@@ -1,0 +1,16 @@
+@import 'src/styles/vars';
+
+body {
+    background-color: $white;
+    margin: 0;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+}
+button {
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    margin: 0;
+}
