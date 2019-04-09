@@ -5,6 +5,9 @@
     // Misc WordPress functions
     include_once get_template_directory() . '/functions/wp-functions.php';
 
+    // Misc Graph QL functions, mostly filters used to extend the Schema
+    include_once get_template_directory() . '/functions/gql-functions.php';
+
     // Handles what image sizes WordPress should generate server side
     include_once get_template_directory() . '/functions/images.php';
 
