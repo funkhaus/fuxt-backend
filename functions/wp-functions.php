@@ -1,6 +1,7 @@
 <?php
 /*
  * Setup WordPress
+ * TODO Get preview URLs working: https://gist.githubusercontent.com/resir014/28bd011b909c44cb9a9bcfce8a63b0b6/raw/7e388ba7bd21c6981769c95f972865b0622c926a/functions.php
  */
     function custom_wordpress_setup() {
 
@@ -9,7 +10,7 @@
 
         // Enable excerpts for pages
         add_post_type_support('page', 'excerpt');
-        
+
 		// Add theme options page
 	    // if( function_exists('acf_add_options_page') ) {
 	    // 	acf_add_options_page(array(
@@ -68,10 +69,10 @@
 	     return get_bloginfo('name');
 	}
 	function custom_loginpage_styles() {
-        wp_enqueue_style( 'login_css', get_template_directory_uri() . '/static/css/login.css' );
+        wp_enqueue_style('login_css', get_template_directory_uri() . '/css/login.css');
 	}
 	function custom_admin_styles() {
-        wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/static/css/admin.css');
+        wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/css/admin.css');
 	}
 	add_filter('login_headerurl','custom_loginpage_logo_link');
 	add_filter('login_headertitle','custom_loginpage_logo_title');
@@ -133,18 +134,18 @@
  */
     function my_general_section() {
         add_settings_section(
-            'vh_google_analytics_section',  // Section ID
+            'sh_google_analytics_section',  // Section ID
             'Google Analytics Tracking IDs',        // Section Title
-            'vh_google_analytics_section', // Callback
+            'sh_google_analytics_section', // Callback
             'general'                      // This makes the section show up on the General Settings Page
         );
 
         add_settings_field(
             'ga_tracking_code_1',   // Option ID
             'Tracking ID #1',       // Label
-            'vh_google_analytics_settings', // !important - This is where the args go!
+            'sh_google_analytics_settings', // !important - This is where the args go!
             'general',                      // Page it will be displayed (General Settings)
-            'vh_google_analytics_section',  // Name of our section
+            'sh_google_analytics_section',  // Name of our section
             array(
                 'ga_tracking_code_1' // Should match Option ID
             )
@@ -153,9 +154,9 @@
         add_settings_field(
             'ga_tracking_code_2',   // Option ID
             'Tracking ID #2',       // Label
-            'vh_google_analytics_settings', // !important - This is where the args go!
+            'sh_google_analytics_settings', // !important - This is where the args go!
             'general',                      // Page it will be displayed (General Settings)
-            'vh_google_analytics_section',  // Name of our section
+            'sh_google_analytics_section',  // Name of our section
             array(
                 'ga_tracking_code_2' // Should match Option ID
             )
@@ -170,11 +171,11 @@
 /*
  * Settings callbacks that build the Analytics markup
  */
-    function vh_google_analytics_section() {
+    function sh_google_analytics_section() {
         echo '<p>Enter Google Analytics tracking codes. Uses the <code>gtag.js</code> tracking method.</p>';
     }
 
-    function vh_google_analytics_settings($args) {
+    function sh_google_analytics_settings($args) {
         $option = get_option($args[0]);
         echo '<input type="text" id="'. $args[0] .'" name="'. $args[0] .'" value="' . $option . '" placeholder="UA-12345678-1"/>';
     }

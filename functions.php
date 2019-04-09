@@ -2,7 +2,6 @@
 /*
  * This file is the main entry point for WordPress functions.
  */
-
     // Misc WordPress functions
     include_once get_template_directory() . '/functions/wp-functions.php';
 
@@ -18,8 +17,8 @@
 /*
  * Generally you don't have to edit any of the files below
  */
-     // Handles plugin dependencies
-     include_once get_template_directory() . '/functions/plugin-importer.php';
+    // Handles plugin dependencies
+    include_once get_template_directory() . '/functions/plugin-importer.php';
 
-     // Handles Developer role
-     include_once get_template_directory() . '/functions/developer-role.php';
+    // Handles Developer role
+    include_once get_template_directory() . '/functions/developer-role.php';

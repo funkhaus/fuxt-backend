@@ -1,0 +1,59 @@
+/*
+ * Style Dashboard
+ * By Drew Baker - 2011
+ * drew@funkhuasdesign.com
+ *
+ */
+
+/*
+ * Logo Icon
+ */
+#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item {
+    background-image: url(../favicon.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 26px auto;
+    background-color: #ffffff;
+}
+#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item span {
+    visibility: hidden;
+}
+
+/*
+ * Turn off menus
+ */
+body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
+    display: none;
+}
+/*
+    #menu-posts {
+        display: none;
+    }
+    #menu-media {
+        display: none;
+    }
+    #menu-links {
+        display: none;
+    }
+    #menu-pages {
+        display: none;
+    }
+    #menu-appearance {
+        display: none;
+    }
+    #menu-plugins {
+        display: none;
+    }
+    #menu-users {
+        display: none;
+    }
+    #menu-tools {
+        display: none;
+    }
+    #menu-settings {
+        display: none;
+    }
+    */
+#menu-comments {
+    display: none;
+}
