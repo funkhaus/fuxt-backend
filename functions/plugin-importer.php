@@ -32,7 +32,7 @@
                 'slug'      => 'wp-graphql-meta-query',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-meta-query/archive/master.zip',
                 'version'   => $latest_rest_easy
-            ),            
+            ),
             array(
                 'name'      => 'Classic Editor',
                 'slug'      => 'classic-editor',
@@ -42,7 +42,7 @@
                 'name'      => 'Nested Pages',
                 'slug'      => 'wp-nested-pages',
                 'required'	=> false
-            )            
+            )
         );
 
         tgmpa( $plugins, $config );
