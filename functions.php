@@ -8,8 +8,8 @@
     // Misc Graph QL functions, mostly filters used to extend the Schema
     include_once get_template_directory() . '/functions/gql-functions.php';
 
-    // Handles what image sizes WordPress should generate server side
-    include_once get_template_directory() . '/functions/images.php';
+    // Any changes to setup the theme (images, menus) go in here
+    include_once get_template_directory() . '/functions/theme-config.php';
 
     // Handles the server side processing of WordPress shortcodes
     include_once get_template_directory() . '/functions/shortcodes.php';
