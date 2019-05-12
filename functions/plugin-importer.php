@@ -25,13 +25,14 @@
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql/archive/master.zip',
-                'version'   => $latest_rest_easy
+                'version'   => "0.3.3"
             ),
             array(
-                'name'      => 'WP Graph QL Meta Query',
-                'slug'      => 'wp-graphql-meta-query',
-                'source'    => 'https://github.com/wp-graphql/wp-graphql-meta-query/archive/master.zip',
-                'version'   => $latest_rest_easy
+                'name'      => 'WP GraphiQL',
+                'slug'      => 'wp-graphiql',
+                'source'    => 'https://github.com/wp-graphql/wp-graphiql/archive/master.zip',
+                'version'   => "0.3.0",
+				'required'	=> false
             ),
             array(
                 'name'      => 'Classic Editor',
