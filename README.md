@@ -10,5 +10,6 @@ A [WordPress](https://wordpress.org/) template that turns it into a headless CMS
 
 ## Wordpress config
 
-### permalinks
+### Permalinks
 Won't work with default setting. Must have pretty permalinks enabled.
+If using WPGraphQL and ACF you must install WPGraphQL ACF extension.
