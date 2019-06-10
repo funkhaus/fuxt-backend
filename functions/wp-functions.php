@@ -178,7 +178,7 @@
 
 
 /*
- * Expose Google Analytics to WP-GQL API
+ * Expose Google Analytics and theme screenshot to WP-GQL API
  */
 	function whitelist_settings() {
 
@@ -190,7 +190,6 @@
         register_setting('general','ga_tracking_code_1', $args);
         register_setting('general','ga_tracking_code_2', $args);
 
-        // Define a custom field to get Theme screenshot URL
         // Define a custom field to get Theme screenshot URL
 		register_graphql_field('GeneralSettings', 'themeScreenshotUrl', [
 			'type' 			=> 'String',
