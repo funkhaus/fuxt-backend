@@ -4,7 +4,6 @@
  */
 function custom_acf_save_directory($path)
 {
-    $path = get_stylesheet_directory() . '/acf';
-    return $path;
+    return get_stylesheet_directory() . '/acf';
 }
 add_filter('acf/settings/save_json', 'custom_acf_save_directory');
