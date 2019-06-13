@@ -160,9 +160,6 @@
                 'ga_tracking_code_2' // Should match Option ID
             )
         );
-
-        register_setting('general','ga_tracking_code_1', 'esc_attr');
-        register_setting('general','ga_tracking_code_2', 'esc_attr');
     }
     add_action('admin_init', 'my_general_section');
 
@@ -178,3 +175,33 @@
         $option = get_option($args[0]);
         echo '<input type="text" id="'. $args[0] .'" name="'. $args[0] .'" value="' . $option . '" placeholder="UA-12345678-1"/>';
     }
+
+
+/*
+ * Expose Google Analytics and theme screenshot to WP-GQL API
+ */
+	function whitelist_settings() {
+
+		// Allow some WordPress settings to be exposed to WP-GQL
+        $args = array(
+	        'sanitize_callback'	=> 'esc_attr',
+	        'show_in_graphql'	=> true
+        );
+        register_setting('general','ga_tracking_code_1', $args);
+        register_setting('general','ga_tracking_code_2', $args);
+
+        // Define a custom field to get Theme screenshot URL
+		register_graphql_field('GeneralSettings', 'themeScreenshotUrl', [
+			'type' 			=> 'String',
+			'description' 	=> __( 'URL to the active theme screenshot', 'stackhaus' ),
+			'resolve' 		=> function( $root, $args, $context, $info ) {
+								$theme = wp_get_theme();
+								$url = "";
+								if($theme->screenshot) {
+									$url = get_template_directory_uri() . "/" . $theme->screenshot;
+								}
+								return $url;
+							}
+		]);
+	}
+	add_action('graphql_init', 'whitelist_settings', 1);

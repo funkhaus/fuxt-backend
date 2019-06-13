@@ -6,25 +6,6 @@ acf_add_local_field_group(array(
 	'title' => 'Developer Settings',
 	'fields' => array(
 		array(
-			'key' => 'field_5cae81bc0d653',
-			'label' => 'Developer ID:',
-			'name' => 'developer_id',
-			'type' => 'text',
-			'instructions' => 'This developer ID can be used to hardcore functionality to this page in the frontend.',
-			'required' => 0,
-			'conditional_logic' => 0,
-			'wrapper' => array(
-				'width' => '',
-				'class' => '',
-				'id' => '',
-			),
-			'default_value' => '',
-			'placeholder' => '',
-			'prepend' => '',
-			'append' => '',
-			'maxlength' => '',
-		),
-		array(
 			'key' => 'field_5cae81f90d654',
 			'label' => 'Prevent non-developer deletion:',
 			'name' => 'prevent_deletion',
