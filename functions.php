@@ -15,7 +15,7 @@
     include_once get_template_directory() . '/functions/shortcodes.php';
 
     //Add additional ACF functionality
-    include_once get_template_directory() . '/acf-functions.php';
+    include_once get_template_directory() . '/functions/acf-functions.php';
 
 /*
  * Generally you don't have to edit any of the files below
