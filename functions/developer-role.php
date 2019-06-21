@@ -91,8 +91,13 @@
  * Add 'is-developer' class to WP admin pages if we're a developer
  */
     function add_developer_admin_body_class($classes){
+        global $post;
+        
         if( is_user_developer() ){
             $classes .= ' is-developer';
+        }
+        if( $post->prevent_deletion ) {
+	        $classes .= ' is-developer-locked';
         }
         return $classes;
     }

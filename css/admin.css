@@ -51,6 +51,11 @@ body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
         display: none;
     }
     */
+    
+body.is-developer-locked.post-php #edit-slug-box #edit-slug-buttons{
+	display: none;
+}
+    
 #menu-comments {
     display: none;
 }
