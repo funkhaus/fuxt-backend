@@ -21,3 +21,4 @@ If using WPGraphQL and ACF you must install WPGraphQL ACF extension.
 ## TODO
 
 -   Refactor login styling to use new functions
+-   Explain how to use shortcodes

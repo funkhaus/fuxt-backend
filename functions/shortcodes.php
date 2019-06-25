@@ -23,12 +23,13 @@
 
 
 /*
- * Gallery placeholder
+ * Gallery shortcode
  */
 	function add_gallery_shortcode( $atts ) {
 
         extract(shortcode_atts(array(
-			'ids'         => ''
+			'ids'         => '',
+			'columns'	  => 2
         ), $atts));
 
         // Get all images
@@ -39,7 +40,7 @@
 	        $images[] = custom_build_repsponsive_image($image_id);
         }
 
-		return '<shortcode-gallery :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
+        return '<shortcode-gallery :columns="'. esc_attr(json_encode($columns)) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
 	}
 	//add_shortcode( 'gallery', 'add_gallery_shortcode' );
 
