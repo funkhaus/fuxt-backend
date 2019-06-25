@@ -5,23 +5,30 @@
 /*
  * Logo Icon
  */
-#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item {
-    background-image: url(../favicon.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 26px auto;
-    background-color: #ffffff;
-}
-#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item span {
-    visibility: hidden;
-}
+	#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item {
+	    background-image: url(../favicon.png);
+	    background-position: center center;
+	    background-repeat: no-repeat;
+	    background-size: 26px auto;
+	    background-color: #ffffff;
+	}
+	#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item span {
+	    visibility: hidden;
+	}
+
+/*
+ * Hide admin functions
+ */
+	body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
+	    display: none;
+	} 
+	body.post-php.is-developer-locked:not(.is-developer) #edit-slug-buttons {
+		display: none;
+	}
 
 /*
  * Turn off menus
  */
-body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
-    display: none;
-}
 /*
     #menu-posts {
         display: none;
@@ -50,7 +57,7 @@ body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
     #menu-settings {
         display: none;
     }
-    */
-#menu-comments {
-    display: none;
-}
+    */ 
+	#menu-comments {
+	    display: none;
+	}
