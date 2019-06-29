@@ -115,3 +115,12 @@
 
 		return $image;
 	}
+
+/*
+ * Change default gallery shortcode columns to 2
+ */
+	function theme_gallery_defaults( $settings ) {
+	    $settings['galleryDefaults']['columns'] = 2;
+	    return $settings;
+	}
+	add_filter('media_view_settings', 'theme_gallery_defaults');
