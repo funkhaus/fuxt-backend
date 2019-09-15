@@ -22,3 +22,4 @@ If using WPGraphQL and ACF you must install WPGraphQL ACF extension.
 
 -   Refactor login styling to use new functions
 -   Explain how to use shortcodes
+-   Add jQuery functions to enable edit of Flywheel home URL and to show attachment IDs on hover
