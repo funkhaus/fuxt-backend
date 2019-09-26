@@ -46,6 +46,22 @@
 
 
 /*
+ * Columns shortcode
+ */
+	function add_columns_shortcode( $atts, $content ) {
+
+        extract(shortcode_atts(array(
+			'columns'    => ''
+        ), $atts));
+
+        $content = apply_filters('the_content', $content);
+
+        return '<shortcode-columns :columns="'. esc_attr(json_encode($columns)) .'">'. $content .'</shortcode-columns>';
+	}
+	add_shortcode( 'columns', 'add_columns_shortcode' );
+
+
+/*
  * Creates a an [svg-image] shortcode so a user can add SVGs into the editor correctly
  */
 	function add_svg_image_shortcode( $atts ) {
@@ -97,7 +113,9 @@
 		// Add ACF image meta data
 		$acf_image_meta = array(
 			"videoUrl"		=> $attachment->videoUrl,
-			"primaryColor"	=> $attachment->primaryColor
+			"primaryColor"	=> $attachment->primaryColor,
+            "focalPointX"	=> $attachment->focalPointX,
+			"focalPointY"	=> $attachment->focalPointY
 		);
 
 		// Build base image data
