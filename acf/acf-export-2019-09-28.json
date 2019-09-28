@@ -47,7 +47,7 @@
                 "wrapper": {
                     "width": "",
                     "class": "focal-point",
-                    "id": ""
+                    "id": "focal-point-x"
                 },
                 "show_in_graphql": 1,
                 "default_value": "",
@@ -69,7 +69,7 @@
                 "wrapper": {
                     "width": "",
                     "class": "focal-point",
-                    "id": ""
+                    "id": "focal-point-y"
                 },
                 "show_in_graphql": 1,
                 "default_value": "",
