@@ -25,13 +25,13 @@
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql/archive/master.zip',
-                'version'   => "0.3.3"
+                'version'   => "0.3.6"
             ),
             array(
                 'name'      => 'WP GraphiQL',
                 'slug'      => 'wp-graphiql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphiql/archive/master.zip',
-                'version'   => "0.3.0",
+                'version'   => "1.0.0",
 				'required'	=> false
             ),
             array(
@@ -42,8 +42,15 @@
             array(
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
-                'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip ',
+                'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
                 'version'   => "0.2.1",
+				'required'	=> false
+            ),
+            array(
+                'name'      => 'Focushuas',
+                'slug'      => 'focushaus',
+                'source'    => 'https://github.com/funkhaus/focushaus/archive/master.zip',
+                'version'   => "2.0",
 				'required'	=> false
             ),
             array(
