@@ -4,19 +4,16 @@ A [WordPress](https://wordpress.org/) template that turns it into a headless CMS
 
 ## Install
 
-1. Install theme
-1. Install required plugins as prompted
-1. Save permalinks
+1.  Install theme
+1.  Install required plugins as prompted
+1.  Re-save Permalinks
+1.  If using ACF, strongly recommended to import the ACH fields in the `.json` file from `/acf/` directory.
 
 ## Wordpress config
 
 ### Permalinks
 
 Won't work with default setting. Must have pretty permalinks enabled.
-
-### WPGraphQL
-
-If using WPGraphQL and ACF you must install WPGraphQL ACF extension.
 
 ## TODO
 

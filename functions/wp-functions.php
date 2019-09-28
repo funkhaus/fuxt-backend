@@ -13,14 +13,6 @@
     }
     add_action('init', 'custom_wordpress_setup');
 
-/*
- * Set custom page title
- */
-    function alter_wordpress_title( $title, $sep ) {
-        return get_bloginfo('name') . $title;
-    }
-    add_filter('wp_title', 'alter_wordpress_title', 10, 2);
-
 
 /*
  * Setup theme
@@ -36,14 +28,15 @@
 	}
 	add_action( 'after_setup_theme', 'custom_theme_setup' );
 
+
 /*
  * Enqueue any Custom Admin Scripts
  */
 	function custom_admin_scripts() {
-		//wp_register_script('site-admin', get_template_directory_uri() . '/static/js/admin.js', 'jquery', custom_latest_timestamp());
-		//wp_enqueue_script('site-admin');
+		wp_register_script('site-admin', get_template_directory_uri() . '/js/admin.js', 'jquery', "1.0");
+		wp_enqueue_script('site-admin');
 	}
-	//add_action( 'admin_enqueue_scripts', 'custom_admin_scripts' );
+	add_action( 'admin_enqueue_scripts', 'custom_admin_scripts' );
 
 
 /*
@@ -65,7 +58,7 @@
         wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/css/admin.css');
 	}
 	add_filter('login_headerurl','custom_loginpage_logo_link');
-	add_filter('login_headertitle','custom_loginpage_logo_title');
+	add_filter('login_headertext','custom_loginpage_logo_title');
 	add_action('login_head','custom_loginpage_styles');
     add_action('admin_print_styles', 'custom_admin_styles');
 

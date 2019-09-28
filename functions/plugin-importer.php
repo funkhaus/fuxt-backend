@@ -35,6 +35,18 @@
 				'required'	=> false
             ),
             array(
+                'name'      => 'Advanced Custom Fields',
+                'slug'      => 'advanced-custom-fields',
+				'required'	=> false
+            ),
+            array(
+                'name'      => 'WP GraphQL for Advanced Custom Fields',
+                'slug'      => 'wp-graphql-acf',
+                'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip ',
+                'version'   => "0.2.1",
+				'required'	=> false
+            ),
+            array(
                 'name'      => 'Classic Editor',
                 'slug'      => 'classic-editor',
                 'required'	=> false

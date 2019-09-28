@@ -46,7 +46,7 @@
 
 
 /*
- * Columns shortcode
+ * Columns shortcode. You must enable shortcode "column" below for this to work well.
  */
 	function add_columns_shortcode( $atts, $content ) {
 
@@ -58,7 +58,17 @@
 
         return '<shortcode-columns :columns="'. esc_attr(json_encode($columns)) .'">'. $content .'</shortcode-columns>';
 	}
-	add_shortcode( 'columns', 'add_columns_shortcode' );
+	//add_shortcode( 'columns', 'add_columns_shortcode' );
+
+
+/*
+ * Indervidual column shortcode, used inside [columns]
+ */
+	function add_column_shortcode( $atts, $content ) {
+        $content = apply_filters('the_content', $content);
+        return '<div class="column">'. $content .'</div>';
+	}
+	//add_shortcode( 'column', 'add_column_shortcode' );
 
 
 /*
