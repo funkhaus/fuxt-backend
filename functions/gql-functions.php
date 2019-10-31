@@ -71,9 +71,9 @@ function gql_register_next_post()
                     'wp-graphql'
                 ),
                 'resolve' => function ($post_object, $args, $context) {
-                    global $post;
+//                     global $post;
                     $post = get_post($post_object->postId);
-                    if ($post->post_type == 'page') {
+					if (is_post_type_hierarchical($post->post_type)) {
 	                    $post_id = get_next_page_id($post);
                     }
                     else {
@@ -133,7 +133,7 @@ function gql_register_previous_post()
                 'resolve' => function ($post_object, $args, $context) {
                     global $post;
                     $post = get_post($post_object->postId);
-                    if ($post->post_type == 'page') {
+                    if (is_post_type_hierarchical($post->post_type)) {
 	                    $post_id = get_previous_page_id($post);
                     }
                     else {
@@ -167,7 +167,7 @@ function get_next_page_id($page) {
 // Params: $direction -> Integer -1 or 1 indicating next or previous post 
 function get_adjacent_page_id($page, $direction) {
 	$args = array(
-				'post_type'         => 'page',
+				'post_type'         => $page->post_type,
 				'order'             => 'ASC',
 				'orderby'           => 'menu_order',
 				'post_parent'       => $page->post_parent,
