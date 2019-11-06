@@ -121,11 +121,12 @@
 		);
 
 		// Add ACF image meta data
+		// Add ACF image meta data
 		$acf_image_meta = array(
-			"videoUrl"		=> $attachment->videoUrl,
-			"primaryColor"	=> $attachment->primaryColor,
-            "focalPointX"	=> $attachment->focalPointX,
-			"focalPointY"	=> $attachment->focalPointY
+			"videoUrl"	=> $attachment->video_url,
+			"primaryColor"	=> $attachment->primary_color,
+			"focalPointX"	=> $attachment->focal_point_x,
+			"focalPointY"	=> $attachment->focal_point_y
 		);
 
 		// Build base image data

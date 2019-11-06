@@ -71,10 +71,15 @@ function gql_register_next_post()
                     'wp-graphql'
                 ),
                 'resolve' => function ($post_object, $args, $context) {
-                    global $post;
+//                     global $post;
                     $post = get_post($post_object->postId);
-                    $next_post = get_next_post();
-                    $post_id = $next_post->ID;
+					if (is_post_type_hierarchical($post->post_type)) {
+	                    $post_id = get_next_page_id($post);
+                    }
+                    else {
+	                    $next_post = get_next_post();
+	                    $post_id = $next_post->ID;
+                    }
                     return $post_id;
                 }
             ]);
@@ -128,8 +133,14 @@ function gql_register_previous_post()
                 'resolve' => function ($post_object, $args, $context) {
                     global $post;
                     $post = get_post($post_object->postId);
-                    $prev_post = get_previous_post();
-                    $post_id = $prev_post->ID;
+                    if (is_post_type_hierarchical($post->post_type)) {
+	                    $post_id = get_previous_page_id($post);
+                    }
+                    else {
+	                    $prev_post = get_previous_post();
+						$post_id = $prev_post->ID;
+
+                    }
                     return $post_id;
                 }
             ]);
@@ -137,3 +148,38 @@ function gql_register_previous_post()
     }
 }
 add_action('graphql_register_types', 'gql_register_previous_post');
+
+
+// Util function for previous page id
+function get_previous_page_id($page) {
+	return get_adjacent_page_id($page, -1);
+}
+
+// Util function for next page id
+function get_next_page_id($page) {
+	return get_adjacent_page_id($page, 1);
+}
+
+
+// Util function for adjacent page id
+// returns adjacent page id
+// Params: $page -> page object from wordpress
+// Params: $direction -> Integer -1 or 1 indicating next or previous post 
+function get_adjacent_page_id($page, $direction) {
+	$args = array(
+				'post_type'         => $page->post_type,
+				'order'             => 'ASC',
+				'orderby'           => 'menu_order',
+				'post_parent'       => $page->post_parent,
+				'fields'            => 'ids',
+				'posts_per_page'    => -1
+			);
+	$pages = get_posts($args);
+	$current_key = array_search($page->ID, $pages);
+	$output = 0;
+	if( isset($pages[$current_key+$direction]) ) {
+		// Next page exists
+		$output = $pages[$current_key+$direction];
+	}
+	return $output;
+}
