@@ -35,6 +35,13 @@
 				'required'	=> false
             ),
             array(
+                'name'      => 'WP GraphQL CORS',
+                'slug'      => 'wp-graphql-cors',
+                'source'    => 'https://github.com/funkhaus/wp-graphql-cors/archive/master.zip',
+                'version'   => "1.0.0",
+				'required'	=> false
+            ),
+            array(
                 'name'      => 'Advanced Custom Fields',
                 'slug'      => 'advanced-custom-fields',
 				'required'	=> false
@@ -63,6 +70,8 @@
                 'slug'      => 'wp-nested-pages',
                 'required'	=> false
             )
+
+
         );
 
         tgmpa( $plugins, $config );
