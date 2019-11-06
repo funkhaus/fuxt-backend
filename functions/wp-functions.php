@@ -159,3 +159,20 @@
         $option = get_option($args[0]);
         echo '<input type="text" id="'. $args[0] .'" name="'. $args[0] .'" value="' . $option . '" placeholder="UA-12345678-1"/>';
     }
+
+
+/*
+ * Add useful args to post/page preview URLs
+ */
+	function add_custom_preview_link($link, $post) {
+		$args = array(
+			"id"		=> $post->ID,
+			"type"		=> get_post_type($post),
+			"uri"		=> "/" . get_page_uri($post),
+			"status"	=> get_post_status($post)
+		);
+		$link = add_query_arg($args, $link);
+
+		return $link;
+	}
+	add_filter( 'preview_post_link', "add_custom_preview_link", 10, 2);
