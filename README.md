@@ -36,7 +36,7 @@ mutation MyMutation {
           message: "Email subject here",
           subject: "Message body here",
           trap: "12345",
-          headers: ["From: site@example.com"]
+          headers: ["From: site@example.com"] # Will default to WordPress@{your-domain.com}
        }
     ) {
         to
