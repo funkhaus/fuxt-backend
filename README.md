@@ -21,7 +21,7 @@ GrapghQL won't work with default Permalink setting. You must have some form of p
 
 This theme includes a `sendEmail` mutation. Simply uncomment `gql_register_email_mutation` action in `/functions/gql-functions.php`.
 
-The function maps to the [wp_mail() function](https://developer.wordpress.org/reference/functions/wp_mail/), so please read that for a description of required inputs.
+The mutation maps to the [wp_mail() function](https://developer.wordpress.org/reference/functions/wp_mail/), so please read that for a description of required inputs.
 
 The mutation comes with a basic form of anti-spam protection. The input `trap` must equal the same as the `clientMutationId`. With GraphQL, the `clientMutationId` is a unique identify and you can set it to whatever you like.
 
@@ -35,7 +35,8 @@ mutation MyMutation {
           to: ["example@example.com"],
           message: "Email subject here",
           subject: "Message body here",
-          trap: "12345"
+          trap: "12345",
+          headers: ["From: site@example.com"]
        }
     ) {
         to
