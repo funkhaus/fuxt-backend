@@ -197,3 +197,95 @@
         return 300;
     }
     //add_filter( 'graphql_connection_max_query_amount', 'allow_more_posts_per_query', 10, 5);
+
+
+
+/*
+ * Extend GraphQL to add a mutation to send emails via the wp_mail() function.
+ * SEE https://developer.wordpress.org/reference/functions/wp_mail/ for more info on how each input works.
+ * SEE https://docs.wpgraphql.com/extending/mutations/
+ */
+    use GraphQL\Error\UserError;
+    function gql_register_email_mutation() {
+
+    	// Define the input parameters
+    	$inputFields = array(
+    		'to' => [
+    			'type' 			=> ['list_of' => 'String'],
+    			'description' 	=> 'Array of email addresses to send email to. Must comply to RFC 2822 format.',
+    		],
+    		'subject' => [
+    			'type' 			=> 'String',
+    			'description' 	=> 'Email subject.',
+    		],
+    		'message' => [
+    			'type' 			=> 'String',
+    			'description' 	=> 'Message contents.',
+    		],
+    		'headers' => [
+    			'type' 			=> ['list_of' => 'String'],
+    			'description' 	=> 'Array of any additional headers. This is how you set BCC, CC and HTML type. See wp_mail() function for more details.'
+    		],
+    		'trap' => [
+    			'type' 			=> 'String',
+    			'description' 	=> 'Crude anti-spam measure. This must equal the clientMutationId, otherwise the email will not be sent.'
+    		]
+    	);
+
+    	// Define the ouput parameters
+    	$outputFields = array(
+    		'to' => [
+    			'type' 			=> ['list_of' => 'String'],
+    			'description' 	=> 'Array of email addresses to send email to. Must comply to RFC 2822 format.',
+    		],
+    		'subject' => [
+    			'type' 			=> 'String',
+    			'description' 	=> 'Email subject.',
+    		],
+    		'message' => [
+    			'type' 			=> 'String',
+    			'description' 	=> 'Message contents.',
+    		],
+    		'headers' => [
+    			'type' 			=> ['list_of' => 'String'],
+    			'description' 	=> 'Array of any additional headers. This is how you set BCC, CC and HTML type. See wp_mail() function for more details.'
+    		],
+    		'sent' => [
+    			'type' 			=> 'Boolean',
+    			'description' 	=> 'Returns true if the email was sent successfully.',
+    			'resolve' => function( $payload, $args, $context, $info ) {
+    				return isset( $payload['sent'] ) ? $payload['sent'] : false;
+    			}
+    		]
+    	);
+
+    	// This function processes the submitted data
+    	$mutateAndGetPayload = function( $input, $context, $info ) {
+
+    		// Spam honeypot. Make sure that the clientMutationId matches the trap input.
+    		if( $input['clientMutationId'] !== $input['trap'] ) {
+    			throw new UserError("You got caught in a spam trap");
+    		}
+
+    		// Vailidate email before trying to send
+    		foreach( $input["to"] as $email ) {
+    			if( !is_email($email) ) {
+    				throw new UserError("Invalid email address: " . $email);
+    			}
+    		}
+
+    		// Send email!
+    		$input['sent'] = wp_mail( $input['to'], $input['subject'], $input['message'], $input['headers'], $input['attachments'] );
+
+    		return $input;
+    	};
+
+    	// Add mutation to WP-GQL now
+    	$args = array(
+    		'inputFields' 			=> $inputFields,
+    		'outputFields'			=> $outputFields,
+    		'mutateAndGetPayload'	=> $mutateAndGetPayload
+    	);
+    	register_graphql_mutation( 'sendEmail', $args);
+    }
+    //add_action( 'graphql_register_types', 'gql_register_email_mutation');
