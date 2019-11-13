@@ -25,6 +25,8 @@ The mutation maps to the [wp_mail() function](https://developer.wordpress.org/re
 
 The mutation comes with a basic form of anti-spam protection. The input `trap` must equal the same as the `clientMutationId`. With GraphQL, the `clientMutationId` is a unique identify and you can set it to whatever you like.
 
+The `Log Emails` plugin is handy to install, to track what emails are getting sent. You can get it [here](https://wordpress.org/plugins/log-emails/).
+
 So for example:
 
 ```
