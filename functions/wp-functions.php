@@ -168,12 +168,13 @@
 		$args = array(
 			"id"		=> $post->ID,
 			"type"		=> get_post_type($post),
-			"path"		=> "/" . get_page_uri($post),
+			"path"		=> "",
+            "slug"	    => $post->post_name,
 			"status"	=> get_post_status($post)
 		);
 
 		// If we have a slug, build path
-		if($post->post_name) {
+		if($args['slug']) {
 			$args['path'] = "/" . get_page_uri($post);
 
 			// Use custom path for posts
