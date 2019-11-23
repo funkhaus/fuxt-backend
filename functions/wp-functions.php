@@ -168,7 +168,7 @@
 		$args = array(
 			"id"		=> $post->ID,
 			"type"		=> get_post_type($post),
-			"slug"		=> $post->post_name,
+			"path"		=> "/" . get_page_uri($post),
 			"status"	=> get_post_status($post)
 		);
 
