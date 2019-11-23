@@ -168,11 +168,22 @@
 		$args = array(
 			"id"		=> $post->ID,
 			"type"		=> get_post_type($post),
-			"uri"		=> "/" . get_page_uri($post),
+			"slug"		=> $post->post_name,
 			"status"	=> get_post_status($post)
 		);
-		$link = add_query_arg($args, $link);
 
-		return $link;
+		// If we have a slug, build path
+		if($args['slug']) {
+			$args['path'] = "/" . get_page_uri($post);
+
+			// Use custom path for posts
+			if($args['type'] == "post") {
+				$args['path'] = "/news/" . $post->post_name;
+			} else {
+				$args['path'] = "/" . get_page_uri($post);
+			}
+		}
+
+		return add_query_arg($args, $link);
 	}
-	add_filter( 'preview_post_link', "add_custom_preview_link", 10, 2);
+	add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
