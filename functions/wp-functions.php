@@ -168,7 +168,7 @@
 		$args = array(
 			"id"		=> $post->ID,
 			"type"		=> get_post_type($post),
-			"uri"		=> "/" . get_page_uri($post),
+			"path"		=> "/" . get_page_uri($post),
 			"status"	=> get_post_status($post)
 		);
 		$link = add_query_arg($args, $link);
