@@ -173,7 +173,7 @@
 		);
 
 		// If we have a slug, build path
-		if($args['slug']) {
+		if($post->post_name) {
 			$args['path'] = "/" . get_page_uri($post);
 
 			// Use custom path for posts
