@@ -32,7 +32,7 @@
  * Adds next post node to all the custom Post Types
  */
     function gql_register_next_post() {
-        $post_types = WPGraphQL::$allowed_post_types;
+        $post_types = WPGraphQL::get_allowed_post_types();
 
         if (!empty($post_types) && is_array($post_types)) {
             foreach ($post_types as $post_type) {
@@ -90,7 +90,7 @@
  * Adds previous post node to all the custom Post Types
  */
     function gql_register_previous_post() {
-        $post_types = WPGraphQL::$allowed_post_types;
+        $post_types = WPGraphQL::get_allowed_post_types();
 
         if (!empty($post_types) && is_array($post_types)) {
             foreach ($post_types as $post_type) {
