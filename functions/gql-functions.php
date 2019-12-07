@@ -11,7 +11,7 @@
         register_setting('general', 'ga_tracking_code_1', $args);
         register_setting('general', 'ga_tracking_code_2', $args);
 
-        // Define a custom field to get Theme screenshot URL
+        // Define a field to get Theme screenshot URL
         register_graphql_field('GeneralSettings', 'themeScreenshotUrl', [
             'type' => 'String',
             'description' => __('URL to the active theme screenshot', 'stackhaus'),
@@ -24,6 +24,15 @@
                 return $url;
             }
         ]);
+
+        // Define a field to get Site URL
+		register_graphql_field('GeneralSettings', 'siteUrl', [
+			'type' 			=> 'String',
+			'description' 	=> __( 'Site Address (URL)', 'stackhaus' ),
+			'resolve' 		=> function( $root, $args, $context, $info ) {
+				return get_home_url();
+			}
+		]);
     }
     add_action('graphql_init', 'whitelist_settings', 1);
 
