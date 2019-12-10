@@ -1,5 +1,5 @@
 /* eslint-disable */
-var funkhausAdmin = {
+var stackhausAdmin = {
 	enabledHomeUrlEdit: function(){
 		jQuery('input#home').prop('readonly', false)
 	},
@@ -15,11 +15,34 @@ var funkhausAdmin = {
 	            }
 	        }
 	    )
+	},
+	shiftClickNestedPages: function() {
+        // Enable shift-clicking on NestedPages admin lists
+        var lastChecked = null;
+		jQuery("#wpbody-content").on("click", ".nestedpages .np-bulk-checkbox input[type='checkbox']", function(e){
+
+			// Abort if first click
+	        if (!lastChecked) {
+	            lastChecked = this;
+	            return;
+	        }
+
+	        // Handle shift clicking and auto selecting all following checkboxes
+			var $chkboxes = jQuery(".nestedpages .np-bulk-checkbox input[type='checkbox']");
+	        if (e.shiftKey) {
+	            var start = $chkboxes.index(this);
+	            var end = $chkboxes.index(lastChecked);
+	            $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).prop('checked', lastChecked.checked);
+	        }
+
+	        lastChecked = this;
+		});
 	}
 }
 jQuery(document).ready(function() {
-	funkhausAdmin.showAttachmentIds();
+	stackhausAdmin.showAttachmentIds();
+	stackhausAdmin.shiftClickNestedPages();
 })
 jQuery(window).load(function(){
-    funkhausAdmin.enabledHomeUrlEdit()
+    stackhausAdmin.enabledHomeUrlEdit()
 })
