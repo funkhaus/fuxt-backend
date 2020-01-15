@@ -1,7 +1,7 @@
 /* eslint-disable */
 var stackhausAdmin = {
 	enabledHomeUrlEdit: function(){
-		jQuery('input#home').prop('readonly', false)
+		jQuery('input#home').removeClass('disabled').prop('readonly', false).prop('disabled', false);
 	},
 	showAttachmentIds: function() {
 	    // Show the attachment IDs on hover of attachment grid blocks
