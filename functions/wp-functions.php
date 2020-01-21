@@ -188,3 +188,11 @@
 		return add_query_arg($args, $link);
 	}
 	add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
+
+/*
+ * Prevent Google from indexing any PHP generated part of the API.
+ */   
+	function add_nofollow_header() {
+		header("X-Robots-Tag: noindex, nofollow", true);
+	}
+	add_action('send_headers', 'add_nofollow_header');

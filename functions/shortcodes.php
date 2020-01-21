@@ -110,7 +110,7 @@
  * @param int $attachment_id The WordPress attachment ID
  * @param string $size The WordPress image size keyword
  */
-	function custom_build_repsponsive_image($attachment_id, $size = "medium") {
+	function custom_build_repsponsive_image($attachment_id, $size = "large") {
 		$attachment = get_post($attachment_id);
 		$attachment_data = wp_get_attachment_image_src($attachment_id, $size);
 
