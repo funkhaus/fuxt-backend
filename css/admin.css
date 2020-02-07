@@ -23,7 +23,10 @@
 	    display: none;
 	} 
 	body.post-php.is-developer-locked:not(.is-developer) #edit-slug-buttons {
-		display: none;
+	    display: none;
+	}
+	body:not(.is-developer) #adminmenu #toplevel_page_wp-graphiql-wp-graphiql {
+	    display: none;
 	}
 
 /*
