@@ -23,12 +23,13 @@
 
 
 /*
- * Gallery placeholder
+ * Gallery shortcode
  */
 	function add_gallery_shortcode( $atts ) {
 
         extract(shortcode_atts(array(
-			'ids'         => ''
+			'ids'         => '',
+			'columns'	  => 2
         ), $atts));
 
         // Get all images
@@ -39,9 +40,35 @@
 	        $images[] = custom_build_repsponsive_image($image_id);
         }
 
-		return '<shortcode-gallery :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
+        return '<shortcode-gallery :columns="'. esc_attr(json_encode($columns)) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
 	}
 	//add_shortcode( 'gallery', 'add_gallery_shortcode' );
+
+
+/*
+ * Columns shortcode. You must enable shortcode "column" below for this to work well.
+ */
+	function add_columns_shortcode( $atts, $content ) {
+
+        extract(shortcode_atts(array(
+			'columns'    => ''
+        ), $atts));
+
+        $content = apply_filters('the_content', $content);
+
+        return '<shortcode-columns :columns="'. esc_attr(json_encode($columns)) .'">'. $content .'</shortcode-columns>';
+	}
+	//add_shortcode( 'columns', 'add_columns_shortcode' );
+
+
+/*
+ * Indervidual column shortcode, used inside [columns]
+ */
+	function add_column_shortcode( $atts, $content ) {
+        $content = apply_filters('the_content', $content);
+        return '<div class="column">'. $content .'</div>';
+	}
+	//add_shortcode( 'column', 'add_column_shortcode' );
 
 
 /*
@@ -83,7 +110,7 @@
  * @param int $attachment_id The WordPress attachment ID
  * @param string $size The WordPress image size keyword
  */
-	function custom_build_repsponsive_image($attachment_id, $size = "medium") {
+	function custom_build_repsponsive_image($attachment_id, $size = "large") {
 		$attachment = get_post($attachment_id);
 		$attachment_data = wp_get_attachment_image_src($attachment_id, $size);
 
@@ -94,9 +121,12 @@
 		);
 
 		// Add ACF image meta data
+		// Add ACF image meta data
 		$acf_image_meta = array(
-			"videoUrl"		=> $attachment->videoUrl,
-			"primaryColor"	=> $attachment->primaryColor
+			"videoUrl"	=> $attachment->video_url,
+			"primaryColor"	=> $attachment->primary_color,
+			"focalPointX"	=> $attachment->focal_point_x,
+			"focalPointY"	=> $attachment->focal_point_y
 		);
 
 		// Build base image data
@@ -114,3 +144,12 @@
 
 		return $image;
 	}
+
+/*
+ * Change default gallery shortcode columns to 2
+ */
+	function theme_gallery_defaults( $settings ) {
+	    $settings['galleryDefaults']['columns'] = 2;
+	    return $settings;
+	}
+	add_filter('media_view_settings', 'theme_gallery_defaults');

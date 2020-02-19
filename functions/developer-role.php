@@ -3,7 +3,7 @@
 /*
  * Add Developer role
  */
-    function custom_theme_switch(){
+    function custom_add_developer_role(){
         global $wp_roles;
         if ( ! isset( $wp_roles ) ){
             $wp_roles = new WP_Roles();
@@ -21,7 +21,7 @@
         $user = new WP_User(1);
         $user->set_role('developer');
     }
-    add_action('after_switch_theme', 'custom_theme_switch');
+    add_action('after_switch_theme', 'custom_add_developer_role');
 
 
 /*
@@ -91,8 +91,13 @@
  * Add 'is-developer' class to WP admin pages if we're a developer
  */
     function add_developer_admin_body_class($classes){
+        global $post;
+
         if( is_user_developer() ){
             $classes .= ' is-developer';
+        }
+        if( !empty($post->prevent_deletion) ) {
+	        $classes .= ' is-developer-locked';
         }
         return $classes;
     }

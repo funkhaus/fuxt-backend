@@ -1,0 +1,172 @@
+[
+    {
+        "key": "group_5cccac8d93cd4",
+        "title": "Image Meta",
+        "fields": [
+            {
+                "key": "field_5cccac9d781a1",
+                "label": "Video URL",
+                "name": "video_url",
+                "type": "url",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "default_value": "",
+                "placeholder": ""
+            },
+            {
+                "key": "field_5cccacb8781a2",
+                "label": "Primary Color",
+                "name": "primary_color",
+                "type": "color_picker",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "default_value": ""
+            },
+            {
+                "key": "field_5d8eabc56cc17",
+                "label": "Focal Point X",
+                "name": "focal_point_x",
+                "type": "number",
+                "instructions": "Horizontal coordinate",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "focal-point",
+                    "id": "focal-point-x"
+                },
+                "show_in_graphql": 1,
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "%",
+                "append": "",
+                "min": 0,
+                "max": 100,
+                "step": ""
+            },
+            {
+                "key": "field_5d8eac216cc19",
+                "label": "Focal Point Y",
+                "name": "focal_point_y",
+                "type": "number",
+                "instructions": "Vertical coordinate",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "focal-point",
+                    "id": "focal-point-y"
+                },
+                "show_in_graphql": 1,
+                "default_value": "",
+                "placeholder": "",
+                "prepend": "%",
+                "append": "",
+                "min": 0,
+                "max": 100,
+                "step": ""
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "attachment",
+                    "operator": "==",
+                    "value": "image"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_graphql": 1,
+        "graphql_field_name": "acfImageMeta"
+    },
+    {
+        "key": "group_5cae81a34f41b",
+        "title": "Developer Settings",
+        "fields": [
+            {
+                "key": "field_5cae81f90d654",
+                "label": "Prevent non-developer deletion:",
+                "name": "prevent_deletion",
+                "type": "true_false",
+                "instructions": "This prevents this page from being deleted by a non-developer user.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "message": "",
+                "default_value": 0,
+                "ui": 1,
+                "ui_on_text": "",
+                "ui_off_text": ""
+            },
+            {
+                "key": "field_5cae827c0d655",
+                "label": "Force text editor:",
+                "name": "force_text_editor",
+                "type": "true_false",
+                "instructions": "Force the WYSIWYG editor into text mode for this page.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "message": "",
+                "default_value": 0,
+                "ui": 1,
+                "ui_on_text": "",
+                "ui_off_text": ""
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "page"
+                },
+                {
+                    "param": "current_user_role",
+                    "operator": "==",
+                    "value": "developer"
+                }
+            ]
+        ],
+        "menu_order": 10,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "field",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_graphql": 0,
+        "graphql_field_name": "acfDeveloperSettings"
+    }
+]

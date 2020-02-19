@@ -10,25 +10,8 @@
         // Enable excerpts for pages
         add_post_type_support('page', 'excerpt');
 
-		// Add theme options page
-	    // if( function_exists('acf_add_options_page') ) {
-	    // 	acf_add_options_page(array(
-	    // 		'page_title' => 'Theme Settings',
-	    // 		'menu_title'	=> 'Theme Settings',
-	    // 		'menu_slug' 	=> 'theme-settings'
-	    // 	));
-	    // }
-
     }
     add_action('init', 'custom_wordpress_setup');
-
-/*
- * Set custom page title
- */
-    function alter_wordpress_title( $title, $sep ) {
-        return get_bloginfo('name') . $title;
-    }
-    add_filter('wp_title', 'alter_wordpress_title', 10, 2);
 
 
 /*
@@ -45,14 +28,15 @@
 	}
 	add_action( 'after_setup_theme', 'custom_theme_setup' );
 
+
 /*
  * Enqueue any Custom Admin Scripts
  */
 	function custom_admin_scripts() {
-		//wp_register_script('site-admin', get_template_directory_uri() . '/static/js/admin.js', 'jquery', custom_latest_timestamp());
-		//wp_enqueue_script('site-admin');
+		wp_register_script('site-admin', get_template_directory_uri() . '/js/admin.js', 'jquery', "1.0");
+		wp_enqueue_script('site-admin');
 	}
-	//add_action( 'admin_enqueue_scripts', 'custom_admin_scripts' );
+	add_action( 'admin_enqueue_scripts', 'custom_admin_scripts' );
 
 
 /*
@@ -74,7 +58,7 @@
         wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/css/admin.css');
 	}
 	add_filter('login_headerurl','custom_loginpage_logo_link');
-	add_filter('login_headertitle','custom_loginpage_logo_title');
+	add_filter('login_headertext','custom_loginpage_logo_title');
 	add_action('login_head','custom_loginpage_styles');
     add_action('admin_print_styles', 'custom_admin_styles');
 
@@ -175,3 +159,40 @@
         $option = get_option($args[0]);
         echo '<input type="text" id="'. $args[0] .'" name="'. $args[0] .'" value="' . $option . '" placeholder="UA-12345678-1"/>';
     }
+
+
+/*
+ * Add useful args to post/page preview URLs
+ */
+	function add_custom_preview_link($link, $post) {
+		$args = array(
+			"id"		=> $post->ID,
+			"type"		=> get_post_type($post),
+			"path"		=> "",
+            "slug"	    => $post->post_name,
+			"status"	=> get_post_status($post)
+		);
+
+		// If we have a slug, build path
+		if($args['slug']) {
+			$args['path'] = "/" . get_page_uri($post);
+
+			// Use custom path for posts
+			if($args['type'] == "post") {
+				$args['path'] = "/news/" . $post->post_name;
+			} else {
+				$args['path'] = "/" . get_page_uri($post);
+			}
+		}
+
+		return add_query_arg($args, $link);
+	}
+	add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
+
+/*
+ * Prevent Google from indexing any PHP generated part of the API.
+ */   
+	function add_nofollow_header() {
+		header("X-Robots-Tag: noindex, nofollow", true);
+	}
+	add_action('send_headers', 'add_nofollow_header');
