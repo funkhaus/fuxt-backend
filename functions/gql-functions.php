@@ -3,14 +3,6 @@
  * Expose Google Analytics and theme screenshot to WP-GQL API
  */
     function whitelist_settings() {
-        // Allow some WordPress settings to be exposed to WP-GQL
-        $args = array(
-            'sanitize_callback' => 'esc_attr',
-            'show_in_graphql' => true
-        );
-        register_setting('general', 'ga_tracking_code_1', $args);
-        register_setting('general', 'ga_tracking_code_2', $args);
-
         // Define a field to get Theme screenshot URL
         register_graphql_field('GeneralSettings', 'themeScreenshotUrl', [
             'type' => 'String',

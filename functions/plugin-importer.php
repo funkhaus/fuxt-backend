@@ -25,7 +25,7 @@
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql/archive/master.zip',
-                'version'   => "0.3.6"
+                'version'   => "0.6.1"
             ),
             array(
                 'name'      => 'WP GraphiQL',
@@ -50,7 +50,7 @@
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
-                'version'   => "0.2.1",
+                'version'   => "0.3.1",
 				'required'	=> false
             ),
             array(

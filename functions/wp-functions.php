@@ -111,56 +111,6 @@
     }
     add_filter('excerpt_more', 'custom_excerpt_ellipsis');
 
-
-/*
- * Add Google Analytics tracking settings to admin dashboard
- */
-    function my_general_section() {
-        add_settings_section(
-            'sh_google_analytics_section',  // Section ID
-            'Google Analytics Tracking IDs',        // Section Title
-            'sh_google_analytics_section', // Callback
-            'general'                      // This makes the section show up on the General Settings Page
-        );
-
-        add_settings_field(
-            'ga_tracking_code_1',   // Option ID
-            'Tracking ID #1',       // Label
-            'sh_google_analytics_settings', // !important - This is where the args go!
-            'general',                      // Page it will be displayed (General Settings)
-            'sh_google_analytics_section',  // Name of our section
-            array(
-                'ga_tracking_code_1' // Should match Option ID
-            )
-        );
-
-        add_settings_field(
-            'ga_tracking_code_2',   // Option ID
-            'Tracking ID #2',       // Label
-            'sh_google_analytics_settings', // !important - This is where the args go!
-            'general',                      // Page it will be displayed (General Settings)
-            'sh_google_analytics_section',  // Name of our section
-            array(
-                'ga_tracking_code_2' // Should match Option ID
-            )
-        );
-    }
-    add_action('admin_init', 'my_general_section');
-
-
-/*
- * Settings callbacks that build the Analytics markup
- */
-    function sh_google_analytics_section() {
-        echo '<p>Enter Google Analytics tracking codes. Uses the <code>gtag.js</code> tracking method.</p>';
-    }
-
-    function sh_google_analytics_settings($args) {
-        $option = get_option($args[0]);
-        echo '<input type="text" id="'. $args[0] .'" name="'. $args[0] .'" value="' . $option . '" placeholder="UA-12345678-1"/>';
-    }
-
-
 /*
  * Add useful args to post/page preview URLs
  */
@@ -191,7 +141,7 @@
 
 /*
  * Prevent Google from indexing any PHP generated part of the API.
- */   
+ */
 	function add_nofollow_header() {
 		header("X-Robots-Tag: noindex, nofollow", true);
 	}
