@@ -1,6 +1,6 @@
 <?php
 /*
- * Expose Google Analytics and theme screenshot to WP-GQL API
+ * Expose theme screenshot to WP-GQL API
  */
     function whitelist_settings() {
         // Define a field to get Theme screenshot URL
