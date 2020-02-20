@@ -10,7 +10,7 @@
 
 
 /*
- * Add ACF options page
+ * Add ACF site options page
  */
     if( function_exists('acf_add_options_page') ) {
         // Add `Theme General Settings` sub page
