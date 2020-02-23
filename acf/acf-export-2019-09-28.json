@@ -106,6 +106,48 @@
         "title": "Site Options",
         "fields": [
             {
+                "key": "field_5e4dbc3d5b0a8",
+                "label": "Google Analytics",
+                "name": "google_analytics",
+                "type": "repeater",
+                "instructions": "Enter Google Analytics tracking codes. Uses the gtag.js tracking method.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "collapsed": "",
+                "min": 0,
+                "max": 0,
+                "layout": "table",
+                "button_label": "Add Tracking Code",
+                "sub_fields": [
+                    {
+                        "key": "field_5e4dbc465b0a9",
+                        "label": "Code",
+                        "name": "code",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "placeholder": "UA-12345678-1",
+                        "prepend": "",
+                        "append": "",
+                        "maxlength": ""
+                    }
+                ]
+            },
+            {
                 "key": "field_5e4da982da90c",
                 "label": "Social Media",
                 "name": "social_media",
@@ -160,49 +202,7 @@
                         },
                         "show_in_graphql": 1,
                         "default_value": "",
-                        "placeholder": ""
-                    }
-                ]
-            },
-            {
-                "key": "field_5e4dbc3d5b0a8",
-                "label": "Google Analytics",
-                "name": "google_analytics",
-                "type": "repeater",
-                "instructions": "Enter Google Analytics tracking codes. Uses the gtag.js tracking method.",
-                "required": 0,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "show_in_graphql": 1,
-                "collapsed": "",
-                "min": 0,
-                "max": 0,
-                "layout": "table",
-                "button_label": "Add Tracking Code",
-                "sub_fields": [
-                    {
-                        "key": "field_5e4dbc465b0a9",
-                        "label": "Code",
-                        "name": "code",
-                        "type": "text",
-                        "instructions": "",
-                        "required": 0,
-                        "conditional_logic": 0,
-                        "wrapper": {
-                            "width": "",
-                            "class": "",
-                            "id": ""
-                        },
-                        "show_in_graphql": 1,
-                        "default_value": "",
-                        "placeholder": "",
-                        "prepend": "",
-                        "append": "",
-                        "maxlength": ""
+                        "placeholder": "https://www.instagram.com/funkhaus/"
                     }
                 ]
             }
@@ -233,10 +233,10 @@
         "fields": [
             {
                 "key": "field_5cae81f90d654",
-                "label": "Prevent non-developer deletion:",
+                "label": "Prevent non-developer deletion",
                 "name": "prevent_deletion",
                 "type": "true_false",
-                "instructions": "This prevents this page from being deleted by a non-developer user.",
+                "instructions": "This prevents this page from being deleted by a non-developer user. It also locks the slug from being changed.",
                 "required": 0,
                 "conditional_logic": 0,
                 "wrapper": {
@@ -244,6 +244,7 @@
                     "class": "",
                     "id": ""
                 },
+                "show_in_graphql": 1,
                 "message": "",
                 "default_value": 0,
                 "ui": 1,
@@ -252,7 +253,7 @@
             },
             {
                 "key": "field_5cae827c0d655",
-                "label": "Force text editor:",
+                "label": "Force text editor",
                 "name": "force_text_editor",
                 "type": "true_false",
                 "instructions": "Force the WYSIWYG editor into text mode for this page.",
@@ -263,6 +264,7 @@
                     "class": "",
                     "id": ""
                 },
+                "show_in_graphql": 1,
                 "message": "",
                 "default_value": 0,
                 "ui": 1,
