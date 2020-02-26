@@ -131,7 +131,7 @@
 		// Add slug and build path
 		if($post->post_name) {
 			$args['slug'] = $post->post_name;
-			$args['path'] = "/" . get_page_uri($post);
+			$args['path'] = get_page_uri($post);
 		}
 
 		return add_query_arg($args, $link);
