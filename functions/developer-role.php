@@ -17,7 +17,7 @@
             $admin_role->capabilities
         );
 
-        // set initial user to Developer
+        // Set initial user to Developer
         $user = new WP_User(1);
         $user->set_role('developer');
     }
@@ -98,6 +98,9 @@
         }
         if( !empty($post->prevent_deletion) ) {
 	        $classes .= ' is-developer-locked';
+        }
+        if( empty($post->post_name) ) {
+	        $classes .= ' no-slug';
         }
         return $classes;
     }

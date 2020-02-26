@@ -5,29 +5,38 @@
 /*
  * Logo Icon
  */
-	#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item {
-	    background-image: url(../favicon.png);
-	    background-position: center center;
-	    background-repeat: no-repeat;
-	    background-size: 26px auto;
-	    background-color: #ffffff;
-	}
-	#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item span {
-	    visibility: hidden;
-	}
+#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item {
+    background-image: url(../favicon.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 26px auto;
+    background-color: #ffffff;
+}
+#wpwrap #wpadminbar #wp-admin-bar-wp-logo > .ab-item span {
+    visibility: hidden;
+}
 
 /*
  * Hide admin functions
  */
-	body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
-	    display: none;
-	} 
-	body.post-php.is-developer-locked:not(.is-developer) #edit-slug-buttons {
-	    display: none;
-	}
-	body:not(.is-developer) #adminmenu #toplevel_page_wp-graphiql-wp-graphiql {
-	    display: none;
-	}
+body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
+    display: none;
+}
+body.post-php.is-developer-locked:not(.is-developer) #edit-slug-buttons {
+    display: none;
+}
+body:not(.is-developer) #adminmenu #toplevel_page_wp-graphiql-wp-graphiql {
+    display: none;
+}
+
+/* Turn off preview links */
+body.post-new-php.no-slug #preview-action,
+body.post-php.no-slug #preview-action {
+    display: none;
+}
+#wpbody-content a.np-view-button[href*='/?'] {
+    display: none;
+}
 
 /*
  * Turn off menus
@@ -60,7 +69,7 @@
     #menu-settings {
         display: none;
     }
-    */ 
-	#menu-comments {
-	    display: none;
-	}
+    */
+#menu-comments {
+    display: none;
+}

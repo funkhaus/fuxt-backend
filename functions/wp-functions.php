@@ -78,7 +78,6 @@
 	add_filter('the_excerpt_rss', 'rss_post_thumbnail');
 
 
-
 /*
  * Allow SVG uploads
  */
@@ -112,19 +111,26 @@
     add_filter('excerpt_more', 'custom_excerpt_ellipsis');
 
 /*
+ * Prevent Google from indexing any PHP generated part of the API.
+ */
+	function add_nofollow_header() {
+        header("X-Robots-Tag: noindex, nofollow", true);
+	}
+    add_action('send_headers', 'add_nofollow_header');
+
+/*
  * Add useful args to post/page preview URLs
  */
 	function add_custom_preview_link($link, $post) {
 		$args = array(
 			"id"		=> $post->ID,
 			"type"		=> get_post_type($post),
-			"path"		=> "",
-            "slug"	    => $post->post_name,
 			"status"	=> get_post_status($post)
 		);
 
-		// If we have a slug, build path
-		if($args['slug']) {
+		// Add slug and build path
+		if($post->post_name) {
+			$args['slug'] = $post->post_name;
 			$args['path'] = "/" . get_page_uri($post);
 
 			// Use custom path for posts
@@ -139,10 +145,27 @@
 	}
 	add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
 
+
+
 /*
- * Prevent Google from indexing any PHP generated part of the API.
+ * This function auto saves drafts posts, to force them to get a URL for previews to work.
+ * See: https://wordpress.stackexchange.com/questions/218168/how-to-make-draft-posts-or-posts-in-review-accessible-via-full-url-slug
  */
-	function add_nofollow_header() {
-		header("X-Robots-Tag: noindex, nofollow", true);
+	function auto_set_post_status( $post_id, $post, $update ) {
+
+		if( $post->post_status == "draft" && ! $post->post_name ) {
+	        // Un-hook to prevent infinite loop
+	        remove_action( 'save_post', 'auto_set_post_status', 13, 3 );
+
+	        // Set the post to publish so it gets the slug is saved to post_name
+	        wp_update_post( array( 'ID' => $post_id, 'post_status' => 'publish' ) );
+
+	        // Immediately put it back to draft status
+	        wp_update_post( array( 'ID' => $post_id, 'post_status' => 'draft' ) );
+
+	        // Re-hook save
+	        add_action( 'save_post', 'auto_set_post_status', 13, 3 );
+	    }
+
 	}
-	add_action('send_headers', 'add_nofollow_header');
+	add_action('save_post', 'auto_set_post_status', 13, 3);
