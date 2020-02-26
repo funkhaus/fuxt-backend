@@ -132,13 +132,6 @@
 		if($post->post_name) {
 			$args['slug'] = $post->post_name;
 			$args['path'] = "/" . get_page_uri($post);
-
-			// Use custom path for posts
-			if($args['type'] == "post") {
-				$args['path'] = "/news/" . $post->post_name;
-			} else {
-				$args['path'] = "/" . get_page_uri($post);
-			}
 		}
 
 		return add_query_arg($args, $link);
