@@ -54,7 +54,7 @@
 			'columns'    => ''
         ), $atts));
 
-        $content = apply_filters('the_content', $content);
+	$content = custom_filter_shortcode_text($content);
 
         return '<shortcode-columns :columns="'. esc_attr(json_encode($columns)) .'">'. $content .'</shortcode-columns>';
 	}
@@ -65,7 +65,9 @@
  * Indervidual column shortcode, used inside [columns]
  */
 	function add_column_shortcode( $atts, $content ) {
-        $content = apply_filters('the_content', $content);
+	
+	$content = custom_filter_shortcode_text($content);
+		
         return '<div class="column">'. $content .'</div>';
 	}
 	//add_shortcode( 'column', 'add_column_shortcode' );
