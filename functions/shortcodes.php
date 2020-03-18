@@ -62,7 +62,7 @@
 
 
 /*
- * Indervidual column shortcode, used inside [columns]
+ * Individual column shortcode, used inside [columns]
  */
 	function add_column_shortcode( $atts, $content ) {
 	
