@@ -35,8 +35,7 @@
  */
     function register_custom_nav_menus() {
         register_nav_menus( array(
-			// TODO: rename menus as locations: //header-menu, social-menu, footer-menu etc
-            'header-menu'         => 'Main Menu'
+            'header-menu'         => 'Header Menu'
         ));
     }
     add_action('after_setup_theme', 'register_custom_nav_menus');
