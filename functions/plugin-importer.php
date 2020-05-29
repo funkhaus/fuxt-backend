@@ -16,7 +16,7 @@
             'has_notices'  => true,                    // Show admin notices or not.
             'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
             'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
-            'is_automatic' => false,                   // Automatically activate plugins after installation or not.
+            'is_automatic' => true,                   // Automatically activate plugins after installation or not.
             'message'      => '',                      // Message to output right before the plugins table.
         );
 
@@ -25,13 +25,13 @@
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql/archive/master.zip',
-                'version'   => "0.6.1"
+                'version'   => "0.9.1"
             ),
             array(
                 'name'      => 'WP GraphiQL',
                 'slug'      => 'wp-graphiql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphiql/archive/master.zip',
-                'version'   => "1.0.0",
+                'version'   => "1.0.1",
 				'required'	=> false
             ),
             array(
@@ -42,15 +42,16 @@
 				'required'	=> false
             ),
             array(
-                'name'      => 'Advanced Custom Fields',
-                'slug'      => 'advanced-custom-fields',
-				'required'	=> false
+                'name'      => 'Advanced Custom Fields Pro',
+                'slug'      => 'advanced-custom-fields-pro',
+                'external_url'    	=> 'https://www.advancedcustomfields.com/pro/',
+				'required'			=> false
             ),
             array(
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
-                'version'   => "0.3.1",
+                'version'   => "0.3.3",
 				'required'	=> false
             ),
             array(
