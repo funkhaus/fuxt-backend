@@ -10,7 +10,7 @@
 /*
  * Add ACF site options page
  */
-	function stackhaus_add_acf_options() {
+	function fuxt_add_acf_options() {
 	    if( function_exists('acf_add_options_page') ) {
 	        // Add `Theme General Settings` sub page
 	    	acf_add_options_page(array(
@@ -24,4 +24,4 @@
 	    	));
 	    }
 	}
-	add_action('acf/init', 'stackhaus_add_acf_options');    
+	add_action('acf/init', 'fuxt_add_acf_options');    

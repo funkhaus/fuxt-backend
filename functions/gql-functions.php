@@ -6,7 +6,7 @@
         // Define a field to get Theme screenshot URL
         register_graphql_field('GeneralSettings', 'themeScreenshotUrl', [
             'type' => 'String',
-            'description' => __('URL to the active theme screenshot', 'stackhaus'),
+            'description' => __('URL to the active theme screenshot', 'fuxt'),
             'resolve' => function ($root, $args, $context, $info) {
                 $theme = wp_get_theme();
                 $url = "";
@@ -20,7 +20,7 @@
         // Define a field to get Site URL
 		register_graphql_field('GeneralSettings', 'siteUrl', [
 			'type' 			=> 'String',
-			'description' 	=> __( 'Site Address (URL)', 'stackhaus' ),
+			'description' 	=> __( 'Site Address (URL)', 'fuxt' ),
 			'resolve' 		=> function( $root, $args, $context, $info ) {
 				return get_home_url();
 			}

@@ -1,5 +1,5 @@
 /* eslint-disable */
-var stackhausAdmin = {
+var fuxtAdmin = {
 	enabledHomeUrlEdit: function(){
 		jQuery('input#home').removeClass('disabled').prop('readonly', false).prop('disabled', false);
 	},
@@ -40,9 +40,9 @@ var stackhausAdmin = {
 	}
 }
 jQuery(document).ready(function() {
-	stackhausAdmin.showAttachmentIds();
-	stackhausAdmin.shiftClickNestedPages();
+	fuxtAdmin.showAttachmentIds();
+	fuxtAdmin.shiftClickNestedPages();
 })
 jQuery(window).load(function(){
-    stackhausAdmin.enabledHomeUrlEdit()
+    fuxtAdmin.enabledHomeUrlEdit()
 })
