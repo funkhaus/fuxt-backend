@@ -40,7 +40,7 @@
 	        $images[] = custom_build_wp_image($image_id);
         }
 
-        return '<shortcode-gallery :columns="'. esc_attr($columns) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
+        return '<shortcode-gallery class="shortcode" :columns="'. esc_attr($columns) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
 	}
 	add_shortcode( 'gallery', 'add_gallery_shortcode' );
 
@@ -66,7 +66,9 @@
  */
 	function add_column_shortcode( $atts, $content ) {
 		$content = custom_filter_shortcode_text($content);
-		$content = wpautop($content);
+
+		// TODO We need to do this better, wpautop breaks everything
+		$content = nl2br($content);
 
         return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
 	}
@@ -82,7 +84,7 @@
 			'name'         => ''
         ), $atts));
 
-		return '<svg-'. $name .'></svg-'. $name .'>';
+		return '<svg-'. $name .' class="shortcode"></svg-'. $name .'>';
 	}
 	add_shortcode( 'svg', 'add_svg_image_shortcode' );
 
@@ -100,10 +102,10 @@
         // Remove any BR tags
         $tags = array("<br>", "<br/>", "<br />");
         $text = str_replace($tags, "", $text);
-		
-		// Do any shortcodes again        
+
+		// Do any shortcodes again
 		$text = do_shortcode($text);
-		
+
         return $text;
     }
 
