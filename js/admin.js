@@ -1,7 +1,7 @@
 /* eslint-disable */
 var fuxtAdmin = {
 	enabledHomeUrlEdit: function(){
-		jQuery('input#home').removeClass('disabled').prop('readonly', false).prop('disabled', false);
+		jQuery('input#home').removeClass('disabled').removeAttr('readonly').removeAttr('disabled');
 	},
 	showAttachmentIds: function() {
 	    // Show the attachment IDs on hover of attachment grid blocks

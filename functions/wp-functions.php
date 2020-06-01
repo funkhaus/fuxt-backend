@@ -33,8 +33,8 @@
  * Enqueue any Custom Admin Scripts
  */
 	function custom_admin_scripts() {
-		wp_register_script('site-admin', get_template_directory_uri() . '/js/admin.js', 'jquery', "1.0");
-		wp_enqueue_script('site-admin');
+		wp_register_script('fuxt-admin', get_template_directory_uri() . '/js/admin.js', 'jquery', "1.1");
+		wp_enqueue_script('fuxt-admin');
 	}
 	add_action( 'admin_enqueue_scripts', 'custom_admin_scripts' );
 

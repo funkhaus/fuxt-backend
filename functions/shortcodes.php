@@ -37,12 +37,12 @@
         $images = array();
 
         foreach($images_ids as $image_id) {
-	        $images[] = custom_build_repsponsive_image($image_id);
+	        $images[] = custom_build_wp_image($image_id);
         }
 
-        return '<shortcode-gallery :columns="'. esc_attr(json_encode($columns)) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
+        return '<shortcode-gallery :columns="'. esc_attr($columns) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
 	}
-	//add_shortcode( 'gallery', 'add_gallery_shortcode' );
+	add_shortcode( 'gallery', 'add_gallery_shortcode' );
 
 
 /*
@@ -54,23 +54,23 @@
 			'columns'    => ''
         ), $atts));
 
-	$content = custom_filter_shortcode_text($content);
+		$content = custom_filter_shortcode_text($content);
 
-        return '<shortcode-columns :columns="'. esc_attr(json_encode($columns)) .'">'. $content .'</shortcode-columns>';
+        return '<shortcode-columns class="shortcode" :columns="'. esc_attr($columns) .'">'. $content .'</shortcode-columns>';
 	}
-	//add_shortcode( 'columns', 'add_columns_shortcode' );
+	add_shortcode( 'columns', 'add_columns_shortcode' );
 
 
 /*
  * Individual column shortcode, used inside [columns]
  */
 	function add_column_shortcode( $atts, $content ) {
-	
-	$content = custom_filter_shortcode_text($content);
-		
-        return '<div class="column">'. $content .'</div>';
+		$content = custom_filter_shortcode_text($content);
+		$content = wpautop($content);
+
+        return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
 	}
-	//add_shortcode( 'column', 'add_column_shortcode' );
+	add_shortcode( 'column', 'add_column_shortcode' );
 
 
 /*
@@ -84,7 +84,7 @@
 
 		return '<svg-'. $name .'></svg-'. $name .'>';
 	}
-	//add_shortcode( 'svg', 'add_svg_image_shortcode' );
+	add_shortcode( 'svg', 'add_svg_image_shortcode' );
 
 
 /**
@@ -100,19 +100,21 @@
         // Remove any BR tags
         $tags = array("<br>", "<br/>", "<br />");
         $text = str_replace($tags, "", $text);
-
-        // Add back in the P and BR tags again, this will remove empty ones
-        return apply_filters('the_content', $text);
+		
+		// Do any shortcodes again        
+		$text = do_shortcode($text);
+		
+        return $text;
     }
 
 
 /**
- * Utility function to build an image int he same format <responsive-image> expects it
+ * Utility function to build an image in the same format <wp-image> expects it
  *
  * @param int $attachment_id The WordPress attachment ID
  * @param string $size The WordPress image size keyword
  */
-	function custom_build_repsponsive_image($attachment_id, $size = "large") {
+	function custom_build_wp_image($attachment_id, $size = "large") {
 		$attachment = get_post($attachment_id);
 		$attachment_data = wp_get_attachment_image_src($attachment_id, $size);
 
