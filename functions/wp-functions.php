@@ -179,3 +179,23 @@
 
 	}
 	add_action('save_post', 'auto_set_post_status', 13, 3);
+
+
+/*
+ * Set permlinks on theme activate
+ */
+    function set_custom_permalinks() {
+        $current_setting = get_option('permalink_structure');
+
+        // Abort if already saved to something else
+        if($current_setting) {
+            return
+        }
+
+        // Save permalinks to a custom setting, force create of rules file
+        global $wp_rewrite;
+        update_option("rewrite_rules", FALSE);
+        $wp_rewrite->set_permalink_structure('/news/%postname%/');
+        $wp_rewrite->flush_rules(true);
+    }
+    add_action('after_switch_theme', 'set_custom_permalinks');
