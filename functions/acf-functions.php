@@ -81,7 +81,7 @@
 
         $slugs = array(
             '/contact'      =>  '/contact',
-            //'/featured/'    =>  '/featured/'
+            '/featured/'    =>  '/featured/'
         );
 
         return array_merge($choices, $slugs);
