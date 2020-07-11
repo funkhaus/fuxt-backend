@@ -24,4 +24,55 @@
 	    	));
 	    }
 	}
-	add_action('acf/init', 'fuxt_add_acf_options');    
+	add_action('acf/init', 'fuxt_add_acf_options');
+
+
+/*
+ * Custom ACF filter rules.
+ * This adds the label to the first <select> in the Field Group screen.
+ */
+    function acf_location_rules_types( $choices ) {
+        $choices['Post']['uri-contains'] = "Post URI contains";
+        $choices['Page']['uri-contains'] = "Page URI contains";
+        return $choices;
+    }
+    add_filter('acf/location/rule_types', 'acf_location_rules_types');
+
+
+/*
+ * This provides the logic for the "uri-contains" option
+ */
+    function acf_location_rules_match_has_taxonomy( $match, $rule, $options ) {
+
+        $current_post = get_post($options["post_id"]);
+        $selected_uri = $rule['value'];
+        $current_uri = '/' . trailingslashit( get_page_uri($current_post) );
+
+        switch($rule['operator']) {
+            case '==' :
+                $match = $selected_uri == $current_uri;
+                break;
+
+            case '!=' :
+                $match = $selected_uri != $current_uri;
+                break;
+        }
+
+        return $match;
+    }
+    add_filter('acf/location/rule_match/uri-contains', 'acf_location_rules_match_has_taxonomy', 10, 3);
+
+
+/*
+ * This adds the options on the right <select>. You can add more options for slugs/URI's to test agaisnt here.
+ */
+    function acf_location_rules_values_has_taxonomy( $choices ) {
+
+        $slugs = array(
+            '/contact'      =>  '/contact',
+            //'/featured/'    =>  '/featured/'
+        );
+
+        return array_merge($choices, $slugs);
+    }
+    add_filter( 'acf/location/rule_values/uri-contains', 'acf_location_rules_values_has_taxonomy' );
