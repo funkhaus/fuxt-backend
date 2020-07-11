@@ -31,42 +31,53 @@
  * Custom ACF filter rules.
  * This adds the label to the first <select> in the Field Group screen.
  */
-    function acf_location_rules_types( $choices ) {
-        $choices['Post']['uri-contains'] = "Post URI contains";
-        $choices['Page']['uri-contains'] = "Page URI contains";
+    function acf_location_rules_uri_contains( $choices ) {
+
+        $choices['Post']['post-uri-contains'] = "Post URI contains";
+        $choices['Page']['page-uri-contains'] = "Page URI contains";
+
         return $choices;
     }
-    add_filter('acf/location/rule_types', 'acf_location_rules_types');
+    add_filter('acf/location/rule_types', 'acf_location_rules_uri_contains');
 
 
 /*
  * This provides the logic for the "uri-contains" option
  */
-    function acf_location_rules_match_has_taxonomy( $match, $rule, $options ) {
+    function acf_location_rules_match_uri_contains( $match, $rule, $options ) {
 
         $current_post = get_post($options["post_id"]);
         $selected_uri = $rule['value'];
         $current_uri = '/' . trailingslashit( get_page_uri($current_post) );
 
+        // Test if URI contains
+        $contain = strpos($current_uri, $selected_uri);
+        $does_contain = true;
+        if($contain === false) {
+            $does_contain = false;
+        }
+
         switch($rule['operator']) {
             case '==' :
-                $match = $selected_uri == $current_uri;
+                $match = $does_contain === true;
                 break;
 
             case '!=' :
-                $match = $selected_uri != $current_uri;
+                $match = $does_contain !== true;
                 break;
         }
 
         return $match;
     }
-    add_filter('acf/location/rule_match/uri-contains', 'acf_location_rules_match_has_taxonomy', 10, 3);
+    add_filter('acf/location/rule_match/post-uri-contains', 'acf_location_rules_match_uri_contains', 10, 3);
+    add_filter('acf/location/rule_match/page-uri-contains', 'acf_location_rules_match_uri_contains', 10, 3);
 
 
 /*
- * This adds the options on the right <select>. You can add more options for slugs/URI's to test agaisnt here.
+ * This adds the options on the right <select>.
+ * You can add more options for slugs/URI's to test agaisnt here.
  */
-    function acf_location_rules_values_has_taxonomy( $choices ) {
+    function acf_location_rules_values_uri_contains( $choices ) {
 
         $slugs = array(
             '/contact'      =>  '/contact',
@@ -75,4 +86,5 @@
 
         return array_merge($choices, $slugs);
     }
-    add_filter( 'acf/location/rule_values/uri-contains', 'acf_location_rules_values_has_taxonomy' );
+    add_filter( 'acf/location/rule_values/post-uri-contains', 'acf_location_rules_values_uri_contains' );
+    add_filter( 'acf/location/rule_values/page-uri-contains', 'acf_location_rules_values_uri_contains' );
