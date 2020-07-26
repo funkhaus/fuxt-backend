@@ -80,8 +80,11 @@
     function acf_location_rules_values_uri_contains( $choices ) {
 
         $slugs = array(
-            '/contact'      =>  '/contact',
-            '/featured/'    =>  '/featured/'
+            '/contact/'      =>  '/contact/',
+            '/featured/'     =>  '/featured/',
+            '/directors/'    =>  '/directors/',
+            '/editors/'      =>  '/editors/',
+            '/work/'         =>  '/work/'
         );
 
         return array_merge($choices, $slugs);
