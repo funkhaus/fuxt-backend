@@ -189,7 +189,7 @@
 
         // Abort if already saved to something else
         if($current_setting) {
-            return
+            return;
         }
 
         // Save permalinks to a custom setting, force create of rules file
