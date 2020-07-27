@@ -77,17 +77,34 @@
  * This adds the options on the right <select>.
  * You can add more options for slugs/URI's to test agaisnt here.
  */
-    function acf_location_rules_values_uri_contains( $choices ) {
-
-        $slugs = array(
-            '/contact/'      =>  '/contact/',
-            '/featured/'     =>  '/featured/',
-            '/directors/'    =>  '/directors/',
-            '/editors/'      =>  '/editors/',
-            '/work/'         =>  '/work/'
+    function acf_location_rules_values_uri_contains( $choices, $data ) {
+    
+        // Get any public custom post types that is hierarchical in nature
+        $args = array(
+           'public'         => true,
+           '_builtin'       => false,
+           'hierarchical'   => true
         );
+        $post_types = array_keys( get_post_types($args) ); 
+        $post_types[] = "page";
+        
+        // Get all top level pages/CPTs
+        $args = array(
+            "post_parent"   => 0,
+            "post_type"     => $post_types,
+            "post_per_page" => 100, // Limit this just in case
+            "orderby"       => "name"
+        );
+        $pages = get_posts($args);
+        
+        // Build menu for ACF, wrap slug in "/"
+        $slugs = array();
+        foreach($pages as $page) {
+            $name = "/".$page->post_name."/";
+            $slugs[$name] = $page->post_type.": ".$name; 
+        }
 
         return array_merge($choices, $slugs);
     }
-    add_filter( 'acf/location/rule_values/post-uri-contains', 'acf_location_rules_values_uri_contains' );
-    add_filter( 'acf/location/rule_values/page-uri-contains', 'acf_location_rules_values_uri_contains' );
+    add_filter( 'acf/location/rule_values/post-uri-contains', 'acf_location_rules_values_uri_contains', 10, 2 );
+    add_filter( 'acf/location/rule_values/page-uri-contains', 'acf_location_rules_values_uri_contains', 10, 2 );
