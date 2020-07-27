@@ -21,8 +21,9 @@
  * Setup menu locations
  */
     function register_custom_nav_menus() {
-        register_nav_menus( array(
-            'main-menu'         => 'Main Menu'
-        ));
+        $menus = array(
+            'main-menu' => 'Main Menu'
+        );
+        register_nav_menus($menus);
     }
     add_action('after_setup_theme', 'register_custom_nav_menus');
