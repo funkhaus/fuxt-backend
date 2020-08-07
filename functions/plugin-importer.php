@@ -25,51 +25,51 @@
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql/archive/master.zip',
-                'version'   => "0.9.1"
+                'version'   => "0.11.0"
             ),
             array(
                 'name'      => 'WP GraphiQL',
                 'slug'      => 'wp-graphiql',
                 'source'    => 'https://github.com/wp-graphql/wp-graphiql/archive/master.zip',
                 'version'   => "1.0.1",
-				'required'	=> false
+		'required'  => false
             ),
             array(
                 'name'      => 'WP GraphQL CORS',
                 'slug'      => 'wp-graphql-cors',
                 'source'    => 'https://github.com/funkhaus/wp-graphql-cors/archive/master.zip',
-                'version'   => "1.0.0",
-				'required'	=> false
+                'version'   => "1.1",
+		'required'  => false
             ),
             array(
                 'name'      => 'Advanced Custom Fields Pro',
                 'slug'      => 'advanced-custom-fields-pro',
-                'external_url'    	=> 'https://www.advancedcustomfields.com/pro/',
-				'required'			=> false
+                'external_url'	=> 'https://www.advancedcustomfields.com/pro/',
+		'required'	=> false
             ),
             array(
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
                 'version'   => "0.3.3",
-				'required'	=> false
+		'required'  => false
             ),
             array(
                 'name'      => 'Focushuas',
                 'slug'      => 'focushaus',
                 'source'    => 'https://github.com/funkhaus/focushaus/archive/master.zip',
                 'version'   => "2.0",
-				'required'	=> false
+		'required'  => false
             ),
             array(
                 'name'      => 'Classic Editor',
                 'slug'      => 'classic-editor',
-                'required'	=> false
+                'required'  => false
             ),
             array(
                 'name'      => 'Nested Pages',
                 'slug'      => 'wp-nested-pages',
-                'required'	=> false
+                'required'  => false
             )
 
 
