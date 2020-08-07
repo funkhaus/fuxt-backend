@@ -38,7 +38,7 @@
                 'name'      => 'WP GraphQL CORS',
                 'slug'      => 'wp-graphql-cors',
                 'source'    => 'https://github.com/funkhaus/wp-graphql-cors/archive/master.zip',
-                'version'   => "1.1",
+                'version'   => "1.1.0",
 		'required'  => false
             ),
             array(
