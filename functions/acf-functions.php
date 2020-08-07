@@ -46,6 +46,11 @@
  */
     function acf_location_rules_match_uri_contains( $match, $rule, $options ) {
 
+        // Abort if no post ID
+        if( empty($options["post_id"]) ) {
+            return $match;
+        }
+	    
         $current_post = get_post($options["post_id"]);
         $selected_uri = $rule['value'];
         $current_uri = '/' . trailingslashit( get_page_uri($current_post) );
