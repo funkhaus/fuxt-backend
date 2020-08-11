@@ -17,7 +17,7 @@
 		$props = 'title="' . $title . '"';
 		$content = custom_filter_shortcode_text($content);
 
-		return '<vue-component-name ' . $props . '>'. $content .'</vue-component-name>';
+		return "<vue-component-name " . $props . ">". $content ."</vue-component-name>";
 	}
 	//add_shortcode( 'shortcode-name', 'custom_shortcode_function' );
 
@@ -41,9 +41,9 @@
 		}
 
 		// Get ready for JSON in a HTML attribute
-		$images = json_encode($images, JSON_HEX_QUOT);
+		$images = json_encode($images);
 
-		return '<shortcode-gallery class="shortcode" :columns="'. esc_attr($columns) .'" :images="'. esc_attr($images) .'">'.$content.'</shortcode-gallery>';
+		return "<shortcode-gallery class='shortcode' :columns='". esc_attr($columns) ."' :images='". esc_attr($images) ."'>".$content."</shortcode-gallery>";
 
 	}
 	add_shortcode( 'gallery', 'add_gallery_shortcode' );
@@ -60,7 +60,7 @@
 
 		$content = custom_filter_shortcode_text($content);
 
-        return '<shortcode-columns class="shortcode" :columns="'. esc_attr($columns) .'">'. $content .'</shortcode-columns>';
+        return "<shortcode-columns class='shortcode' :columns='". esc_attr($columns) ."'>". $content ."</shortcode-columns>";
 	}
 	//add_shortcode( 'columns', 'add_columns_shortcode' );
 
@@ -71,7 +71,7 @@
 	function add_column_shortcode( $atts, $content ) {
 		$content = custom_filter_shortcode_text($content);
 
-        return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
+        return "<shortcode-column class='shortcode'>". $content ."</shortcode-column>";
 	}
 	//add_shortcode( 'column', 'add_column_shortcode' );
 
@@ -85,7 +85,7 @@
 			'name'         => ''
 		), $atts));
 
-		return '<svg-loader url="'. $name .'" class="shortcode"></svg-loader>';
+		return "<svg-loader url='". $name ."' class='shortcode'></svg-loader>";
 	}
 	//add_shortcode( 'svg', 'add_svg_image_shortcode' );
 
