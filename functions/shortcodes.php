@@ -9,13 +9,13 @@
 	function custom_shortcode_function( $atts, $content = '', $name ) {
 
 		// Include default props here
-        extract(shortcode_atts(array(
+		extract(shortcode_atts(array(
 			'title'         => ''
-        ), $atts));
+		), $atts));
 
 		// Props to pass to Vue component
-        $props = 'title="' . $title . '"';
-        $content = custom_filter_shortcode_text($content);
+		$props = 'title="' . $title . '"';
+		$content = custom_filter_shortcode_text($content);
 
 		return '<vue-component-name ' . $props . '>'. $content .'</vue-component-name>';
 	}
@@ -25,22 +25,26 @@
 /*
  * Gallery shortcode
  */
-	function add_gallery_shortcode( $atts ) {
+	function add_gallery_shortcode( $atts, $content ) {
 
-        extract(shortcode_atts(array(
+		extract(shortcode_atts(array(
 			'ids'         => '',
 			'columns'	  => 2
-        ), $atts));
+		), $atts));
 
-        // Get all images
-        $images_ids = explode(',', $ids);
-        $images = array();
+		// Get all images
+		$images_ids = explode(',', $ids);
+		$images = array();
 
-        foreach($images_ids as $image_id) {
-	        $images[] = custom_build_wp_image($image_id);
-        }
+		foreach($images_ids as $image_id) {
+			$images[] = custom_build_wp_image($image_id);
+		}
 
-        return '<shortcode-gallery class="shortcode" :columns="'. esc_attr($columns) .'" :images="'. esc_attr(json_encode($images)) .'"></shortcode-gallery>';
+		// Get ready for JSON in a HTML attribute
+		$images = json_encode($images, JSON_HEX_QUOT);
+
+		return '<shortcode-gallery class="shortcode" :columns="'. esc_attr($columns) .'" :images="'. esc_attr($images) .'">'.$content.'</shortcode-gallery>';
+
 	}
 	add_shortcode( 'gallery', 'add_gallery_shortcode' );
 
@@ -50,15 +54,15 @@
  */
 	function add_columns_shortcode( $atts, $content ) {
 
-        extract(shortcode_atts(array(
+		extract(shortcode_atts(array(
 			'columns'    => ''
-        ), $atts));
+		), $atts));
 
 		$content = custom_filter_shortcode_text($content);
 
-        return '<shortcode-columns class="shortcode" :columns="'. esc_attr($columns) .'">'. $content .'</shortcode-columns>';
+        	return '<shortcode-columns class="shortcode" :columns="'. esc_attr($columns) .'">'. $content .'</shortcode-columns>';
 	}
-	add_shortcode( 'columns', 'add_columns_shortcode' );
+	//add_shortcode( 'columns', 'add_columns_shortcode' );
 
 
 /*
@@ -67,12 +71,9 @@
 	function add_column_shortcode( $atts, $content ) {
 		$content = custom_filter_shortcode_text($content);
 
-		// TODO We need to do this better, wpautop breaks everything
-		$content = nl2br($content);
-
-        return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
+        	return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
 	}
-	add_shortcode( 'column', 'add_column_shortcode' );
+	//add_shortcode( 'column', 'add_column_shortcode' );
 
 
 /*
@@ -80,13 +81,13 @@
  */
 	function add_svg_image_shortcode( $atts ) {
 
-        extract(shortcode_atts(array(
+		extract(shortcode_atts(array(
 			'name'         => ''
-        ), $atts));
+		), $atts));
 
-		return '<svg-'. $name .' class="shortcode"></svg-'. $name .'>';
+		return '<svg-loader url="'. $name .'" class="shortcode"></svg-loader>';
 	}
-	add_shortcode( 'svg', 'add_svg_image_shortcode' );
+	//add_shortcode( 'svg', 'add_svg_image_shortcode' );
 
 
 /**
@@ -94,20 +95,23 @@
  *
  * @param string $text A string of HTML text
  */
-    function custom_filter_shortcode_text($text = '') {
-        // Replace all the poorly formatted P tags that WP adds by default.
-        $tags = array("<p>", "</p>");
-        $text = str_replace($tags, "\n", $text);
+	function custom_filter_shortcode_text($text = '') {
+		// Remove any starting spaces or line breaks
+		$text = trim($text);    
 
-        // Remove any BR tags
-        $tags = array("<br>", "<br/>", "<br />");
-        $text = str_replace($tags, "", $text);
+		// Replace all the poorly formatted P tags that WP adds by default.
+		$tags = array("<p>", "</p>");
+		$text = str_replace($tags, "\n", $text);
+
+		// Remove any BR tags
+		$tags = array("<br>", "<br/>", "<br />");
+		$text = str_replace($tags, "\n", $text);
 
 		// Do any shortcodes again
 		$text = do_shortcode($text);
 
-        return $text;
-    }
+        	return $text;
+	}
 
 
 /**
@@ -155,7 +159,7 @@
  * Change default gallery shortcode columns to 2
  */
 	function theme_gallery_defaults( $settings ) {
-	    $settings['galleryDefaults']['columns'] = 2;
-	    return $settings;
+		$settings['galleryDefaults']['columns'] = 2;
+		return $settings;
 	}
 	add_filter('media_view_settings', 'theme_gallery_defaults');
