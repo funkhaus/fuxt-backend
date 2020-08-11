@@ -60,7 +60,7 @@
 
 		$content = custom_filter_shortcode_text($content);
 
-        	return '<shortcode-columns class="shortcode" :columns="'. esc_attr($columns) .'">'. $content .'</shortcode-columns>';
+        return '<shortcode-columns class="shortcode" :columns="'. esc_attr($columns) .'">'. $content .'</shortcode-columns>';
 	}
 	//add_shortcode( 'columns', 'add_columns_shortcode' );
 
@@ -71,7 +71,7 @@
 	function add_column_shortcode( $atts, $content ) {
 		$content = custom_filter_shortcode_text($content);
 
-        	return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
+        return '<shortcode-column class="shortcode">'. $content .'</shortcode-column>';
 	}
 	//add_shortcode( 'column', 'add_column_shortcode' );
 
@@ -110,7 +110,7 @@
 		// Do any shortcodes again
 		$text = do_shortcode($text);
 
-        	return $text;
+        return $text;
 	}
 
 
@@ -141,7 +141,7 @@
 
 		// Build base image data
 		$image = array(
-			"id"			=> "attachment-".$attachment->ID,
+            "id"			=> "attachment-".$attachment->ID,
 			"mediaItemId"	=> $attachment->ID,
 			"sourceUrl"		=> $attachment_data[0],
 			"title"			=> $attachment->post_title,
