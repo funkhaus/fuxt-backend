@@ -77,17 +77,26 @@
 
 
 /*
- * Creates a an [svg-image] shortcode so a user can add SVGs into the editor correctly
+ * Creates a an [svg] shortcode so a user can add SVGs into the editor correctly
  */
 	function add_svg_image_shortcode( $atts ) {
-
+        $output = "";
+        
 		extract(shortcode_atts(array(
-			'name'         => ''
+			'name'         => '',
+			'url'          => ''
 		), $atts));
-
-		return "<svg-loader url='". $name ."' class='shortcode'></svg-loader>";
+		
+		// If name, then just add the SVG directly
+		if($name) {
+    		$output = "<svg-".$name." class='shortcode shortcode-svg svg'></svg-".$name.">";    		
+		} elseif($url) {
+    		$output = "<shortcode-svg url='". $url ."' class='shortcode shortcode-svg'></svg-loader>";            
+        }
+        
+        return $output;
 	}
-	//add_shortcode( 'svg', 'add_svg_image_shortcode' );
+	add_shortcode( 'svg', 'add_svg_image_shortcode' );
 
 
 /**
