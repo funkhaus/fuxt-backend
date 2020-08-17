@@ -12,21 +12,21 @@
  * Add ACF site options page
  */
 	function fuxt_add_acf_options() {
-	    if( function_exists('acf_add_options_page') ) {
-	        // Add `Theme General Settings` sub page
-	    	acf_add_options_page(array(
-	    		'page_title' 	=> 'Site Options',
-	    		'menu_title'	=> 'Site Options',
-	    		'menu_slug' 	=> 'site-options',
-	    		'capability'	=> 'edit_posts',
-	    		'redirect'		=> false,
-	        	'show_in_graphql' => true,
-	        	'position'		  => '60.1'
-	    	));
-	    }
+		if( function_exists('acf_add_options_page') ) {
+			// Add `Theme General Settings` sub page
+			acf_add_options_page(array(
+				'page_title' 	=> 'Site Options',
+				'menu_title'	=> 'Site Options',
+				'menu_slug' 	=> 'site-options',
+				'capability'	=> 'edit_posts',
+				'redirect'		=> false,
+				'show_in_graphql' => true,
+				'position'		  => '60.1'
+			));
+		}
 
-		// Allow ACF location filters to work in GQL
-		//add_filter('acf/location/rule_match', '__return_true');
+		// Tempoary ignore ACF filters so WP-GQL works. Waiting on a bug fix.
+		add_filter('acf/location/rule_match', '__return_true');
 	}
 	add_action('acf/init', 'fuxt_add_acf_options');
 
