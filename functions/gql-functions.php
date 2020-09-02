@@ -153,6 +153,7 @@
     	return get_adjacent_page_id($page, -1);
     }
 
+
 /*
  * Util function for next page id
  */
@@ -199,6 +200,21 @@
     }
     //add_filter( 'graphql_connection_max_query_amount', 'allow_more_posts_per_query', 10, 5);
 
+
+/*
+ * Set the default ordering of quieres in WP-GQL
+ */
+    function custom_default_where_args($query_args, $source, $args, $context, $info) {
+
+        // If not a post, set defaults to ordering by menu 
+        if( $query_args['post_type'] !== 'post' ) {
+            $query_args['orderby'] = 'menu_order';
+            $query_args['order'] = 'ASC';
+        }
+
+        return $query_args;
+    }
+    add_filter( 'graphql_post_object_connection_query_args', 'custom_default_where_args', 10, 5);
 
 
 /*
