@@ -30,6 +30,22 @@
 
 
 /*
+ * Give each content node a field of HTML encoded to play nicely with wp-content Vue component
+ * SEE https://github.com/wp-graphql/wp-graphql/issues/1035
+ */
+    function add_encoded_content_field() {
+    	register_graphql_field( 'NodeWithContentEditor', 'encodedContent', [
+    		'type'      => 'String',
+    		'resolve'   => function( $post ) {
+    			$content = get_post( $post->databaseId )->post_content;
+    			return !empty( $content ) ?  apply_filters( 'the_content', $content ) : null;
+    		}
+    	]);
+    };
+	add_action( 'graphql_register_types', 'add_encoded_content_field');
+
+
+/*
  * Adds next post node to all the custom Post Types
  */
     function gql_register_next_post() {
@@ -206,7 +222,7 @@
  */
     function custom_default_where_args($query_args, $source, $args, $context, $info) {
 
-        // If not a post, set defaults to ordering by menu 
+        // If not a post, set defaults to ordering by menu
         if( $query_args['post_type'] !== 'post' ) {
             $query_args['orderby'] = 'menu_order';
             $query_args['order'] = 'ASC';
