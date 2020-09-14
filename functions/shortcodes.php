@@ -17,9 +17,33 @@
 		$props = 'title="' . $title . '"';
 		$content = custom_filter_shortcode_text($content);
 
-		return "<vue-component-name " . $props . ">". $content ."</vue-component-name>";
+        // Need .shortcode-wrap so wordpress autop works
+		return "<div class='shortcode-wrap'><vue-component-name " . $props . ">". $content ."</vue-component-name></div>";
 	}
 	//add_shortcode( 'shortcode-name', 'custom_shortcode_function' );
+
+
+
+/*
+ * Individual column shortcode, used inside [columns]
+ */
+	function add_column_shortcode( $atts, $content ) {
+		extract(shortcode_atts(array(
+			'new'         => false
+		), $atts));
+
+		$content = custom_filter_shortcode_text($content);
+
+        // Add classes
+        $class = "";
+		if( $new ) {
+    		$class = "new-column";
+		}
+
+        return "<div class='shortcode-wrap'><shortcode-column class='shortcode shortcode-column ".$class."'>". $content ."</shortcode-column></div>";
+	}
+	add_shortcode( 'column', 'add_column_shortcode' );
+
 
 
 /*
@@ -43,31 +67,10 @@
 		// Get ready for JSON in a HTML attribute
 		$images = json_encode($images);
 
-		return "<shortcode-gallery class='shortcode' :columns='". esc_attr($columns) ."' :images='". esc_attr($images) ."'>".$content."</shortcode-gallery>";
+		return "<div class='shortcode-wrap'><shortcode-gallery class='shortcode' :columns='". esc_attr($columns) ."' :images='". esc_attr($images) ."'>".$content."</shortcode-gallery></div>";
 
 	}
 	add_shortcode( 'gallery', 'add_gallery_shortcode' );
-
-
-/*
- * Individual column shortcode, used inside [columns]
- */
-	function add_column_shortcode( $atts, $content ) {
-		extract(shortcode_atts(array(
-			'new'         => false
-		), $atts));
-
-		$content = custom_filter_shortcode_text($content);
-
-        // Add classes
-        $class = "";
-		if( $new ) {
-    		$class = "new-column";
-		}
-
-        return "<shortcode-column class='shortcode shortcode-column ".$class."' data-test='".$new."'>". $content ."</shortcode-column>";
-	}
-	add_shortcode( 'column', 'add_column_shortcode' );
 
 
 /*
@@ -99,7 +102,8 @@
  * @param string $text A string of HTML text
  */
 	function custom_filter_shortcode_text($text = '') {
-        return wpautop($text);
+        $text = wpautop($text);
+        return do_shortcode($text);
 	}
 
 
@@ -151,4 +155,4 @@
 		$settings['galleryDefaults']['columns'] = 2;
 		return $settings;
 	}
-	add_filter('media_view_settings', 'theme_gallery_defaults');	
+	add_filter('media_view_settings', 'theme_gallery_defaults');
