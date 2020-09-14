@@ -50,30 +50,24 @@
 
 
 /*
- * Columns shortcode. You must enable shortcode "column" below for this to work well.
+ * Individual column shortcode, used inside [columns]
  */
-	function add_columns_shortcode( $atts, $content ) {
-
+	function add_column_shortcode( $atts, $content ) {
 		extract(shortcode_atts(array(
-			'columns'    => ''
+			'new'         => false
 		), $atts));
 
 		$content = custom_filter_shortcode_text($content);
 
-        return "<shortcode-columns class='shortcode' :columns='". esc_attr($columns) ."'>". $content ."</shortcode-columns>";
+        // Add classes
+        $class = "";
+		if( $new ) {
+    		$class = "new-column";
+		}
+
+        return "<shortcode-column class='shortcode shortcode-column ".$class."' data-test='".$new."'>". $content ."</shortcode-column>";
 	}
-	//add_shortcode( 'columns', 'add_columns_shortcode' );
-
-
-/*
- * Individual column shortcode, used inside [columns]
- */
-	function add_column_shortcode( $atts, $content ) {
-		$content = custom_filter_shortcode_text($content);
-
-        return "<shortcode-column class='shortcode'>". $content ."</shortcode-column>";
-	}
-	//add_shortcode( 'column', 'add_column_shortcode' );
+	add_shortcode( 'column', 'add_column_shortcode' );
 
 
 /*
@@ -81,19 +75,19 @@
  */
 	function add_svg_image_shortcode( $atts ) {
         $output = "";
-        
+
 		extract(shortcode_atts(array(
 			'name'         => '',
 			'url'          => ''
 		), $atts));
-		
+
 		// If name, then just add the SVG directly
 		if($name) {
-    		$output = "<svg-".$name." class='shortcode shortcode-svg svg'></svg-".$name.">";    		
+    		$output = "<svg-".$name." class='shortcode shortcode-svg svg'></svg-".$name.">";
 		} elseif($url) {
-    		$output = "<shortcode-svg url='". $url ."' class='shortcode shortcode-svg'></svg-loader>";            
+    		$output = "<shortcode-svg url='". $url ."' class='shortcode shortcode-svg'></svg-loader>";
         }
-        
+
         return $output;
 	}
 	add_shortcode( 'svg', 'add_svg_image_shortcode' );
@@ -105,21 +99,7 @@
  * @param string $text A string of HTML text
  */
 	function custom_filter_shortcode_text($text = '') {
-		// Remove any starting spaces or line breaks
-		$text = trim($text);    
-
-		// Replace all the poorly formatted P tags that WP adds by default.
-		$tags = array("<p>", "</p>");
-		$text = str_replace($tags, "\n", $text);
-
-		// Remove any BR tags
-		$tags = array("<br>", "<br/>", "<br />");
-		$text = str_replace($tags, "\n", $text);
-
-		// Do any shortcodes again
-		$text = do_shortcode($text);
-
-        return $text;
+        return wpautop($text);
 	}
 
 
@@ -171,4 +151,4 @@
 		$settings['galleryDefaults']['columns'] = 2;
 		return $settings;
 	}
-	add_filter('media_view_settings', 'theme_gallery_defaults');
+	add_filter('media_view_settings', 'theme_gallery_defaults');	
