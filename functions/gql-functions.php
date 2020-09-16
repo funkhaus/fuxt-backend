@@ -222,12 +222,20 @@
  */
     function custom_default_where_args($query_args, $source, $args, $context, $info) {
 
-        // If not a post, set defaults to ordering by menu
-        if( $query_args['post_type'] !== 'post' ) {
-            $query_args['orderby'] = 'menu_order';
-            $query_args['order'] = 'ASC';
+        $post_types = $query_args['post_type'];
+        $gql_args = $query_args['graphql_args'];
+
+        if( isset($gql_args['where']) ) {
+            // Where args set, so use them
+            return $query_args;
+        } else if( count($post_types) == 1 && in_array('post', $post_types) ) {
+            // Is just Posts, so use defaults
+            return $query_args;
         }
 
+        // Is anything else, so set to menu_order
+        $query_args['orderby'] = 'menu_order';
+        $query_args['order'] = 'ASC';
         return $query_args;
     }
     add_filter( 'graphql_post_object_connection_query_args', 'custom_default_where_args', 10, 5);
