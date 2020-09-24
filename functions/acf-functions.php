@@ -24,9 +24,6 @@
 				'position'		  => '60.1'
 			));
 		}
-
-		// Tempoary ignore ACF filters so WP-GQL works. Waiting on a bug fix.
-		add_filter('acf/location/rule_match', '__return_true');
 	}
 	add_action('acf/init', 'fuxt_add_acf_options');
 
