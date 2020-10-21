@@ -28,12 +28,12 @@
     }
     add_action('after_setup_theme', 'register_custom_nav_menus');
 
-
 /*
  * Define site frontend URL. This is because Flywheel manually over rides this.
- * This should be set to whatever the frontend of the site will be.
+ * This should be set to whatever the frontend of the site will be. 
+ * Do not end with a /
  */
-    function define_site_frontend_url() {
-        define( 'WP_HOME', 'https://example.com' ); // Change this URL
+    function fuxt_site_frontend_url() {
+        return "https://example.com";
     }
-    //add_action('init', 'define_site_frontend_url');
+    //add_filter( 'site_url', 'fuxt_site_frontend_url', 10, 4 );
