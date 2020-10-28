@@ -28,13 +28,6 @@
                 'version'   => "0.11.0"
             ),
             array(
-                'name'      => 'WP GraphiQL',
-                'slug'      => 'wp-graphiql',
-                'source'    => 'https://github.com/wp-graphql/wp-graphiql/archive/master.zip',
-                'version'   => "1.0.1",
-		'required'  => false
-            ),
-            array(
                 'name'      => 'WP GraphQL CORS',
                 'slug'      => 'wp-graphql-cors',
                 'source'    => 'https://github.com/funkhaus/wp-graphql-cors/archive/master.zip',
