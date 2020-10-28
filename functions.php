@@ -14,8 +14,11 @@
     // Handles the server side processing of WordPress shortcodes
     include_once get_template_directory() . '/functions/shortcodes.php';
 
-    //Add additional ACF functionality
+    // Add additional ACF functionality
     include_once get_template_directory() . '/functions/acf-functions.php';
+
+    // Add custom WP-JSON API endpoints
+    include_once get_template_directory() . '/functions/api.php';
 
 /*
  * Generally you don't have to edit any of the files below

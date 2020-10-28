@@ -18,11 +18,11 @@
         ]);
 
         // Define a field to get Site URL
-		register_graphql_field('GeneralSettings', 'siteUrl', [
+		register_graphql_field('GeneralSettings', 'backendUrl', [
 			'type' 			=> 'String',
 			'description' 	=> __( 'Site Address (URL)', 'fuxt' ),
 			'resolve' 		=> function( $root, $args, $context, $info ) {
-				return get_home_url();
+				return get_site_url();
 			}
 		]);
     }
