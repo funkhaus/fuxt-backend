@@ -106,23 +106,6 @@
         "title": "Site Options",
         "fields": [
             {
-                "key": "field_5f90296d5cf10",
-                "label": "Frontend URL",
-                "name": "frontend_url",
-                "type": "url",
-                "instructions": "Do not include a trailing slash.",
-                "required": 1,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "show_in_graphql": 1,
-                "default_value": "",
-                "placeholder": "https://example.com"
-            },
-            {
                 "key": "field_5e4dbc3d5b0a8",
                 "label": "Google Analytics",
                 "name": "google_analytics",
