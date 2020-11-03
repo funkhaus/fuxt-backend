@@ -57,10 +57,16 @@
 	function custom_admin_styles() {
         wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/css/admin.css');
 	}
+    function custom_site_favicon() {
+        echo '<link rel="shortcut icon" href="' . get_stylesheet_directory_uri() . '/favicon.png" />';
+    }
 	add_filter('login_headerurl','custom_loginpage_logo_link');
 	add_filter('login_headertext','custom_loginpage_logo_title');
 	add_action('login_head','custom_loginpage_styles');
     add_action('admin_print_styles', 'custom_admin_styles');
+    add_action('admin_head', 'custom_site_favicon');
+	add_action('login_head', 'custom_site_favicon');
+
 
 
 /*
