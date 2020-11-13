@@ -21,9 +21,9 @@
  * This should be set to whatever the frontend of the site will be.
  */
     function define_site_frontend_url() {
-        update_option( 'home', 'https://www.example.com' );
+        update_option( 'home', 'https://fuxt.funkhaus.us' );
     }
-    //add_action('init', 'define_site_frontend_url');
+    add_action('init', 'define_site_frontend_url');
 
 /*
  * Setup menu locations
