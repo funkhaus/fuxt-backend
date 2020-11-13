@@ -17,14 +17,21 @@
             }
         ]);
 
-        // Define a field to get Site URL
-		register_graphql_field('GeneralSettings', 'backendUrl', [
-			'type' 			=> 'String',
-			'description' 	=> __( 'Site Address (URL)', 'fuxt' ),
-			'resolve' 		=> function( $root, $args, $context, $info ) {
-				return get_site_url();
-			}
-		]);
+        // Define a fields to get both WordPress URLs     
+	register_graphql_field('GeneralSettings', 'backendUrl', [
+		'type' 			=> 'String',
+		'description' 	=> __( 'WordPress Address (URL)', 'fuxt' ),
+		'resolve' 		=> function( $root, $args, $context, $info ) {
+			return get_site_url();
+		}
+	]);
+	register_graphql_field('GeneralSettings', 'frontendUrl', [
+		'type' 			=> 'String',
+		'description' 	=> __( 'Site Address (URL)', 'fuxt' ),
+		'resolve' 		=> function( $root, $args, $context, $info ) {
+			return get_home_url();
+		}
+	]);
     }
     add_action('graphql_init', 'whitelist_settings', 1);
 
