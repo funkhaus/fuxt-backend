@@ -20,18 +20,18 @@
  * Define site frontend URL. This is because Flywheel manually overides this.
  * This should be set to whatever the frontend of the site will be.
  */
-    function define_site_frontend_url() {
-        update_option( 'home', 'https://fuxt.funkhaus.us' );
-    }
-    add_action('init', 'define_site_frontend_url');
+	function define_site_frontend_url() {
+		update_option( 'home', 'https://fuxt.funkhaus.us' );
+	}
+	add_action('init', 'define_site_frontend_url');
 
 /*
  * Setup menu locations
  */
-    function register_custom_nav_menus() {
-        $menus = array(
-            'main-menu' => 'Main Menu'
-        );
-        register_nav_menus($menus);
-    }
-    add_action('after_setup_theme', 'register_custom_nav_menus');
+	function register_custom_nav_menus() {
+		$menus = array(
+			'main-menu' => 'Main Menu'
+		);
+		register_nav_menus($menus);
+	}
+	add_action('after_setup_theme', 'register_custom_nav_menus');
