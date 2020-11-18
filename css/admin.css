@@ -25,6 +25,7 @@ body:not(.is-developer) #toplevel_page_edit-post_type-acf-field-group {
 body.post-php.is-developer-locked:not(.is-developer) #edit-slug-buttons {
     display: none;
 }
+body:not(.is-developer) #wp-admin-bar-graphiql-ide,
 body:not(.is-developer) #adminmenu #toplevel_page_graphql,
 body:not(.is-developer) #adminmenu #toplevel_page_wp-graphiql-wp-graphiql {
     display: none;
