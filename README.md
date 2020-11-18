@@ -6,6 +6,7 @@ Built by [Funkhaus](http://funkhaus.us/).
 
 ## Install
 
+1.  Where are you hosting WordPress? We recommend [Flywheel](https://share.getf.ly/n02x5z).
 1.  Install theme
 1.  Install required plugins (as prompted)
     1.  If you want to use ACF, there are some default fields we recommend, you can find the file to import from the theme directory `/acf/` or [here](https://github.com/funkhaus/fuxt-backend/tree/master/acf).
