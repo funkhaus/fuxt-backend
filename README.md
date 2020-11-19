@@ -1,6 +1,6 @@
 # fuxt-backend
 
-A theme that turns WordPress into a true GraphQL powered Headless CMS. Optimized for the [fuxt frontend boilerplate](https://github.com/funkhaus/fuxt).
+A low-code/no-code theme that turns WordPress into a true GraphQL powered Headless CMS. Optimized for the [fuxt frontend boilerplate](https://github.com/funkhaus/fuxt).
 
 Built by [Funkhaus](http://funkhaus.us/).
 
