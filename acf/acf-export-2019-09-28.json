@@ -84,9 +84,14 @@
         "location": [
             [
                 {
-                    "param": "attachment",
+                    "param": "post_type",
+                    "operator": "!=",
+                    "value": "page"
+                },
+                {
+                    "param": "current_user_role",
                     "operator": "==",
-                    "value": "image"
+                    "value": "developer"
                 }
             ]
         ],
