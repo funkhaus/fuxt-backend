@@ -3,13 +3,14 @@
  * Setup WordPress
  */
     function custom_wordpress_setup() {
-
-        // Enable tags for Pages (@see: https://wordpress.org/support/topic/enable-tags-screen-for-pages#post-29500520
-        //register_taxonomy_for_object_type('post_tag', 'page');
+        // Enable tags for Pages
+        register_taxonomy_for_object_type('post_tag', 'page');
 
         // Enable excerpts for pages
         add_post_type_support('page', 'excerpt');
-
+	    
+		// Disable the hiding of big images
+		add_filter( 'big_image_size_threshold', '__return_false' );
     }
     add_action('init', 'custom_wordpress_setup');
 
@@ -17,9 +18,9 @@
 /*
  * Setup theme
  */
-    function custom_theme_setup() {
+	function custom_theme_setup() {
 
-	    // Turn on menus
+		// Turn on menus
 		add_theme_support('menus');
 
 		// Enable HTML5 support
@@ -48,23 +49,23 @@
 	     return get_bloginfo('url');
 	}
 	function custom_loginpage_logo_title($message) {
-	     // Return title text for the logo to replace 'wordpress'; in this case, the blog name.
-	     return get_bloginfo('name');
+		// Return title text for the logo to replace 'wordpress'; in this case, the blog name.
+		return get_bloginfo('name');
 	}
 	function custom_loginpage_styles() {
-        wp_enqueue_style('login_css', get_template_directory_uri() . '/css/login.css');
+	        wp_enqueue_style('login_css', get_template_directory_uri() . '/css/login.css');
 	}
 	function custom_admin_styles() {
-        wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/css/admin.css');
+        	wp_enqueue_style('admin-stylesheet', get_template_directory_uri() . '/css/admin.css');
 	}
-    function custom_site_favicon() {
-        echo '<link rel="shortcut icon" href="' . get_stylesheet_directory_uri() . '/favicon.png" />';
-    }
+	function custom_site_favicon() {
+		echo '<link rel="shortcut icon" href="' . get_stylesheet_directory_uri() . '/favicon.png" />';
+	}
 	add_filter('login_headerurl','custom_loginpage_logo_link');
 	add_filter('login_headertext','custom_loginpage_logo_title');
 	add_action('login_head','custom_loginpage_styles');
-    add_action('admin_print_styles', 'custom_admin_styles');
-    add_action('admin_head', 'custom_site_favicon');
+	add_action('admin_print_styles', 'custom_admin_styles');
+	add_action('admin_head', 'custom_site_favicon');
 	add_action('login_head', 'custom_site_favicon');
 
 
@@ -72,12 +73,12 @@
 /*
  * Add post thumbnail into RSS feed
  */
-    function rss_post_thumbnail($content) {
-        global $post;
+	function rss_post_thumbnail($content) {
+		global $post;
 
-        if( has_post_thumbnail($post->ID) ) {
-            $content = '<p><a href='.get_permalink($post->ID).'>'.get_the_post_thumbnail($post->ID).'</a></p>'.$content;
-        }
+		if( has_post_thumbnail($post->ID) ) {
+			$content = '<p><a href='.get_permalink($post->ID).'>'.get_the_post_thumbnail($post->ID).'</a></p>'.$content;
+		}
 
 		return $content;
 	}
@@ -88,8 +89,8 @@
  * Allow SVG uploads
  */
     function add_mime_types($mimes) {
-        $mimes['svg'] = 'image/svg+xml';
-        return $mimes;
+		$mimes['svg'] = 'image/svg+xml';
+		return $mimes;
     }
     //add_filter('upload_mimes', 'add_mime_types');
 
