@@ -40,6 +40,12 @@
                 'required'	=> false
             ),
             array(
+                'name'      => 'Auto SEO',
+                'slug'      => 'auto-seo',
+                'external_url'	=> 'https://github.com/funkhaus/auto-seo/',
+                'required'	=> false
+            ),            
+            array(
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
