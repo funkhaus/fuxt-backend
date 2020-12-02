@@ -227,3 +227,19 @@ function set_custom_permalinks()
     $wp_rewrite->flush_rules(true);
 }
 add_action("after_switch_theme", "set_custom_permalinks");
+
+
+/*
+ * Strip quotes from oEmbed title html attributes
+ */	
+function filter_oembed_attributes($return, $data, $url) {
+    
+    // Remove the title attribute, as often times it has a quote in it.
+    $return = preg_replace("/title=\"[\\s\\S]*?\"/", "", $return);
+    
+    // Strip quotes from title
+    $title = str_replace('"', "", $data->title);
+    
+    return str_replace('<iframe', '<iframe title="'. $title . '"', $return);
+}
+add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
