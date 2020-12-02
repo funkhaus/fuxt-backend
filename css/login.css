@@ -101,7 +101,7 @@ a {
 #wp-submit:focus {
     background: var(--button-bg-color-hover);
     color: var(--button-color-hover);
-    border: 2px solid var(--button-border-color);
+    border: 2px solid var(--button-border-color-hover);
 }
 
 /*
