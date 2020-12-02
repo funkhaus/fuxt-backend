@@ -42,7 +42,7 @@
             array(
                 'name'      => 'Auto SEO',
                 'slug'      => 'funkhaus-auto-seo',
-                'external_url'	=> 'https://github.com/funkhaus/auto-seo/',
+                'external_url'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/',
                 'required'	=> false
             ),            
             array(
