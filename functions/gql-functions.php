@@ -53,6 +53,18 @@
 
 
 /*
+ * Make menus publicly accessible 
+ */
+	function enable_public_menus( $is_private, $model_name, $data, $visibility, $owner, $current_user ) {
+		if ( 'MenuObject' === $model_name || 'MenuItemObject' === $model_name ) {
+			return false;
+		}
+		return $is_private;
+	}
+	add_filter( 'graphql_data_is_private', 'enable_public_menus', 10, 6 );
+
+
+/*
  * Adds next post node to all the custom Post Types
  */
     function gql_register_next_post() {
