@@ -168,23 +168,28 @@ add_action("send_headers", "add_nofollow_header");
 /*
  * Add useful args to post/page preview URLs
  */
-function add_custom_preview_link($link, $post)
-{
-    $args = [
-        "id" => $post->ID,
-        "type" => get_post_type($post),
-        "status" => get_post_status($post),
-    ];
+function add_custom_preview_link($link, $post) {
+    $args = array(
+        "id"		=> $post->ID,
+        "type"		=> get_post_type($post),
+        "status"	=> get_post_status($post),
+        "preview"   => true,
+    );		
 
     // Add slug and build path
-    if ($post->post_name) {
-        $args["slug"] = $post->post_name;
-        $args["path"] = wp_make_link_relative( get_permalink($post) );
+    if($post->post_name) {
+        // Build out Preview permalink
+        $sample_link = get_sample_permalink($post->ID)[0];
+        $sample_link = str_replace('%pagename%', $post->post_name, $sample_link);
+        $sample_link = str_replace('%postname%', $post->post_name, $sample_link);
+
+        $args['slug'] = $post->post_name;
+        $args['uri'] = wp_make_link_relative( $sample_link );
     }
 
     return add_query_arg($args, $link);
 }
-add_filter("preview_post_link", "add_custom_preview_link", 10, 2);
+add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
 
 /*
  * This function auto saves drafts posts, to force them to get a URL for previews to work.
