@@ -210,6 +210,7 @@ add_action("save_post", "auto_set_post_status", 13, 3);
 
 /*
  * Set permlinks on theme activate
+ * SEE https://github.com/wp-graphql/wp-graphql/issues/1612
  */
 function set_custom_permalinks()
 {
