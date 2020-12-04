@@ -223,7 +223,9 @@ function set_custom_permalinks()
     // Save permalinks to a custom setting, force create of rules file
     global $wp_rewrite;
     update_option("rewrite_rules", false);
-    $wp_rewrite->set_permalink_structure("/news/%postname%/");
+    $wp_rewrite->set_permalink_structure("/news/p/%postname%/");
+    $wp_rewrite->set_category_base("/news/c/");
+    $wp_rewrite->set_tag_base("/news/t/");
     $wp_rewrite->flush_rules(true);
 }
 add_action("after_switch_theme", "set_custom_permalinks");
