@@ -179,7 +179,7 @@ function add_custom_preview_link($link, $post)
     // Add slug and build path
     if ($post->post_name) {
         $args["slug"] = $post->post_name;
-        $args["path"] = get_page_uri($post);
+        $args["path"] = wp_make_link_relative( get_permalink($post) );
     }
 
     return add_query_arg($args, $link);
