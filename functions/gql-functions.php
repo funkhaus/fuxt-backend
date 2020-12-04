@@ -17,21 +17,21 @@
             }
         ]);
 
-        // Define a fields to get both WordPress URLs     
-	register_graphql_field('GeneralSettings', 'backendUrl', [
-		'type' 			=> 'String',
-		'description' 	=> __( 'WordPress Address (URL)', 'fuxt' ),
-		'resolve' 		=> function( $root, $args, $context, $info ) {
-			return get_site_url();
-		}
-	]);
-	register_graphql_field('GeneralSettings', 'frontendUrl', [
-		'type' 			=> 'String',
-		'description' 	=> __( 'Site Address (URL)', 'fuxt' ),
-		'resolve' 		=> function( $root, $args, $context, $info ) {
-			return get_home_url();
-		}
-	]);
+        // Define a fields to get both WordPress URLs
+    	register_graphql_field('GeneralSettings', 'backendUrl', [
+    		'type' 			=> 'String',
+    		'description' 	=> __( 'WordPress Address (URL)', 'fuxt' ),
+    		'resolve' 		=> function( $root, $args, $context, $info ) {
+    			return get_site_url();
+    		}
+    	]);
+    	register_graphql_field('GeneralSettings', 'frontendUrl', [
+    		'type' 			=> 'String',
+    		'description' 	=> __( 'Site Address (URL)', 'fuxt' ),
+    		'resolve' 		=> function( $root, $args, $context, $info ) {
+    			return get_home_url();
+    		}
+    	]);
     }
     add_action('graphql_init', 'whitelist_settings', 1);
 
@@ -53,7 +53,7 @@
 
 
 /*
- * Make menus publicly accessible 
+ * Make menus publicly accessible
  */
 	function enable_public_menus( $is_private, $model_name, $data, $visibility, $owner, $current_user ) {
 		if ( 'MenuObject' === $model_name || 'MenuItemObject' === $model_name ) {
@@ -62,6 +62,36 @@
 		return $is_private;
 	}
 	add_filter( 'graphql_data_is_private', 'enable_public_menus', 10, 6 );
+
+
+/*
+ * This allows any frontend domain to access the GQL endpoint. This mirros how WP-JSON API works.
+ * SEE https://developer.wordpress.org/reference/functions/rest_send_cors_headers/
+ * SEE https://github.com/funkhaus/wp-graphql-cors/blob/master/includes/process-request.php
+ */
+    function set_wpgql_cors_response_headers($headers) {
+        // Abort if using Wp-GQL_CORS plugin for headers instead
+        if( class_exists('WP_GraphQL_CORS') ) {
+            return $headers;
+        }
+
+        // Allow any domain to send cookies
+        $headers['Access-Control-Allow-Origin'] = get_http_origin();
+        $headers['Access-Control-Allow-Credentials'] = 'true';
+
+        // Allow certain header types. Respect the defauls from WP-GQL too.
+        $access_control_allow_headers = apply_filters(
+    		'graphql_access_control_allow_headers',
+    		[
+    			'Authorization',
+    			'Content-Type',
+    		]
+    	);
+    	$headers['Access-Control-Allow-Headers'] = implode( ', ', $access_control_allow_headers );
+
+    	return $headers;
+    }
+    add_filter('graphql_response_headers_to_send', 'set_wpgql_cors_response_headers');
 
 
 /*
@@ -205,14 +235,14 @@
  * returns adjacent page id
  */
     function get_adjacent_page_id($page, $direction) {
-    	$args = array(
+    	$args = [
     		'post_type'         => $page->post_type,
     		'order'             => 'ASC',
     		'orderby'           => 'menu_order',
     		'post_parent'       => $page->post_parent,
     		'fields'            => 'ids',
     		'posts_per_page'    => -1
-    	);
+    	];
 
     	$pages = get_posts($args);
     	$current_key = array_search($page->ID, $pages);
@@ -269,7 +299,7 @@
     function gql_register_email_mutation() {
 
     	// Define the input parameters
-    	$inputFields = array(
+    	$input_fields = [
     		'to' => [
     			'type' 			=> ['list_of' => 'String'],
     			'description' 	=> 'Array of email addresses to send email to. Must comply to RFC 2822 format.',
@@ -290,10 +320,10 @@
     			'type' 			=> 'String',
     			'description' 	=> 'Crude anti-spam measure. This must equal the clientMutationId, otherwise the email will not be sent.'
     		]
-    	);
+    	];
 
     	// Define the ouput parameters
-    	$outputFields = array(
+    	$output_fields = [
     		'to' => [
     			'type' 			=> ['list_of' => 'String'],
     			'description' 	=> 'Array of email addresses to send email to. Must comply to RFC 2822 format.',
@@ -317,10 +347,10 @@
     				return isset( $payload['sent'] ) ? $payload['sent'] : false;
     			}
     		]
-    	);
+    	];
 
     	// This function processes the submitted data
-    	$mutateAndGetPayload = function( $input, $context, $info ) {
+    	$mutate_and_get_payload = function( $input, $context, $info ) {
 
     		// Spam honeypot. Make sure that the clientMutationId matches the trap input.
     		if( $input['clientMutationId'] !== $input['trap'] ) {
@@ -342,9 +372,9 @@
 
     	// Add mutation to WP-GQL now
     	$args = array(
-    		'inputFields' 			=> $inputFields,
-    		'outputFields'			=> $outputFields,
-    		'mutateAndGetPayload'	=> $mutateAndGetPayload
+    		'inputFields' 			=> $input_fields,
+    		'outputFields'			=> $output_fields,
+    		'mutateAndGetPayload'	=> $mutate_and_get_payload
     	);
     	register_graphql_mutation( 'sendEmail', $args);
     }

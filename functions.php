@@ -21,7 +21,7 @@
  * Generally you don't have to edit any of the files below
  */
     // Handles plugin dependencies
-    include_once get_template_directory() . '/functions/plugin-importer.php';
+    include_once get_template_directory() . '/functions/plugin-manifest.php';
 
     // Handles Developer role
     include_once get_template_directory() . '/functions/developer-role.php';

@@ -2,7 +2,7 @@
 /*
  * This file handles the required plugins for the theme
  */
-    include_once get_template_directory() . '/functions/class-tgm-plugin-activation.php';
+    include_once get_template_directory() . '/libs/class-tgm-plugin-activation.php';
 
     function vuehaus_register_required_plugins() {
 
@@ -27,13 +27,6 @@
                 'version'   => "1.0"
             ),
             array(
-                'name'      => 'WP GraphQL CORS',
-                'slug'      => 'wp-graphql-cors',
-                'source'    => 'https://github.com/funkhaus/wp-graphql-cors/archive/master.zip',
-                'version'   => "1.1.0",
-                'required'  => false
-            ),
-            array(
                 'name'      => 'Advanced Custom Fields Pro',
                 'slug'      => 'advanced-custom-fields-pro',
                 'external_url'	=> 'https://www.advancedcustomfields.com/pro/',
@@ -44,7 +37,7 @@
                 'slug'      => 'funkhaus-auto-seo',
                 'external_url'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/',
                 'required'	=> false
-            ),            
+            ),
             array(
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
