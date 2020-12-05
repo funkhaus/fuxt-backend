@@ -179,9 +179,8 @@ function add_custom_preview_link($link, $post) {
     // Add slug and build path
     if($post->post_name) {
         // Build out new Preview permalink
-        $link = get_sample_permalink($post->ID)[0];
-        $link = str_replace('%pagename%', $post->post_name, $link);
-        $link = str_replace('%postname%', $post->post_name, $link);			
+        $link = get_sample_permalink($post->ID)[0] ?? "";
+        $link = str_replace(['%postname%', '%pagename%'], $post->post_name, $link);
 
         $args['slug'] = $post->post_name;
         $args['uri'] = wp_make_link_relative( $link );
