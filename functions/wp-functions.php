@@ -173,18 +173,18 @@ function add_custom_preview_link($link, $post) {
         "id"		=> $post->ID,
         "type"		=> get_post_type($post),
         "status"	=> get_post_status($post),
-        "preview"   => true,
+        "preview"   => "true",
     );		
 
     // Add slug and build path
     if($post->post_name) {
-        // Build out Preview permalink
-        $sample_link = get_sample_permalink($post->ID)[0];
-        $sample_link = str_replace('%pagename%', $post->post_name, $sample_link);
-        $sample_link = str_replace('%postname%', $post->post_name, $sample_link);
+        // Build out new Preview permalink
+        $link = get_sample_permalink($post->ID)[0];
+        $link = str_replace('%pagename%', $post->post_name, $link);
+        $link = str_replace('%postname%', $post->post_name, $link);			
 
         $args['slug'] = $post->post_name;
-        $args['uri'] = wp_make_link_relative( $sample_link );
+        $args['uri'] = wp_make_link_relative( $link );
     }
 
     return add_query_arg($args, $link);
@@ -200,6 +200,7 @@ function auto_set_post_status($post_id, $post, $update)
     if ($post->post_status == "draft" && !$post->post_name) {
         // Un-hook to prevent infinite loop
         remove_action("save_post", "auto_set_post_status", 13, 3);
+        remove_action("save_post", "nd_debounce_deploy", 10, 1);
 
         // Set the post to publish so it gets the slug is saved to post_name
         wp_update_post(["ID" => $post_id, "post_status" => "publish"]);
@@ -209,6 +210,7 @@ function auto_set_post_status($post_id, $post, $update)
 
         // Re-hook save
         add_action("save_post", "auto_set_post_status", 13, 3);
+        add_action("save_post", "nd_debounce_deploy", 10, 1);
     }
 }
 add_action("save_post", "auto_set_post_status", 13, 3);
