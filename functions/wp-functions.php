@@ -200,7 +200,7 @@ function auto_set_post_status($post_id, $post, $update)
     if ($post->post_status == "draft" && !$post->post_name) {
         // Un-hook to prevent infinite loop
         remove_action("save_post", "auto_set_post_status", 13, 3);
-        remove_action("save_post", "nd_debounce_deploy", 10, 1);
+        remove_action("save_post", "nd_debounce_deploy", 20, 1);
 
         // Set the post to publish so it gets the slug is saved to post_name
         wp_update_post(["ID" => $post_id, "post_status" => "publish"]);
@@ -210,7 +210,7 @@ function auto_set_post_status($post_id, $post, $update)
 
         // Re-hook save
         add_action("save_post", "auto_set_post_status", 13, 3);
-        add_action("save_post", "nd_debounce_deploy", 10, 1);
+        add_action("save_post", "nd_debounce_deploy", 20, 1);
     }
 }
 add_action("save_post", "auto_set_post_status", 13, 3);
