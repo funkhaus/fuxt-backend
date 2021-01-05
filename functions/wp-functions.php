@@ -168,23 +168,27 @@ add_action("send_headers", "add_nofollow_header");
 /*
  * Add useful args to post/page preview URLs
  */
-function add_custom_preview_link($link, $post)
-{
-    $args = [
-        "id" => $post->ID,
-        "type" => get_post_type($post),
-        "status" => get_post_status($post),
-    ];
+function add_custom_preview_link($link, $post) {
+    $args = array(
+        "id"		=> $post->ID,
+        "type"		=> get_post_type($post),
+        "status"	=> get_post_status($post),
+        "preview"   => "true",
+    );		
 
     // Add slug and build path
-    if ($post->post_name) {
-        $args["slug"] = $post->post_name;
-        $args["path"] = get_page_uri($post);
+    if($post->post_name) {
+        // Build out new Preview permalink
+        $link = get_sample_permalink($post->ID)[0] ?? "";
+        $link = str_replace(['%postname%', '%pagename%'], $post->post_name, $link);
+
+        $args['slug'] = $post->post_name;
+        $args['uri'] = wp_make_link_relative( $link );
     }
 
     return add_query_arg($args, $link);
 }
-add_filter("preview_post_link", "add_custom_preview_link", 10, 2);
+add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
 
 /*
  * This function auto saves drafts posts, to force them to get a URL for previews to work.
@@ -195,6 +199,7 @@ function auto_set_post_status($post_id, $post, $update)
     if ($post->post_status == "draft" && !$post->post_name) {
         // Un-hook to prevent infinite loop
         remove_action("save_post", "auto_set_post_status", 13, 3);
+        remove_action("save_post", "nd_debounce_deploy", 20, 1);
 
         // Set the post to publish so it gets the slug is saved to post_name
         wp_update_post(["ID" => $post_id, "post_status" => "publish"]);
@@ -204,12 +209,14 @@ function auto_set_post_status($post_id, $post, $update)
 
         // Re-hook save
         add_action("save_post", "auto_set_post_status", 13, 3);
+        add_action("save_post", "nd_debounce_deploy", 20, 1);
     }
 }
 add_action("save_post", "auto_set_post_status", 13, 3);
 
 /*
  * Set permlinks on theme activate
+ * SEE https://github.com/wp-graphql/wp-graphql/issues/1612
  */
 function set_custom_permalinks()
 {
@@ -223,7 +230,8 @@ function set_custom_permalinks()
     // Save permalinks to a custom setting, force create of rules file
     global $wp_rewrite;
     update_option("rewrite_rules", false);
-    $wp_rewrite->set_permalink_structure("/news/%postname%/");
+    $wp_rewrite->set_permalink_structure("/news/p/%postname%/");
+    $wp_rewrite->set_category_base("/news/c/");
     $wp_rewrite->flush_rules(true);
 }
 add_action("after_switch_theme", "set_custom_permalinks");
