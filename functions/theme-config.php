@@ -15,12 +15,3 @@
 		add_image_size( 'fullscreen', 2560, 0, false );
 	}
 	add_action( 'after_setup_theme', 'custom_image_sizes' );
-
-/*
- * Define site frontend URL. This is because Flywheel manually overides this.
- * This should be set to whatever the frontend of the site will be.
- */
-	function define_site_frontend_url() {
-		update_option( 'home', 'https://fuxt.funkhaus.us' );
-	}
-	add_action('init', 'define_site_frontend_url');

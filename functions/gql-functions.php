@@ -11,7 +11,7 @@
                 $theme = wp_get_theme();
                 $url = "";
                 if ($theme->screenshot) {
-                    $url = get_template_directory_uri() . "/" . $theme->screenshot;
+                    $url = get_theme_file_uri($theme->screenshot);
                 }
                 return $url;
             }
