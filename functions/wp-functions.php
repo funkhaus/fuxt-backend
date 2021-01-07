@@ -272,21 +272,4 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
         return empty( $flywheel_home_url ) ? $url : $flywheel_home_url;
     }
     add_filter('option_home', 'fuxt_get_home_url');
-
-    /*
-     * Add inline style to enable home url edit and to change the description
-     */
-    function fuxt_enqueue_scripts($hook) {
-        if ( 'options-general.php' == $hook ) {
-            wp_add_inline_script(
-                'options_general',
-                `jQuery(window).load(function(){
-                    jQuery( "input#home" ).attr("readonly", false);
-                    jQuery( "input#home" ).parent().children("p").text("Enter the primary front end URL");
-                });`
-            );
-            
-        }
-    }
-    add_action( 'admin_enqueue_scripts', 'fuxt_enqueue_scripts' );
 }
