@@ -259,17 +259,34 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
     /*
      * Update flywheel_home_url when Site Address(home) is updated
      */    
-    function flywheel_update_home_url( $old_value, $new_value, $option ) {
-        update_option( 'flywheel_home_url', $new_value, true );
+    function fuxt_update_home_url( $old_value, $new_value, $option ) {
+        update_option( 'fuxt_home_url ', $new_value, true );
     }
-    add_action('update_option_home', 'flywheel_update_home_url', 10, 3);
+    add_action('update_option_home', 'fuxt_update_home_url', 10, 3);
 
     /*
      * Replace Site Address(home) with flywheel_home_url
      */
-    function flywheel_get_home_url( $url ) {
-        $flywheel_home_url = get_option( 'flywheel_home_url' );
+    function fuxt_get_home_url( $url ) {
+        $flywheel_home_url = get_option( 'fuxt_home_url ' );
         return empty( $flywheel_home_url ) ? $url : $flywheel_home_url;
     }
-    add_filter('option_home', 'flywheel_get_home_url');
+    add_filter('option_home', 'fuxt_get_home_url');
+
+    /*
+     * Add inline style to enable home url edit and to change the description
+     */
+    function fuxt_enqueue_scripts($hook) {
+        if ( 'options-general.php' == $hook ) {
+            wp_add_inline_script(
+                'options_general',
+                `jQuery(window).load(function(){
+                    jQuery( "input#home" ).attr("readonly", false);
+                    jQuery( "input#home" ).parent().children("p").text("Enter the primary front end URL");
+                });`
+            );
+            
+        }
+    }
+    add_action( 'admin_enqueue_scripts', 'fuxt_enqueue_scripts' );
 }
