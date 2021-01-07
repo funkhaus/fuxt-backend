@@ -9,6 +9,19 @@
 
 
 /*
+ * Have ACF load fields from theme
+ */
+function custom_acf_load_directory( $paths ) {
+    // remove original path and add new one
+    unset($paths[0]);
+    $paths[] = get_stylesheet_directory() . '/acf';
+
+    return $paths;
+}
+add_filter('acf/settings/load_json', 'custom_acf_load_directory');
+
+
+/*
  * Add ACF site options page
  */
 	function fuxt_add_acf_options() {
