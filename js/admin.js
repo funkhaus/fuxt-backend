@@ -2,7 +2,7 @@
 var fuxtAdmin = {
 	enabledHomeUrlEdit: function () {
 		jQuery("input#home").attr("readonly", false);
-		jQuery("input#home").parent().children("p").text("Enter the primary front end URL");
+		jQuery("input#home").parent().children("p").text("Enter the primary front end URL.");
 	},
 	showAttachmentIds: function() {
 	    // Show the attachment IDs on hover of attachment grid blocks
