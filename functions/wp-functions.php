@@ -257,7 +257,7 @@ add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
  */
 if ( defined('FLYWHEEL_CONFIG_DIR') ) {
     /*
-     * Update flywheel_home_url when Site Address(home) is updated
+     * Update fuxt_home_url option when Site Address(home) is updated
      */    
     function fuxt_update_home_url( $old_value, $new_value, $option ) {
         update_option( 'fuxt_home_url ', $new_value, true );
@@ -265,7 +265,7 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
     add_action('update_option_home', 'fuxt_update_home_url', 10, 3);
 
     /*
-     * Replace Site Address(home) with flywheel_home_url
+     * Return the fuxt_home_url value when code requests the Site Address(home)
      */
     function fuxt_get_home_url( $url ) {
         $flywheel_home_url = get_option( 'fuxt_home_url ' );
