@@ -84,14 +84,9 @@
         "location": [
             [
                 {
-                    "param": "post_type",
-                    "operator": "!=",
-                    "value": "page"
-                },
-                {
-                    "param": "current_user_role",
+                    "param": "attachment",
                     "operator": "==",
-                    "value": "developer"
+                    "value": "image"
                 }
             ]
         ],
@@ -207,7 +202,7 @@
                         },
                         "show_in_graphql": 1,
                         "default_value": "",
-                        "placeholder": "https://www.instagram.com/funkhaus/"
+                        "placeholder": "https:\/\/www.instagram.com\/funkhaus\/"
                     }
                 ]
             }
