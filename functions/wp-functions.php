@@ -174,7 +174,7 @@ function add_custom_preview_link($link, $post) {
         "type"		=> get_post_type($post),
         "status"	=> get_post_status($post),
         "preview"   => "true",
-    );		
+    );
 
     // Add slug and build path
     if($post->post_name) {
@@ -239,37 +239,41 @@ add_action("after_switch_theme", "set_custom_permalinks");
 
 /*
  * Strip quotes from oEmbed title html attributes
- */	
+ */
 function filter_oembed_attributes($return, $data, $url) {
-    
+
     // Remove the title attribute, as often times it has a quote in it.
     $return = preg_replace("/title=\"[\\s\\S]*?\"/", "", $return);
-    
+
     // Strip quotes from title
     $title = str_replace('"', "", $data->title);
-    
+
     return str_replace('<iframe', '<iframe title="'. $title . '"', $return);
 }
 add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
 
 /*
- * Update home url behavior for Flywheel. This is because Flywheel manually overides home url.
+ * Update home url behavior for Flywheel. This is because Flywheel servers overides home url.
  */
 if ( defined('FLYWHEEL_CONFIG_DIR') ) {
-    /*
-     * Update fuxt_home_url option when Site Address(home) is updated
-     */    
-    function fuxt_update_home_url( $old_value, $new_value, $option ) {
-        update_option( 'fuxt_home_url ', $new_value, true );
-    }
-    add_action('update_option_home', 'fuxt_update_home_url', 10, 3);
 
     /*
-     * Return the fuxt_home_url value when code requests the Site Address(home)
+     * Update fuxt_home_url option when Site Address(home) is updated.
+     * Normally you'd use `update_option_home` here but I guess Flywheel disabled.
+     */
+    function fuxt_update_home_url( $option, $old_value, $new_value ) {
+        if( !empty($_POST['home']) ) {
+            update_option( 'fuxt_home_url ', $_POST['home'], true );
+        }
+    }
+    add_action('update_option', 'fuxt_update_home_url', 20, 3);
+
+    /*
+     * Return the fuxt_home_url value when code requests the Site Address (URL)
      */
     function fuxt_get_home_url( $url ) {
-        $flywheel_home_url = get_option( 'fuxt_home_url ' );
-        return empty( $flywheel_home_url ) ? $url : $flywheel_home_url;
+        $fuxt_home_url = get_option( 'fuxt_home_url ' );
+        return $fuxt_home_url ?: $url;
     }
     add_filter('option_home', 'fuxt_get_home_url');
 }
