@@ -46,13 +46,6 @@
                 'required'  => false
             ),
             array(
-                'name'      => 'Focushuas',
-                'slug'      => 'focushaus',
-                'source'    => 'https://github.com/funkhaus/focushaus/archive/master.zip',
-                'version'   => "2.0",
-                'required'  => false
-            ),
-            array(
                 'name'      => 'Classic Editor',
                 'slug'      => 'classic-editor',
                 'required'  => false
