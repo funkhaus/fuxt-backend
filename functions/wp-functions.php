@@ -264,7 +264,7 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
     function fuxt_update_home_url( $option, $old_value, $new_value ) {
         if( !empty($_POST['home']) ) {
             // Remove filter to not cause infinte loop
-            remove_filter('update_option', 'fuxt_update_home_url', 20, 3);
+            remove_action('update_option', 'fuxt_update_home_url', 20, 3);
             update_option('fuxt_home_url ', $_POST['home'], true);
         }
     }
