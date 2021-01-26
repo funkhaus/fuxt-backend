@@ -44,6 +44,11 @@
     function check_custom_post_lock( $target_post ){
         $target_post = get_post($target_post);
 
+        // Abort if just trashing a revision
+        if( wp_is_post_revision($target_post) ) {
+            return;
+        }
+
         if( !is_user_developer() and $target_post->prevent_deletion ){
             echo 'Only a user with the Developer role can delete this page.<br/><br/>';
             echo '<a href="javascript:history.back()">Back</a>';
