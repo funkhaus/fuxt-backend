@@ -7,7 +7,7 @@
  */
 :root {
     /* Body */
-    --body-color: #011931;
+    --body-bg-color: #011931;
 
     --text-color: #ffffff;
     --text-color-hover: #ffffff;
@@ -31,11 +31,11 @@
     --button-border-color-hover: #ffffff;
 }
 html {
-    background: var(--body-color);
+    background: var(--body-bg-color);
 }
 body.login {
     font-size: 14px;
-    background: var(--body-color);
+    background: var(--body-bg-color);
     line-height: 1.4;
     padding: 0;
     margin: 0;
@@ -136,7 +136,7 @@ a {
  */
 .login .message,
 .login #login_error {
-    background-color: var(--body-color);
+    background-color: var(--body-bg-color);
     color: var(--text-color);
 }
 .login #login_error a {
