@@ -61,7 +61,7 @@
 		$images = array();
 
 		foreach($images_ids as $image_id) {
-			$images[] = custom_build_wp_image($image_id);
+			$images[] = custom_build_wp_image($image_id, "fullscreen-xlarge");
 		}
 
 		// Get ready for JSON in a HTML attribute
