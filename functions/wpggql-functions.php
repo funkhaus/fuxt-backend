@@ -99,8 +99,5 @@ function ggb_get_block_whitelist() {
 	);
 }
 
-
-if ( ! current_user_can( 'manage_options' ) ) {
-	// whitelist blocks for editors
-	add_filter( 'allowed_block_types', 'ggb_get_block_whitelist' );
-}
+// whitelist blocks for editors
+add_filter( 'allowed_block_types', 'ggb_get_block_whitelist' );
