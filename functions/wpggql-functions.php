@@ -62,12 +62,12 @@ function ggb_alter_img_fields( $registry ) {
 add_filter( 'ggb_get_registry', 'ggb_alter_img_fields' );
 
 /**
- * Filter function to whitelist blocks
+ * Filter function to whitelist blocks for GraphQL query
  *
  * @param array $registry
  * @return array new registry value
  */
-function ggb_whitelist_fields( $registry ) {
+/* function ggb_whitelist_fields( $registry ) {
 	$whitelist    = ggb_get_block_whitelist();
 	$new_registry = array();
 	foreach ( $whitelist as $item ) {
@@ -77,8 +77,8 @@ function ggb_whitelist_fields( $registry ) {
 	}
 
 	return $new_registry;
-}
-add_filter( 'ggb_get_registry', 'ggb_whitelist_fields' );
+} */
+// add_filter( 'ggb_get_registry', 'ggb_whitelist_fields' );
 
 /**
  * Gets block whitelist
