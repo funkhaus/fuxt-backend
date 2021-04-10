@@ -277,7 +277,7 @@
         if( isset($gql_args['where']) ) {
             // Where args set, so use them
             return $query_args;
-        } else if( count($post_types) == 1 && in_array('post', $post_types) ) {
+        } else if( is_array($post_types) && count($post_types) == 1 && in_array('post', $post_types) ) {
             // Is just Posts, so use defaults
             return $query_args;
         }
