@@ -58,9 +58,33 @@ var fuxtAdmin = {
 jQuery(document).ready(function() {
     fuxtAdmin.showAttachmentIds()
     fuxtAdmin.shiftClickNestedPages()
+    removeUnusedBlocks();
 })
 jQuery(window).load(function() {
     if (jQuery('body').hasClass('options-general-php')) {
         fuxtAdmin.enabledHomeUrlEdit()
     }
 })
+
+function removeUnusedBlocks() {
+    wp.domReady(function () {
+        const allowedEmbedBlocks = ['vimeo', 'youtube']
+        if (isGutenbergActive())
+            wp.blocks
+                .getBlockVariations('core/embed')
+                .forEach(function (blockVariation) {
+                    if (
+                        -1 === allowedEmbedBlocks.indexOf(blockVariation.name)
+                    ) {
+                        wp.blocks.unregisterBlockVariation(
+                            'core/embed',
+                            blockVariation.name
+                        )
+                    }
+                })
+    })
+}
+
+function isGutenbergActive() {
+    return typeof wp !== 'undefined' && typeof wp.blocks !== 'undefined'
+}
