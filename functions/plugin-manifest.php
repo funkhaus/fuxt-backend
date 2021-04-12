@@ -24,7 +24,7 @@
             array(
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
-                'version'   => "1.0"
+                'version'   => '1.0'
             ),
             array(
                 'name'      => 'Advanced Custom Fields Pro',
@@ -42,7 +42,7 @@
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
-                'version'   => "0.3.3",
+                'version'   => '0.3.3',
                 'required'  => false
             ),
             array(
@@ -54,13 +54,13 @@
                 'name'      => 'Netlify Deploy',
                 'slug'      => 'funkhaus-netlify-deploy',
                 'source'    => 'https://github.com/funkhaus/netlify-deploy/archive/main.zip',
-                'version'   => "1.0"
+                'version'   => '1.0'
             ),
             array(
                 'name'      => 'WP GQL Gutenberg',
                 'slug'      => 'wp-gql-gutenberg',
-                'source'    => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/refs/heads/main.zip',
-                'version'   => "1.0"
+                'source'    => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/main.zip',
+                'version'   => '0.3.8'
             ),
         );
 
