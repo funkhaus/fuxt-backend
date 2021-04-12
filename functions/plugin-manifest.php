@@ -35,7 +35,7 @@
             array(
                 'name'      => 'Auto SEO',
                 'slug'      => 'funkhaus-auto-seo',
-                'external_url'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/archive/main.zip',
+                'source'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/archive/main.zip',
                 'required'	=> false
             ),
             array(
@@ -54,7 +54,8 @@
                 'name'      => 'Netlify Deploy',
                 'slug'      => 'funkhaus-netlify-deploy',
                 'source'    => 'https://github.com/funkhaus/netlify-deploy/archive/main.zip',
-                'version'   => '1.0'
+                'version'   => '1.0',
+                'required'  => false
             ),
             array(
                 'name'      => 'WP GQL Gutenberg',
