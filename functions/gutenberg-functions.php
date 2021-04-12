@@ -27,7 +27,7 @@ function fuxt_init_custom_block() {
 
     // Abort if ACF function does not exists.
     if( ! function_exists('acf_register_block_type') ) {
-        return
+        return;
     }
 
     // Register an example "testimonial" block.
