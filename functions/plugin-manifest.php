@@ -35,7 +35,7 @@
             array(
                 'name'      => 'Auto SEO',
                 'slug'      => 'funkhaus-auto-seo',
-                'external_url'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/',
+                'external_url'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/archive/main.zip',
                 'required'	=> false
             ),
             array(
@@ -61,7 +61,7 @@
                 'slug'      => 'wp-gql-gutenberg',
                 'source'    => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/main.zip',
                 'version'   => '0.3.8',
-                'required'  => false                
+                'required'  => false
             ),
         );
 
