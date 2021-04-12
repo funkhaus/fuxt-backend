@@ -60,7 +60,8 @@
                 'name'      => 'WP GQL Gutenberg',
                 'slug'      => 'wp-gql-gutenberg',
                 'source'    => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/main.zip',
-                'version'   => '0.3.8'
+                'version'   => '0.3.8',
+                'required'  => false                
             ),
         );
 
