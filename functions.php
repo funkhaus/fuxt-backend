@@ -25,3 +25,6 @@
 
     // Handles Developer role
     include_once get_template_directory() . '/functions/developer-role.php';
+
+    // Extends WP-Gutenberg-GraphQL function
+    include_once get_template_directory() . '/functions/wpggql-functions.php';
