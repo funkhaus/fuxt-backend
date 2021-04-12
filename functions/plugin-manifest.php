@@ -4,7 +4,7 @@
  */
     include_once get_template_directory() . '/libs/class-tgm-plugin-activation.php';
 
-    function vuehaus_register_required_plugins() {
+    function fuxt_register_required_plugins() {
 
         // Change these values to install new versions of plugins
         $config = array(
@@ -46,11 +46,6 @@
                 'required'  => false
             ),
             array(
-                'name'      => 'Classic Editor',
-                'slug'      => 'classic-editor',
-                'required'  => false
-            ),
-            array(
                 'name'      => 'Nested Pages',
                 'slug'      => 'wp-nested-pages',
                 'required'  => false
@@ -61,8 +56,14 @@
                 'source'    => 'https://github.com/funkhaus/netlify-deploy/archive/main.zip',
                 'version'   => "1.0"
             ),
+            array(
+                'name'      => 'WP GQL Gutenberg',
+                'slug'      => 'wp-gql-gutenberg',
+                'source'    => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/refs/heads/main.zip',
+                'version'   => "1.0"
+            ),
         );
 
         tgmpa( $plugins, $config );
     }
-    add_action( 'tgmpa_register', 'vuehaus_register_required_plugins' );
+    add_action( 'tgmpa_register', 'fuxt_register_required_plugins' );
