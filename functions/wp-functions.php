@@ -277,7 +277,6 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
     /*
      * Return the fuxt_home_url value when code requests the Site Address (URL)
      */
-<<<<<<< HEAD
     function fuxt_get_home_url( $url, $path, $orig_theme ) {
         if ( 'rest' !== $orig_theme ) {
             $fuxt_home_url = get_option( 'fuxt_home_url ' );
@@ -286,13 +285,6 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
             }
         }
         return $url;
-=======
-    function fuxt_get_home_url( $url ) {
-        //$fuxt_home_url = get_option( 'fuxt_home_url ' );
-        //return $fuxt_home_url ?: $url;
-	// Temp disabled preview URL until we have a fix. Otherwise gutenberg doesn't work.
-	return $url;
->>>>>>> 3a0ec4211c016dd82a45536d6264992e39edbb49
     }
     add_filter('home_url', 'fuxt_get_home_url', 10, 3);
 }
