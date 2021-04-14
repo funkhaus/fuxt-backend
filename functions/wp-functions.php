@@ -286,5 +286,5 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
         }
         return $url;
     }
-    add_filter('home_url', 'fuxt_get_home_url', 10, 3);
+    //add_filter('home_url', 'fuxt_get_home_url', 10, 3);
 }
