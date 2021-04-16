@@ -282,6 +282,9 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
             $fuxt_home_url = get_option( 'fuxt_home_url ' );
             if ( ! empty( $fuxt_home_url ) ) {
                 $url = $fuxt_home_url;
+                if ($path && is_string($path)) {
+                    $url .= '/' . ltrim($path, '/');
+                }
             }
         }
         return $url;
