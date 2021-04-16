@@ -282,9 +282,12 @@ if ( defined('FLYWHEEL_CONFIG_DIR') ) {
             $fuxt_home_url = get_option( 'fuxt_home_url ' );
             if ( ! empty( $fuxt_home_url ) ) {
                 $url = $fuxt_home_url;
+                if ($path && is_string($path)) {
+                    $url .= '/' . ltrim($path, '/');
+                }
             }
         }
         return $url;
     }
-    //add_filter('home_url', 'fuxt_get_home_url', 10, 3);
+    add_filter('home_url', 'fuxt_get_home_url', 10, 3);
 }
