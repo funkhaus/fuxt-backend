@@ -11,8 +11,11 @@
     // Any changes to setup the theme (images, menus) go in here
     include_once get_template_directory() . '/functions/theme-config.php';
 
-    // Handles the server side processing of WordPress shortcodes
-    include_once get_template_directory() . '/functions/shortcodes.php';
+    // Extends WP-Gutenberg-GraphQL function
+    include_once get_template_directory() . '/functions/gutenberg-functions.php';
+
+    // Defines any custom ACF gutenberg blocks
+    include_once get_template_directory() . '/blocks/register-blocks.php';    
 
     // Add additional ACF functionality
     include_once get_template_directory() . '/functions/acf-functions.php';
@@ -25,6 +28,3 @@
 
     // Handles Developer role
     include_once get_template_directory() . '/functions/developer-role.php';
-
-    // Extends WP-Gutenberg-GraphQL function
-    include_once get_template_directory() . '/functions/wpggql-functions.php';

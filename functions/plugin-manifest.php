@@ -4,7 +4,7 @@
  */
     include_once get_template_directory() . '/libs/class-tgm-plugin-activation.php';
 
-    function vuehaus_register_required_plugins() {
+    function fuxt_register_required_plugins() {
 
         // Change these values to install new versions of plugins
         $config = array(
@@ -24,7 +24,7 @@
             array(
                 'name'      => 'WP Graph QL',
                 'slug'      => 'wp-graphql',
-                'version'   => "1.0"
+                'version'   => '1.0'
             ),
             array(
                 'name'      => 'Advanced Custom Fields Pro',
@@ -35,19 +35,14 @@
             array(
                 'name'      => 'Auto SEO',
                 'slug'      => 'funkhaus-auto-seo',
-                'external_url'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/',
+                'source'	=> 'https://github.com/funkhaus/funkhaus-auto-seo/archive/main.zip',
                 'required'	=> false
             ),
             array(
                 'name'      => 'WP GraphQL for Advanced Custom Fields',
                 'slug'      => 'wp-graphql-acf',
                 'source'    => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
-                'version'   => "0.3.3",
-                'required'  => false
-            ),
-            array(
-                'name'      => 'Classic Editor',
-                'slug'      => 'classic-editor',
+                'version'   => '0.3.3',
                 'required'  => false
             ),
             array(
@@ -59,10 +54,18 @@
                 'name'      => 'Netlify Deploy',
                 'slug'      => 'funkhaus-netlify-deploy',
                 'source'    => 'https://github.com/funkhaus/netlify-deploy/archive/main.zip',
-                'version'   => "1.0"
+                'version'   => '1.0',
+                'required'  => false
+            ),
+            array(
+                'name'      => 'WP GQL Gutenberg',
+                'slug'      => 'wp-gql-gutenberg',
+                'source'    => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/main.zip',
+                'version'   => '0.3.8',
+                'required'  => false
             ),
         );
 
         tgmpa( $plugins, $config );
     }
-    add_action( 'tgmpa_register', 'vuehaus_register_required_plugins' );
+    add_action( 'tgmpa_register', 'fuxt_register_required_plugins' );
