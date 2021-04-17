@@ -28,3 +28,12 @@ function fuxt_disable_editor_fullscreen_default() {
 	wp_add_inline_script( 'wp-blocks', $script );
 }
 add_action( 'enqueue_block_editor_assets', 'fuxt_disable_editor_fullscreen_default' );
+
+/**
+ * Disable the paragraph dropcap
+ */
+function fuxt_disable_dropcap($editor_settings) {
+    $editor_settings['__experimentalFeatures']['defaults']['typography']['dropCap'] = false;
+    return $editor_settings;
+}
+add_filter('block_editor_settings', 'fuxt_disable_dropcap');
