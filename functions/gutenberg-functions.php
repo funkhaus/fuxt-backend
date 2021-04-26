@@ -15,6 +15,7 @@ function fuxt_block_whitelist() {
 		'core/columns',
 		'core/column',
 		'core/embed',
+		'core/spacer',		
 	);
 }
 add_filter('allowed_block_types', 'fuxt_block_whitelist');
