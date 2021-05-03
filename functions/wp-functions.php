@@ -257,40 +257,44 @@ function filter_oembed_attributes($return, $data, $url) {
 add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
 
 /*
- * Update home url behavior for Flywheel. This is because Flywheel servers overides home url.
+ * Update fuxt_home_url option when Site Address(home) is updated.
+ * Normally you'd use `update_option_home` here but I guess Flywheel disabled.
  */
-if ( defined('FLYWHEEL_CONFIG_DIR') ) {
-
-    /*
-     * Update fuxt_home_url option when Site Address(home) is updated.
-     * Normally you'd use `update_option_home` here but I guess Flywheel disabled.
-     */
-    function fuxt_update_home_url( $option, $old_value, $new_value ) {
-        if( !empty($_POST['home']) ) {
-            // Remove filter to not cause infinte loop
-            remove_action('update_option', 'fuxt_update_home_url', 20, 3);
-            update_option('fuxt_home_url ', $_POST['home'], true);
-        }
+function fuxt_update_home_url( $option, $old_value, $new_value ) {
+    if ( !empty($_POST['home']) ) {
+        // Remove filter to not cause infinte loop
+        remove_action('update_option', 'fuxt_update_home_url', 20, 3);
+        update_option('fuxt_home_url ', $_POST['home'], true);
     }
-    add_action('update_option', 'fuxt_update_home_url', 20, 3);
+}
+add_action('update_option', 'fuxt_update_home_url', 20, 3);
 
-    /*
-     * Return the fuxt_home_url value when code requests the Site Address (URL)
-     */
-    function fuxt_get_home_url( $url, $path, $orig_scheme ) {
-        if ( 'rest' !== $orig_scheme ) {
-            $fuxt_home_url = get_option('fuxt_home_url');
+/*
+ * Return the fuxt_home_url value when code requests the Site Address (URL)
+ */
+function fuxt_get_home_url( $url, $path, $orig_scheme ) {
+    if ( 'rest' !== $orig_scheme ) {
+        $fuxt_home_url = get_option('fuxt_home_url');
+    } else {
+        $fuxt_home_url = get_option('siteurl');
+    }
 
-            if ( ! empty( $fuxt_home_url ) ) {
-                $url = untrailingslashit($fuxt_home_url);
-                
-                if ($path && is_string($path)) {
-                    $url .= '/' . ltrim($path, '/');
-                }
-            }
-        }
+    if ( ! empty( $fuxt_home_url ) ) {
+        $url = untrailingslashit($fuxt_home_url);
         
-        return $url;
+        if ($path && is_string($path)) {
+            $url .= '/' . ltrim($path, '/');
+        }
     }
-    add_filter('home_url', 'fuxt_get_home_url', 99, 3);
+    
+    return $url;
+}
+add_filter('home_url', 'fuxt_get_home_url', 99, 3);
+
+global $pagenow;
+if ( 'options-general.php' == $pagenow ) {
+    // Update the Site Address value in General Settings panel
+    add_filter( 'option_home', function( $value ) {
+        return get_option( 'fuxt_home_url' );
+    } );
 }
