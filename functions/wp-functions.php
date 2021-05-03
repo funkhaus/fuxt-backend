@@ -168,31 +168,36 @@ add_action("send_headers", "add_nofollow_header");
 /*
  * Add useful args to post/page preview URLs
  */
-function add_custom_preview_link($link, $post) {
-    $args = array(
-        "id"		=> $post->ID,
-        "type"		=> get_post_type($post),
-        "status"	=> get_post_status($post),
-        "preview"   => "true",
-    );
+function add_custom_preview_link($link, $post)
+{
+    $args = [
+        "id" => $post->ID,
+        "type" => get_post_type($post),
+        "status" => get_post_status($post),
+        "preview" => "true",
+    ];
 
     // Add slug and build path
-    if($post->post_name) {
+    if ($post->post_name) {
         // Build out new Preview permalink
-        if ( ! function_exists( 'get_sample_permalink' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/post.php' );
-		}
+        if (!function_exists("get_sample_permalink")) {
+            require_once ABSPATH . "wp-admin/includes/post.php";
+        }
 
         $link = get_sample_permalink($post->ID)[0] ?? "";
-        $link = str_replace(['%postname%', '%pagename%'], $post->post_name, $link);
+        $link = str_replace(
+            ["%postname%", "%pagename%"],
+            $post->post_name,
+            $link
+        );
 
-        $args['slug'] = $post->post_name;
-        $args['uri'] = wp_make_link_relative( $link );
+        $args["slug"] = $post->post_name;
+        $args["uri"] = wp_make_link_relative($link);
     }
 
     return add_query_arg($args, $link);
 }
-add_filter('preview_post_link', "add_custom_preview_link", 10, 2);
+add_filter("preview_post_link", "add_custom_preview_link", 10, 2);
 
 /*
  * This function auto saves drafts posts, to force them to get a URL for previews to work.
@@ -240,61 +245,67 @@ function set_custom_permalinks()
 }
 add_action("after_switch_theme", "set_custom_permalinks");
 
-
 /*
  * Strip quotes from oEmbed title html attributes
  */
-function filter_oembed_attributes($return, $data, $url) {
-
+function filter_oembed_attributes($return, $data, $url)
+{
     // Remove the title attribute, as often times it has a quote in it.
     $return = preg_replace("/title=\"[\\s\\S]*?\"/", "", $return);
 
     // Strip quotes from title
     $title = str_replace('"', "", $data->title);
 
-    return str_replace('<iframe', '<iframe title="'. $title . '"', $return);
+    return str_replace("<iframe", '<iframe title="' . $title . '"', $return);
 }
-add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
+add_filter("oembed_dataparse", "filter_oembed_attributes", 10, 4);
 
 /*
  * Update fuxt_home_url option when Site Address(home) is updated.
  * Normally you'd use `update_option_home` here but I guess Flywheel disabled.
  */
-function fuxt_update_home_url( $option, $old_value, $new_value ) {
-    if ( !empty($_POST['home']) ) {
+function fuxt_update_home_url($option, $old_value, $new_value)
+{
+    if (!empty($_POST["home"])) {
         // Remove filter to not cause infinte loop
-        remove_action('update_option', 'fuxt_update_home_url', 20, 3);
-        update_option('fuxt_home_url ', $_POST['home'], true);
+        remove_action("update_option", "fuxt_update_home_url", 20, 3);
+        update_option("fuxt_home_url ", $_POST["home"], true);
     }
 }
-add_action('update_option', 'fuxt_update_home_url', 20, 3);
+add_action("update_option", "fuxt_update_home_url", 20, 3);
 
 /*
  * Return the fuxt_home_url value when code requests the Site Address (URL)
  */
-function fuxt_get_home_url( $url, $path, $orig_scheme ) {
-    if ( 'rest' !== $orig_scheme ) {
-        $fuxt_home_url = get_option('fuxt_home_url');
+function fuxt_get_home_url($url, $path, $orig_scheme)
+{
+    if ("rest" !== $orig_scheme) {
+        $fuxt_home_url = get_option("fuxt_home_url");
     } else {
-        $fuxt_home_url = get_option('siteurl');
+        $fuxt_home_url = get_option("siteurl");
     }
 
-    if ( ! empty( $fuxt_home_url ) ) {
+    if (!empty($fuxt_home_url)) {
         $url = untrailingslashit($fuxt_home_url);
-        
+
         if ($path && is_string($path)) {
-            $url .= '/' . ltrim($path, '/');
+            $url .= "/" . ltrim($path, "/");
         }
     }
-    
+
     return $url;
 }
-add_filter('home_url', 'fuxt_get_home_url', 99, 3);
+add_filter("home_url", "fuxt_get_home_url", 99, 3);
 
-global $pagenow;
-if ( 'options-general.php' == $pagenow ) {
-    // Update the Site Address value in General Settings panel
-    add_filter( 'option_home', function( $value ) {
-        return get_option( 'fuxt_home_url' );
-    } );
+/*
+ *  Update the Site Address value in General Settings panel to return fuxt override
+ */
+function fuxt_filter_home_option($value)
+{
+    global $pagenow;
+    if ($pagenow == "options-general.php") {
+        $value = get_option("fuxt_home_url");
+    }
+    return $value;
 }
+add_filter("option_home", "fuxt_filter_home_option", 99, 1);
