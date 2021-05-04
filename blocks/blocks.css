@@ -1,0 +1,20 @@
+.fuxt-block {
+    box-sizing: border-box;
+    position: relative;
+    padding: 1em;
+    min-height: 200px;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    color: #1e1e1e;
+    -moz-font-smoothing: subpixel-antialiased;
+    -webkit-font-smoothing: subpixel-antialiased;
+    border-radius: 2px;
+}
+.fuxt-block .label {
+    font-size: 18pt;
+    font-weight: 400;            
+}
+.fuxt-block .instructions {
+    font-size: 13px;            
+}

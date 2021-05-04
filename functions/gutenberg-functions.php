@@ -16,7 +16,8 @@ function fuxt_block_whitelist() {
 		'core/column',
 		'core/embed',
 		'core/spacer',
-		'core/cover',        	
+		'core/cover',
+        //'acf/scrolling-gallery'
 	);
 }
 add_filter('allowed_block_types', 'fuxt_block_whitelist');

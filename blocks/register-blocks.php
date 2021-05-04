@@ -2,6 +2,7 @@
 /**
  * Register custom ACF Blocks
  * SEE: https://www.advancedcustomfields.com/resources/blocks/
+ * SEE: https://www.advancedcustomfields.com/resources/acf_register_block_type/
  */
 function fuxt_init_custom_block() {
 
@@ -12,13 +13,14 @@ function fuxt_init_custom_block() {
 
     // Register an example "testimonial" block.
     acf_register_block_type(array(
-        'name'              => 'testimonial',
-        'title'             => __('Testimonial'),
-        'description'       => __('A custom testimonial block.'),
-        'render_template'   => 'blocks/testimonial.php',
-        'category'          => 'formatting',
-        'icon'              => 'admin-comments',
-        'keywords'          => array( 'testimonial', 'quote' ),
+        'name'              => 'scrolling-gallery',
+        'title'             => __('Scrolling Gallery'),
+        'description'       => __('A sideways scrolling gallery.'),
+        'render_template'   => 'blocks/scrolling-gallery.php',
+        'category'          => 'media',
+        'icon'              => 'images-alt',
+        'keywords'          => array( 'gallery', 'scrolling' ),
+        'enqueue_style'     => get_template_directory_uri() . '/blocks/blocks.css',
     ));
 }
-//add_action('acf/init', 'fuxt_init_custom_block');
+add_action('acf/init', 'fuxt_init_custom_block');
