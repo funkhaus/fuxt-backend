@@ -1,0 +1,70 @@
+{
+    "key": "group_5cae81a34f41b",
+    "title": "Developer Settings",
+    "fields": [
+        {
+            "key": "field_5cae81f90d654",
+            "label": "Prevent non-developer deletion",
+            "name": "prevent_deletion",
+            "type": "true_false",
+            "instructions": "This prevents this page from being deleted by a non-developer user. It also locks the slug from being changed.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "message": "",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_5cae827c0d655",
+            "label": "Force text editor",
+            "name": "force_text_editor",
+            "type": "true_false",
+            "instructions": "Force the WYSIWYG editor into text mode for this page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "message": "",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            },
+            {
+                "param": "current_user_role",
+                "operator": "==",
+                "value": "developer"
+            }
+        ]
+    ],
+    "menu_order": 10,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "field",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_graphql": 0,
+    "graphql_field_name": "acfDeveloperSettings"
+}
