@@ -51,13 +51,18 @@ var fuxtAdmin = {
                         .prop('checked', lastChecked.checked)
                 }
 
-                lastChecked = this
+                lastChecked = this;
             }
         )
     },
     removeUnusedBlocks: function() {
         // This functions removes some blocks from the Gutenberg editor.
         // SEE: https://wordpress.stackexchange.com/questions/379612/how-to-remove-the-core-embed-blocks-in-wordpress-5-6
+
+        if (typeof wp.domReady == "undefined") { 
+            return;
+        }        
+
         wp.domReady(function() {
             let allowedEmbedBlocks = ['vimeo', 'youtube']
             if (fuxtAdmin.isGutenbergActive())
@@ -77,7 +82,7 @@ var fuxtAdmin = {
         })
     },
     isGutenbergActive: function() {
-        return typeof wp !== 'undefined' && typeof wp.blocks !== 'undefined'
+        return typeof wp !== 'undefined' && typeof wp.blocks !== 'undefined';
     }
 }
 jQuery(document).ready(function() {
