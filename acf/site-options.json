@@ -122,5 +122,5 @@
     "active": true,
     "description": "",
     "show_in_graphql": 1,
-    "graphql_field_name": "acfSiteOptions"
+    "graphql_field_name": "siteOptions"
 }
