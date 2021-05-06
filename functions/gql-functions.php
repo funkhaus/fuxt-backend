@@ -134,8 +134,9 @@
                         'wp-graphql'
                     ),
                     'resolve' => function ($post_object, $args, $context) {
-                        // global $post;
-                        $post = get_post($post_object->postId);
+                        $post = getProtectedValue($post_object, "data");
+                        $post = get_post( $post->ID );
+
     					if (is_post_type_hierarchical($post->post_type)) {
     	                    $post_id = get_next_page_id($post);
                         }
@@ -192,8 +193,9 @@
                         'wp-graphql'
                     ),
                     'resolve' => function ($post_object, $args, $context) {
-                        // global $post;
-                        $post = get_post($post_object->postId);
+                        $post = getProtectedValue($post_object, "data");
+                        $post = get_post( $post->ID );
+
                         if (is_post_type_hierarchical($post->post_type)) {
     	                    $post_id = get_previous_page_id($post);
                         }
@@ -226,6 +228,14 @@
     	return get_adjacent_page_id($page, 1);
     }
 
+/*
+ * Util function hack to get a PHP protected var
+ */
+    function getProtectedValue($obj, $name) {
+        $array = (array)$obj;
+        $prefix = chr(0).'*'.chr(0);
+        return $array[$prefix.$name];
+    }    
 
 /*
  * Util function for adjacent page id
