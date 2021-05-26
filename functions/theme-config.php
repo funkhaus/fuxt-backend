@@ -14,6 +14,15 @@
 		add_image_size( 'fullscreen-small', 1920, 0, false );
 		add_image_size( 'fullscreen', 2560, 0, false );
 		add_image_size( 'fullscreen-large', 3840, 0, false );
-		add_image_size( 'fullscreen-xlarge', 6016, 0, false );		
+		add_image_size( 'fullscreen-xlarge', 6016, 0, false );
 	}
 	add_action( 'after_setup_theme', 'custom_image_sizes' );
+
+
+/*
+ * Disabled custom color palettes
+ */
+    function fuxt_disable_gutenberg_color_palette() {
+    	add_theme_support('editor-color-palette');
+    }
+    add_action( 'after_setup_theme', 'fuxt_disable_gutenberg_color_palette' );
