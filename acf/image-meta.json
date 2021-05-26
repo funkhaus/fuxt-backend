@@ -78,7 +78,27 @@
             "min": 0,
             "max": 100,
             "step": ""
-        }
+        },
+        {
+            "key": "field_609539db9248d",
+            "label": "Blurhash",
+            "name": "blurhash",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        }        
     ],
     "location": [
         [
