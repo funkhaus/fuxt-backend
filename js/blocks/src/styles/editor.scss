@@ -1,0 +1,58 @@
+.wp-block-funkhaus-gallery {
+	overflow-x: auto;
+	white-space: nowrap;
+}
+
+.blockfunkhaus--item {
+	display: inline-block;
+	width: 70%;
+}
+.blockfunkhaus--figure {
+	margin: 0;
+	position: relative;
+	&.is-selected::after {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		box-shadow: inset 0 0 0 4px #0085ba;
+		z-index: 1;
+		content: "";
+	}
+
+	img {
+		display: block;
+	}
+}
+
+.components-blockfunkhaus-gallery-item__remove {
+
+	&-wrapper {
+		background-color: $blue;
+		display: inline-flex;
+		padding: 2px;
+		position: absolute;
+		right: 2px;
+		top: 2px;
+		z-index: 20;
+		transition: padding 0.1s linear;
+
+		svg {
+			position: relative;
+		}
+	}
+
+	&-button {
+		box-shadow: none !important;
+		padding: 0;
+		color: $white;
+
+		&:hover {
+			background: $blue !important;
+			border-color: $blue !important;
+			color: $white !important;
+			opacity: 0.75;
+		}
+	}
+}
