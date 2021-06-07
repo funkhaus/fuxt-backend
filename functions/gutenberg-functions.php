@@ -4,6 +4,9 @@
  *
  * @return array
  */
+
+include_once get_template_directory() . "/blocks/gallery.php";
+
 function fuxt_block_whitelist() {
 	return array(
 		'core/paragraph',
@@ -17,7 +20,7 @@ function fuxt_block_whitelist() {
 		'core/embed',
 		'core/spacer',
 		'core/cover',
-        //'acf/scrolling-gallery'
+        'funkhaus/gallery'
 	);
 }
 add_filter('allowed_block_types', 'fuxt_block_whitelist');
@@ -40,3 +43,27 @@ function fuxt_disable_dropcap($editor_settings) {
     return $editor_settings;
 }
 add_filter('block_editor_settings', 'fuxt_disable_dropcap');
+
+function fuxt_editor_assets() {
+	if ( ! defined( 'FUXT_BLOCK_VERSION' ) ) {
+		define('FUXT_BLOCK_VERSION', '1.0.0');
+	}
+
+	// Styles.
+	wp_register_style(
+		'funkhaus-block-editor',
+		get_template_directory_uri() . '/js/blocks/dist/blocks.editor.build.css',
+		array(),
+		FUXT_BLOCK_VERSION
+	);
+
+	// Scripts.
+	wp_register_script(
+		'funkhaus-block-editor',
+		get_template_directory_uri() . '/js/blocks/dist/blocks.build.js',
+		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-plugins', 'wp-components', 'wp-edit-post', 'wp-api' ),
+		FUXT_BLOCK_VERSION,
+		true
+	);
+}
+add_action( 'init', 'fuxt_editor_assets' );
