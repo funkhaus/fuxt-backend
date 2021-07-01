@@ -200,6 +200,20 @@ function add_custom_preview_link($link, $post)
 add_filter("preview_post_link", "add_custom_preview_link", 10, 2);
 
 /*
+ * Includes preview link in post data for a response for Gutenberg preview link to work.
+ */
+function fuxt_preview_link_in_rest_response($response, $post)
+{
+    if ("draft" === $post->post_status) {
+        $response->data["link"] = get_preview_post_link($post);
+    }
+
+    return $response;
+}
+add_filter("rest_prepare_post", "fuxt_preview_link_in_rest_response", 10, 2);
+add_filter("rest_prepare_page", "fuxt_preview_link_in_rest_response", 10, 2);
+
+/*
  * This function auto saves drafts posts, to force them to get a URL for previews to work.
  * See: https://wordpress.stackexchange.com/questions/218168/how-to-make-draft-posts-or-posts-in-review-accessible-via-full-url-slug
  */
