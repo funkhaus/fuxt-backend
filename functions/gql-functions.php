@@ -50,10 +50,10 @@
 
                             return trim(substr($svg_file_content, $position));
                         } else {
-                            return '';
+                            return 'File is missing';
                         }
                     } else {
-                        return '';
+                        return wp_get_attachment_image( $source->ID, 'full' );
                     }
                 }
             )
