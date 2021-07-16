@@ -32,6 +32,32 @@
     			return get_home_url();
     		}
     	]);
+
+        // Add content field for media item
+        register_graphql_field(
+            'mediaItem',
+            'content',
+            array(
+                'type' => 'String',
+                'resolve' => function( $source, $args ) {
+                    if ( $source->mimeType == 'image/svg+xml' ) {
+                        $media_file = get_attached_file( $source->ID );
+                        if ( $media_file ) {
+                            $svg_file_content = file_get_contents($media_file);
+
+                            $find_string   = '<svg';
+                            $position = strpos($svg_file_content, $find_string);
+
+                            return trim(substr($svg_file_content, $position));
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        return '';
+                    }
+                }
+            )
+        );
     }
     add_action('graphql_init', 'whitelist_settings', 1);
 
