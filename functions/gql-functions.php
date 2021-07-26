@@ -37,6 +37,39 @@
 
 
 /*
+ * Give media items a `html` field that outputs the SVG element or an IMG element.
+ * SEE https://github.com/wp-graphql/wp-graphql/issues/1035
+ */
+    function fuxt_add_media_element() {
+        // Add content field for media item
+        register_graphql_field(
+            'mediaItem',
+            'element',
+            array(
+                'type' => 'String',
+                'resolve' => function( $source, $args ) {
+                    if ( $source->mimeType == 'image/svg+xml' ) {
+                        $media_file = get_attached_file( $source->ID );
+                        if ( $media_file ) {
+                            $svg_file_content = file_get_contents($media_file);
+
+                            $find_string   = '<svg';
+                            $position = strpos($svg_file_content, $find_string);
+
+                            return trim(substr($svg_file_content, $position));
+                        } else {
+                            return 'File is missing';
+                        }
+                    } else {
+                        return wp_get_attachment_image( $source->ID, 'full' );
+                    }
+                }
+            )
+        );
+    }
+    add_action( 'graphql_register_types', 'fuxt_add_media_element');
+
+/*
  * Give each content node a field of HTML encoded to play nicely with wp-content Vue component
  * SEE https://github.com/wp-graphql/wp-graphql/issues/1035
  */
@@ -235,7 +268,7 @@
         $array = (array)$obj;
         $prefix = chr(0).'*'.chr(0);
         return $array[$prefix.$name];
-    }    
+    }
 
 /*
  * Util function for adjacent page id
