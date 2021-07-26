@@ -32,11 +32,19 @@
     			return get_home_url();
     		}
     	]);
+    }
+    add_action('graphql_init', 'whitelist_settings', 1);
 
+
+/*
+ * Give media items a `html` field that outputs the SVG element or an IMG element.
+ * SEE https://github.com/wp-graphql/wp-graphql/issues/1035
+ */
+    function fuxt_add_media_element() {
         // Add content field for media item
         register_graphql_field(
             'mediaItem',
-            'content',
+            'element',
             array(
                 'type' => 'String',
                 'resolve' => function( $source, $args ) {
@@ -59,8 +67,7 @@
             )
         );
     }
-    add_action('graphql_init', 'whitelist_settings', 1);
-
+    add_action( 'graphql_register_types', 'fuxt_add_media_element');
 
 /*
  * Give each content node a field of HTML encoded to play nicely with wp-content Vue component
@@ -261,7 +268,7 @@
         $array = (array)$obj;
         $prefix = chr(0).'*'.chr(0);
         return $array[$prefix.$name];
-    }    
+    }
 
 /*
  * Util function for adjacent page id
