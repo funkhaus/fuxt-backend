@@ -157,6 +157,14 @@ function custom_excerpt_ellipsis($more)
 add_filter("excerpt_more", "custom_excerpt_ellipsis");
 
 /*
+ * Change the word length of auto excerpts
+ */
+function fuxt_custom_excerpt_length( $length ) {
+    return 20;
+}
+add_filter( 'excerpt_length', 'fuxt_custom_excerpt_length', 99 );
+
+/*
  * Prevent Google from indexing any PHP generated part of the API.
  */
 function add_nofollow_header()
