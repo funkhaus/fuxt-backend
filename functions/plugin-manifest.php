@@ -64,6 +64,13 @@
                 'version'   => '0.3.8',
                 'required'  => false
             ),
+            array(
+                'name'      => 'SameSite Cookie Manager',
+                'slug'      => 'samesite-cookie-manager',
+                'source'    => 'https://github.com/MikhailRoot/samesite-cookie-manager',
+                'version'   => '0.1',
+                'required'  => false
+            ),
         );
 
         tgmpa( $plugins, $config );
