@@ -67,7 +67,7 @@
             array(
                 'name'      => 'SameSite Cookie Manager',
                 'slug'      => 'samesite-cookie-manager',
-                'source'    => 'https://github.com/MikhailRoot/samesite-cookie-manager',
+                'source'    => 'https://github.com/MikhailRoot/samesite-cookie-manager/archive/refs/heads/master.zip',
                 'version'   => '0.1',
                 'required'  => false
             ),
