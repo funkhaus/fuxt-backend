@@ -17,6 +17,7 @@ function fuxt_block_whitelist() {
 		'core/embed',
 		'core/spacer',
 		'core/cover',
+        'core/html',
         //'acf/scrolling-gallery'
 	);
 }
