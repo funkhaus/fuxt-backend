@@ -18,7 +18,7 @@
 
 	    return $paths;
 	}
-	add_filter('acf/settings/load_json', 'custom_acf_load_directory');
+	// add_filter('acf/settings/load_json', 'custom_acf_load_directory');
 
 
 /*
