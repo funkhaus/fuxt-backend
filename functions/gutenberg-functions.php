@@ -40,4 +40,4 @@ function fuxt_disable_dropcap($editor_settings) {
     $editor_settings['__experimentalFeatures']['defaults']['typography']['dropCap'] = false;
     return $editor_settings;
 }
-add_filter('block_editor_settings', 'fuxt_disable_dropcap');
+add_filter('block_editor_settings_all', 'fuxt_disable_dropcap');
