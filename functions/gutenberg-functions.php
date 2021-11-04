@@ -21,7 +21,7 @@ function fuxt_block_whitelist() {
         //'acf/scrolling-gallery'
 	);
 }
-add_filter('allowed_block_types', 'fuxt_block_whitelist');
+add_filter('allowed_block_types_all', 'fuxt_block_whitelist');
 
 /**
  * Disable the fullscreen editor as default
