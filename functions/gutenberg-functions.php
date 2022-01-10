@@ -4,8 +4,15 @@
  *
  * @return array
  */
-function fuxt_block_whitelist() {
-	return array(
+function fuxt_block_whitelist($allowed_block_types) {
+	
+	// Assuming you want all ACF custom blocks.
+	$acf_blocks = array_filter(get_dynamic_block_names(), function($name){
+		return strpos($name, 'acf/') !== false;
+	});
+	
+	// Add specific core blocks to whitelist
+	$whitelist = array(
 		'core/paragraph',
 		'core/image',
 		'core/heading',
@@ -17,9 +24,10 @@ function fuxt_block_whitelist() {
 		'core/embed',
 		'core/spacer',
 		'core/cover',
-        'core/html',
-        //'acf/scrolling-gallery'
+		'core/html',
 	);
+	
+	return array_merge($acf_blocks, $whitelist);
 }
 add_filter('allowed_block_types_all', 'fuxt_block_whitelist');
 
