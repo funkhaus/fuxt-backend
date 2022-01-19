@@ -1,0 +1,16 @@
+.block-scrolling-gallery {
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: scroll;
+	height: 400px;
+	white-space: nowrap;
+}
+.block-scrolling-gallery .image {
+	display: inline-block;
+	height: 100%;
+	width: auto;
+	margin: 0 20px 0 0;
+}
+.block-scrolling-gallery .image:last-child {
+	margin-right: 0;
+}

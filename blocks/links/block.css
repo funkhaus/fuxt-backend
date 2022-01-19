@@ -1,0 +1,23 @@
+.block-links {
+	border-top: 1px solid;
+}
+.block-links .link {
+	display: block;
+	padding: 30px 0;
+	border-bottom: 1px solid;
+	text-decoration: none;
+	color: inherit;
+}
+.block-links .title {
+	font-weight: 400;
+	font-size: 26px;
+	margin: 0 0 10px;
+}
+.block-links .credit {
+	font-size: 23px;	
+}
+.block-links .attachment-thumbnail {
+	height: 20px;
+	width: auto;
+	background-color: #f1f1f1;
+}

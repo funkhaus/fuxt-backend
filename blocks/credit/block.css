@@ -1,0 +1,12 @@
+.block-credit {
+
+}
+.block-credit .name {
+	font-size: 20px;
+	line-height: 1.25;
+	margin: 15px 0;
+}
+.block-credit .title {
+	margin-top: -0.5em;
+	margin-bottom: 30px;
+}

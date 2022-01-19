@@ -1,0 +1,19 @@
+.block-video-with-badge iframe {
+	width: 100%;
+	height: auto;
+	position: relative;
+
+	aspect-ratio: 16 / 9;
+}
+.block-video-with-badge .message {
+	font-size: 18pt;
+}
+
+.block-video-with-badge .attachment-thumbnail {
+	position: absolute;
+	top: -15%;
+	left: -15%;
+	
+	width: 200px;
+	height: auto;
+}

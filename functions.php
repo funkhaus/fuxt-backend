@@ -14,11 +14,11 @@
     // Extends WP-Gutenberg-GraphQL function
     include_once get_template_directory() . '/functions/gutenberg-functions.php';
 
-    // Defines any custom ACF gutenberg blocks
-    include_once get_template_directory() . '/blocks/register-blocks.php';    
-
     // Add additional ACF functionality
     include_once get_template_directory() . '/functions/acf-functions.php';
+
+    // Defines any custom ACF gutenberg blocks
+    include_once get_template_directory() . '/blocks/register-blocks.php';
 
 /*
  * Generally you don't have to edit any of the files below
