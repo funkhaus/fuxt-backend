@@ -233,10 +233,10 @@ function auto_set_post_status($post_id, $post, $update)
         remove_action("save_post", "nd_debounce_deploy", 20, 1);
 
         // Set the post to publish so it gets the slug is saved to post_name
-        wp_update_post(["ID" => $post_id, "post_status" => "publish"]);
+        wp_update_post(["ID" => $post_id, "post_status" => "publish", "post_date" => ""]);
 
         // Immediately put it back to draft status
-        wp_update_post(["ID" => $post_id, "post_status" => "draft"]);
+        wp_update_post(["ID" => $post_id, "post_status" => "draft", "post_date" => ""]);
 
         // Re-hook save
         add_action("save_post", "auto_set_post_status", 13, 3);
