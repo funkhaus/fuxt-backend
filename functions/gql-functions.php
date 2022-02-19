@@ -121,7 +121,7 @@ function set_wpgql_cors_response_headers($headers)
     // Allow certain header types. Respect the defauls from WP-GQL too.
     $access_control_allow_headers = apply_filters(
         "graphql_access_control_allow_headers",
-        ["Authorization", "Content-Type"]
+        ["Authorization", "Content-Type", "Preview"]
     );
     $headers["Access-Control-Allow-Headers"] = implode(
         ", ",
