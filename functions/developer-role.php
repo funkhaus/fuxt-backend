@@ -20,24 +20,9 @@
         // Set initial user to Developer
         $user = new WP_User(1);
         $user->set_role('developer');
-        $user->add_role('administrator');   
+        $user->add_role('administrator');
     }
     add_action('after_switch_theme', 'custom_add_developer_role');
-
-
-/*
- * Disable Rich Editor on certain pages
- */
-    function disabled_rich_editor($allow_rich_editor) {
-        global $post;
-
-        if($post->force_text_editor) {
-            return false;
-        }
-        return true;
-    }
-    add_filter('user_can_richedit', 'disabled_rich_editor');
-
 
 /*
  * Prevent non-dev from deleting locked pages/posts
