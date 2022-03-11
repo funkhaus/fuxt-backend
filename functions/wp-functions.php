@@ -12,6 +12,7 @@ function custom_wordpress_setup()
 
     // Disable the hiding of big images
     add_filter("big_image_size_threshold", "__return_false");
+    add_filter("max_srcset_image_width", "__return_false");    
 }
 add_action("init", "custom_wordpress_setup");
 
