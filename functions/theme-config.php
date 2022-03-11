@@ -5,7 +5,7 @@
 	function custom_image_sizes(){
 		add_theme_support( 'post-thumbnails' );
 		set_post_thumbnail_size( 960, 540, false );
-		add_image_size( 'social-preview', 600, 315, true ); // Square thumbnail used by sharethis and facebook
+		add_image_size( 'social-preview', 1200, 630, true ); // Square thumbnail used by sharethis and facebook
 
 		// You may want to change these, but these defaults cover most use cases
 		add_image_size( 'small-preview', 375, 0, false );

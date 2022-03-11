@@ -1,126 +1,156 @@
-{
-    "key": "group_5e4da96a17fe9",
-    "title": "Site Options",
-    "fields": [
-        {
-            "key": "field_5e4dbc3d5b0a8",
-            "label": "Google Analytics",
-            "name": "google_analytics",
-            "type": "repeater",
-            "instructions": "Enter Google Analytics tracking codes. Uses the gtag.js tracking method.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "show_in_graphql": 1,
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "table",
-            "button_label": "Add Tracking Code",
-            "sub_fields": [
-                {
-                    "key": "field_5e4dbc465b0a9",
-                    "label": "Code",
-                    "name": "code",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "show_in_graphql": 1,
-                    "default_value": "",
-                    "placeholder": "UA-12345678-1",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": ""
-                }
-            ]
-        },
-        {
-            "key": "field_5e4da982da90c",
-            "label": "Social Media",
-            "name": "social_media",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "show_in_graphql": 1,
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "table",
-            "button_label": "Add Social Media",
-            "sub_fields": [
-                {
-                    "key": "field_5e4daaed308b6",
-                    "label": "Platform",
-                    "name": "platform",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "show_in_graphql": 1,
-                    "default_value": "",
-                    "placeholder": "Instagram",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": ""
-                },
-                {
-                    "key": "field_5e4dc3ebb6ba8",
-                    "label": "Url",
-                    "name": "url",
-                    "type": "url",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "show_in_graphql": 1,
-                    "default_value": "",
-                    "placeholder": "https:\/\/www.instagram.com\/funkhaus\/"
-                }
-            ]
-        }
-    ],
-    "location": [
-        [
+[
+    {
+        "key": "group_5e4da96a17fe9",
+        "title": "Site Options",
+        "fields": [
             {
-                "param": "options_page",
-                "operator": "==",
-                "value": "site-options"
+                "key": "field_5e4dbc3d5b0a8",
+                "label": "Google Analytics",
+                "name": "google_analytics",
+                "type": "repeater",
+                "instructions": "Enter Google Analytics tracking codes. Uses the gtag.js tracking method.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "collapsed": "",
+                "min": 0,
+                "max": 0,
+                "layout": "table",
+                "button_label": "Add Tracking Code",
+                "sub_fields": [
+                    {
+                        "key": "field_5e4dbc465b0a9",
+                        "label": "Code",
+                        "name": "code",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "placeholder": "UA-12345678-1",
+                        "prepend": "",
+                        "append": "",
+                        "maxlength": ""
+                    }
+                ]
+            },
+            {
+                "key": "field_5e4da982da90c",
+                "label": "Social media",
+                "name": "social_media",
+                "type": "repeater",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "collapsed": "",
+                "min": 0,
+                "max": 0,
+                "layout": "table",
+                "button_label": "Add Social Media",
+                "sub_fields": [
+                    {
+                        "key": "field_5e4daaed308b6",
+                        "label": "Platform",
+                        "name": "platform",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "placeholder": "Instagram",
+                        "prepend": "",
+                        "append": "",
+                        "maxlength": ""
+                    },
+                    {
+                        "key": "field_5e4dc3ebb6ba8",
+                        "label": "Url",
+                        "name": "url",
+                        "type": "url",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "placeholder": "https://www.instagram.com/funkhaus/"
+                    }
+                ]
+            },
+            {
+                "key": "field_622ab9158ac0d",
+                "label": "Social shared image",
+                "name": "social_shared_image",
+                "type": "image",
+                "instructions": "This image is used when people share the site on social media, unless a more relevant image is found. The ideal size for this image is 1200px wide by 630px high.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "return_format": "id",
+                "preview_size": "social-preview",
+                "library": "all",
+                "min_width": "",
+                "min_height": "",
+                "min_size": "",
+                "max_width": "",
+                "max_height": "",
+                "max_size": "",
+                "mime_types": ""
             }
-        ]
-    ],
-    "menu_order": 0,
-    "position": "normal",
-    "style": "default",
-    "label_placement": "top",
-    "instruction_placement": "label",
-    "hide_on_screen": "",
-    "active": true,
-    "description": "",
-    "show_in_graphql": 1,
-    "graphql_field_name": "siteOptions"
-}
+        ],
+        "location": [
+            [
+                {
+                    "param": "options_page",
+                    "operator": "==",
+                    "value": "site-options"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0,
+        "show_in_graphql": 1,
+        "graphql_field_name": "siteOptions",
+        "map_graphql_types_from_location_rules": 0,
+        "graphql_types": ""
+    }
+]
