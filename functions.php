@@ -28,3 +28,6 @@
 
     // Handles Developer role
     include_once get_template_directory() . '/functions/developer-role.php';
+
+    // Handles Developer role
+    include_once get_template_directory() . '/functions/override.php';
