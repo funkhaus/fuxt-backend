@@ -2,6 +2,9 @@
 /*
  * This file is the main entry point for WordPress functions.
  */
+    // Handles cookie
+    include_once get_template_directory() . '/functions/cookie-manager.php';
+
     // Misc WordPress functions
     include_once get_template_directory() . '/functions/wp-functions.php';
 
