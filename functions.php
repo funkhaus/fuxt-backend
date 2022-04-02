@@ -28,3 +28,9 @@
 
     // Handles Developer role
     include_once get_template_directory() . '/functions/developer-role.php';
+<<<<<<< Updated upstream
+=======
+
+    // Handles Developer role
+    include_once get_template_directory() . '/functions/widgets.php';
+>>>>>>> Stashed changes
