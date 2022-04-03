@@ -175,8 +175,7 @@ function gql_register_next_post()
                     "The next post of the current port",
                     "wp-graphql"
                 ),
-                "resolve" => function ($post_object, $args, $context) {
-                    $post = getProtectedValue($post_object, "data");
+                "resolve" => function ($post, $args, $context) {
                     $post = get_post($post->ID);
 
                     if (is_post_type_hierarchical($post->post_type)) {
@@ -233,8 +232,7 @@ function gql_register_previous_post()
                     "The previous post of the current post",
                     "wp-graphql"
                 ),
-                "resolve" => function ($post_object, $args, $context) {
-                    $post = getProtectedValue($post_object, "data");
+                "resolve" => function ($post, $args, $context) {
                     $post = get_post($post->ID);
 
                     if (is_post_type_hierarchical($post->post_type)) {
@@ -265,16 +263,6 @@ function get_previous_page_id($page)
 function get_next_page_id($page)
 {
     return get_adjacent_page_id($page, 1);
-}
-
-/*
- * Util function hack to get a PHP protected var
- */
-function getProtectedValue($obj, $name)
-{
-    $array = (array) $obj;
-    $prefix = chr(0) . "*" . chr(0);
-    return $array[$prefix . $name];
 }
 
 /*
