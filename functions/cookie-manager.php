@@ -66,6 +66,9 @@ function fuxt_set_auth_cookie( $auth_cookie, $expire, $expiration, $user_id, $sc
 
 	$same_site     = get_option( FUXT_COOKIE_SETTING_SAMESITE, 'None' ); // Lax|Strict|None.
 	$cookie_domain = get_option( FUXT_COOKIE_SETTING_DOMAIN, COOKIE_DOMAIN );
+	if ( empty( $cookie_domain ) ) {
+		$cookie_domain = COOKIE_DOMAIN;
+	}
 
 	if ( $fuxt_secure ) {
 		$auth_cookie_name = SECURE_AUTH_COOKIE;
@@ -124,6 +127,9 @@ function fuxt_set_logged_in_cookie( $logged_in_cookie, $expire, $expiration, $us
 
 	$same_site     = get_option( FUXT_COOKIE_SETTING_SAMESITE, 'None' ); // Lax|Strict|None.
 	$cookie_domain = get_option( FUXT_COOKIE_SETTING_DOMAIN, COOKIE_DOMAIN );
+	if ( empty( $cookie_domain ) ) {
+		$cookie_domain = COOKIE_DOMAIN;
+	}
 
 	if ( version_compare( PHP_VERSION, '7.3.0' ) >= 0 ) {
 		setcookie(
@@ -217,10 +223,9 @@ function fuxt_register_setting() {
 		'general',
 		FUXT_COOKIE_SETTING_DOMAIN,
 		array(
-			'type'              => 'string',
+			'type'              => 'boolean',
 			'group'             => 'general',
-			'description'       => 'Authentication Cookie Domain parameter',
-			// 'sanitize_callback' => 'fuxt_sanitize_value',
+			'description'       => 'Authentication Cookie Domain',
 			'show_in_rest'      => false,
 			'default'           => COOKIE_DOMAIN,
 		)
@@ -229,7 +234,7 @@ function fuxt_register_setting() {
 	// add Field.
 	add_settings_field(
 		'fuxt_cookie_domain-id',
-		'Authentication Cookie Domain parameter',
+		'Authentication Cookie Domain',
 		'fuxt_setting_domain_callback_function',
 		'general',
 		'default',
@@ -317,11 +322,46 @@ function fuxt_setting_domain_callback_function( $val ) {
 	$id           = $val['id'];
 	$option_name  = $val['option_name'];
 	$option_value = get_option( $option_name );
+	$wild_cards   = fuxt_get_domain_wildcards();
 	?>
-	<input type="text" name="<?php echo esc_attr( $option_name ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $option_value ); ?>">
-	<p class="description">
-		Be carefully! You won't be able to login to site if you set wrong value.
-		Please check <a href="https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.3">RFC 6265 section 5.1.3 Domain Matching</a>
-	</p>
+
+	<div id="<?php echo esc_attr( $id ); ?>">
+	<?php foreach ( $wild_cards as $wild_card ) : ?>
+		<div>
+		<label for="<?php echo esc_attr( $wild_card ); ?>">
+			<input type="radio" name="<?php echo esc_attr( $option_name ); ?>" id="<?php echo esc_attr( $wild_card ); ?>" value="<?php echo esc_attr( $wild_card ); ?>" <?php checked( $wild_card, $option_value ); ?>>
+			<?php if ( $wild_card ) : ?>
+				Enable cookie for <b><?php echo esc_html( $wild_card ); ?></b>
+			<?php else : ?>
+				Default Cookie Domain
+			<?php endif; ?>
+		</label>
+		</div>
+	<?php endforeach; ?>
+	</div>
+
 	<?php
+}
+
+/**
+ * Get domain wildcard list.
+ *
+ * @return array
+ */
+function fuxt_get_domain_wildcards() {
+	$domain_name  = parse_url( site_url(), PHP_URL_HOST );
+	$domain_parts = explode( '.', $domain_name );
+	$count        = count( $domain_parts );
+	$wildcard_arr = array();
+	if ( $count >= 2 ) {
+		$wildcard_str = '.' . $domain_parts[ $count - 1 ];
+		for ( $i = $count - 2; $i >= 0; $i -- ) {
+			$wildcard_str  = '.' . $domain_parts[ $i ] . $wildcard_str;
+			array_unshift( $wildcard_arr, $wildcard_str );
+		}
+	}
+
+	array_unshift( $wildcard_arr, COOKIE_DOMAIN );
+
+	return $wildcard_arr;
 }
