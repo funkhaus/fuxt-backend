@@ -1,6 +1,7 @@
 <?php
 /**
  * Whitelist blocks for the Gutenberg editor
+ * SEE https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src
  *
  * @return array
  */
@@ -25,6 +26,7 @@ function fuxt_block_whitelist($allowed_block_types) {
 		'core/spacer',
 		'core/cover',
 		'core/html',
+        'core/video',
 	);
 
 	return array_merge($acf_blocks, $whitelist);
