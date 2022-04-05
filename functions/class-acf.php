@@ -10,14 +10,7 @@ namespace FuxtBackend;
 /**
  * ACF rules for custom post type
  */
-class Acf_Rules {
-
-	/**
-	 * Custom post types array. Used for caching purpose.
-	 *
-	 * @var array
-	 */
-	private $cpt_array;
+class Acf {
 
 	/**
 	 * Custom location rule prefix.
@@ -41,12 +34,145 @@ class Acf_Rules {
 	private $surfix_tree = 'tree';
 
 	/**
+	 * Location rule name for post is tree.
+	 *
+	 * @var string
+	 */
+	private $post_is_tree = 'post-is-tree';
+
+	/**
+	 * Location rule name for page is tree.
+	 *
+	 * @var string
+	 */
+	private $page_is_tree = 'page-is-tree';
+
+	/**
+	 * Custom post types array. Used for caching purpose.
+	 *
+	 * @var array
+	 */
+	private $cpt_array;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'acf/location/rule_types', array( $this, 'acf_location_rule_types' ) );
-		add_filter( 'acf/location/rule_values', array( $this, 'acf_location_rule_values' ), 10, 2 );
-		add_filter( 'acf/location/rule_match', array( $this, 'acf_location_rule_match' ), 10, 4 );
+		add_action( 'acf/init', array( $this, 'add_options' ) );
+
+		add_filter( 'acf/location/rule_types', array( $this, 'location_rule_types' ) );
+
+		// Adds custom location rule types for post and page tree.
+		add_filter( 'acf/location/rule_values/' . $this->post_is_tree, array( $this, 'tree_location_rules_values' ), 10, 2 );
+		add_filter( 'acf/location/rule_values/' . $this->page_is_tree, array( $this, 'tree_location_rules_values' ), 10, 2 );
+
+		add_filter( 'acf/location/rule_match/' . $this->post_is_tree, array( $this, 'tree_location_rule_match' ), 10, 3 );
+		add_filter( 'acf/location/rule_match/' . $this->page_is_tree, array( $this, 'tree_location_rule_match' ), 10, 3 );
+
+		// Adds custom location rule types.
+		add_filter( 'acf/location/rule_values', array( $this, 'cpt_location_rule_values' ), 10, 2 );
+		add_filter( 'acf/location/rule_match', array( $this, 'cpt_location_rule_match' ), 10, 4 );
+
+	}
+
+	/**
+	 * Add custom site options panel.
+	 *
+	 * @return void
+	 */
+	public function add_options() {
+		acf_add_options_page(
+			array(
+				'page_title'      => 'Site Options',
+				'menu_title'      => 'Site Options',
+				'menu_slug'       => 'site-options',
+				'capability'      => 'edit_posts',
+				'redirect'        => false,
+				'show_in_graphql' => true,
+				'position'        => '60.1',
+			)
+		);
+	}
+
+	/**
+	 * This adds the options on the right <select>.
+	 * You can add more options for top level pages to test agaisnt here.
+	 *
+	 * @param array $values Rule values.
+	 * @param array $rule   Rule.
+	 *
+	 * @return array
+	 */
+	public function tree_location_rules_values( $values, $rule ) {
+
+		// Get any public custom post types that is hierarchical in nature.
+		$args = array(
+			'public'       => true,
+			'_builtin'     => false,
+			'hierarchical' => true,
+		);
+
+		// Use CPTs, or page.
+		$post_types[] = 'page';
+		if ( $this->post_is_tree === $rule['param'] ) {
+			$post_types = array_keys( get_post_types( $args ) );
+		}
+
+		// Get all top level pages/CPTs.
+		$args = array(
+			'post_parent'    => 0,
+			'post_type'      => $post_types,
+			'posts_per_page' => 100, // Limit this just in case.
+			'orderby'        => 'type name',
+			'order'          => 'ASC',
+		);
+		$pages = get_posts( $args );
+
+		// Build menu for ACF filter rule.
+		$slugs = array();
+		foreach ( $pages as $page ) {
+				// Value => Label.
+				$slugs[ 'post_id_' . $page->ID ] = $page->post_type . ': ' . $page->post_title;
+		}
+
+		return array_merge( $values, $slugs );
+	}
+
+	/**
+	 * Custom ACF filter values.
+	 * This adds the options on the right <select>.
+	 *
+	 * @param bool  $result The match result.
+	 * @param array $rule The location rule.
+	 * @param array $screen The screen args.
+	 *
+	 * @return array
+	 */
+	public function tree_location_rule_match( $result, $rule, $screen ) {
+
+		// Abort if no post ID.
+		if ( ! isset( $screen['post_id'] ) ) {
+			return $result;
+		}
+
+		// Current and selected vars.
+		$current_post = get_post( $screen['post_id'] );
+		$tree_id      = (int) str_replace( 'post_id_', '', $rule['value'] );
+
+		// Is current post in the selected tree?
+		$ancestors = get_ancestors( $current_post->ID, $current_post->post_type );
+		$in_tree   = ( $current_post->ID == $tree_id ) || in_array( $tree_id, $ancestors );
+
+		switch ( $rule['operator'] ) {
+			case '==':
+				$result = true === $in_tree;
+				break;
+			case '!=':
+				$result = true !== $in_tree;
+				break;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -57,9 +183,9 @@ class Acf_Rules {
 	 *
 	 * @return array
 	 */
-	public function acf_location_rule_types( $types ) {
+	public function location_rule_types( $types ) {
+		// Adds Parent and Tree rule types.
 		$cpt_arr = $this->get_cpt_array();
-
 		if ( count( $cpt_arr ) ) {
 			foreach ( $cpt_arr as $cpt ) {
 				$types[ $cpt['label'] ] = array(
@@ -68,6 +194,11 @@ class Acf_Rules {
 				);
 			}
 		}
+
+		// Adds Tree rule types to Post and Page.
+		$types['Post'][ $this->post_is_tree ] = 'Post belongs to tree';
+		$types['Page'][ $this->page_is_tree ] = 'Page belongs to tree';
+
 		return $types;
 	}
 
@@ -80,7 +211,7 @@ class Acf_Rules {
 	 *
 	 * @return array
 	 */
-	public function acf_location_rule_values( $values, $rule ) {
+	public function cpt_location_rule_values( $values, $rule ) {
 		$rule_arr = $this->parse_key( $rule['param'] );
 		if ( $rule_arr && in_array( $rule_arr['cpt_name'], array_column( $this->get_cpt_array(), 'name' ) ) ) {
 			$args = array(
@@ -114,7 +245,7 @@ class Acf_Rules {
 	 *
 	 * @return array
 	 */
-	public function acf_location_rule_match( $result, $rule, $screen, $field_group ) {
+	public function cpt_location_rule_match( $result, $rule, $screen, $field_group ) {
 
 		// Abort if no post ID.
 		if ( ! isset( $screen['post_id'] ) ) {
@@ -236,4 +367,4 @@ class Acf_Rules {
 	}
 }
 
-new Acf_Rules();
+new Acf();

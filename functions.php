@@ -15,10 +15,7 @@
     include_once get_template_directory() . '/functions/gutenberg-functions.php';
 
     // Add additional ACF functionality
-    include_once get_template_directory() . '/functions/acf-functions.php';
-
-    // Add additional ACF functionality
-    include_once get_template_directory() . '/functions/class-acf-rules.php';
+    include_once get_template_directory() . '/functions/class-acf.php';
 
     // Defines any custom ACF gutenberg blocks
     include_once get_template_directory() . '/blocks/register-blocks.php';
