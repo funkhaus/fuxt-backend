@@ -2,9 +2,6 @@
 /*
  * This file is the main entry point for WordPress functions.
  */
-    // Handles cookie
-    include_once get_template_directory() . '/functions/cookie-manager.php';
-
     // Misc WordPress functions
     include_once get_template_directory() . '/functions/wp-functions.php';
 
@@ -18,7 +15,7 @@
     include_once get_template_directory() . '/functions/gutenberg-functions.php';
 
     // Add additional ACF functionality
-    include_once get_template_directory() . '/functions/class-acf.php';
+    include_once get_template_directory() . '/functions/acf-functions.php';
 
     // Defines any custom ACF gutenberg blocks
     include_once get_template_directory() . '/blocks/register-blocks.php';
@@ -26,6 +23,9 @@
 /*
  * Generally you don't have to edit any of the files below
  */
+    // Handles cookie
+    include_once get_template_directory() . '/functions/cookie-manager.php';
+     
     // Handles plugin dependencies
     include_once get_template_directory() . '/functions/plugin-manifest.php';
 
