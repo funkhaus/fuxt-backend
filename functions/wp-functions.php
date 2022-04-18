@@ -334,3 +334,12 @@ function fuxt_filter_home_option($value)
     return $value;
 }
 add_filter("option_home", "fuxt_filter_home_option", 99, 1);
+
+/**
+ * Whitelist siteurl for wp_safe_redirect
+ */
+function fuxt_allow_siteurl_safe_redirect( $hosts ) {
+    $wpp = parse_url( site_url() );
+    return array_merge( $hosts, array( $wpp['host'] ) );
+}
+add_filter( 'allowed_redirect_hosts', 'fuxt_allow_siteurl_safe_redirect' );
