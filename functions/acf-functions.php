@@ -48,6 +48,20 @@ class Acf {
 	private $page_is_tree = 'page-is-tree';
 
 	/**
+	 * Location rule name for post has child.
+	 *
+	 * @var string
+	 */
+	private $post_has_child = 'post-has-child';
+
+	/**
+	 * Location rule name for page has child.
+	 *
+	 * @var string
+	 */
+	private $page_has_child = 'page-has-child';
+
+	/**
 	 * Custom post types array. Used for caching purpose.
 	 *
 	 * @var array
@@ -68,6 +82,13 @@ class Acf {
 
 		add_filter( 'acf/location/rule_match/' . $this->post_is_tree, array( $this, 'tree_location_rule_match' ), 10, 3 );
 		add_filter( 'acf/location/rule_match/' . $this->page_is_tree, array( $this, 'tree_location_rule_match' ), 10, 3 );
+
+		// Adds custom location rule types for post and page has children.
+		add_filter( 'acf/location/rule_values/' . $this->post_has_child, array( $this, 'has_child_location_rules_values' ), 10, 2 );
+		add_filter( 'acf/location/rule_values/' . $this->page_has_child, array( $this, 'has_child_location_rules_values' ), 10, 2 );
+
+		add_filter( 'acf/location/rule_match/' . $this->post_has_child, array( $this, 'has_child_location_rule_match' ), 10, 3 );
+		add_filter( 'acf/location/rule_match/' . $this->page_has_child, array( $this, 'has_child_location_rule_match' ), 10, 3 );
 
 		// Adds custom location rule types.
 		add_filter( 'acf/location/rule_values', array( $this, 'cpt_location_rule_values' ), 10, 2 );
@@ -139,8 +160,7 @@ class Acf {
 	}
 
 	/**
-	 * Custom ACF filter values.
-	 * This adds the options on the right <select>.
+	 * Custom ACF rule match.
 	 *
 	 * @param bool  $result The match result.
 	 * @param array $rule The location rule.
@@ -176,6 +196,59 @@ class Acf {
 	}
 
 	/**
+	 * This adds the options on the right <select>.
+	 * You can add more options for top level pages to test agaisnt here.
+	 *
+	 * @param array $values Rule values.
+	 * @param array $rule   Rule.
+	 *
+	 * @return array
+	 */
+	public function has_child_location_rules_values( $values, $rule ) {
+		return 'Has Children';
+	}
+
+	/**
+	 * Custom ACF rule match.
+	 *
+	 * @param bool  $result The match result.
+	 * @param array $rule The location rule.
+	 * @param array $screen The screen args.
+	 *
+	 * @return array
+	 */
+	public function has_child_location_rule_match( $result, $rule, $screen ) {
+
+		// Abort if no post ID.
+		if ( ! isset( $screen['post_id'] ) ) {
+			return $result;
+		}
+
+		$post_id   = $screen['post_id'];
+		$post_type = get_post_type( $post_id );
+
+		// Current and selected vars.
+		$current_post = get_post( $post_id );
+		$children = get_children(
+			array(
+				'post_parent' => $post_id,
+				'post_type'   => $post_type,
+			)
+		);
+
+		switch ( $rule['operator'] ) {
+			case '==':
+				$result = ! empty( $children );
+				break;
+			case '!=':
+				$result = empty( $children );
+				break;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Custom ACF filter rules.
 	 * This adds the label to the first <select> in the Field Group screen.
 	 *
@@ -198,6 +271,10 @@ class Acf {
 		// Adds Tree rule types to Post and Page.
 		$types['Post'][ $this->post_is_tree ] = 'Post belongs to tree';
 		$types['Page'][ $this->page_is_tree ] = 'Page belongs to tree';
+
+		// Adds Tree rule types to Post and Page.
+		$types['Post'][ $this->post_has_child ] = 'Post has children';
+		$types['Page'][ $this->page_has_child ] = 'Page has children';
 
 		return $types;
 	}
@@ -235,8 +312,7 @@ class Acf {
 	}
 
 	/**
-	 * Custom ACF filter values.
-	 * This adds the options on the right <select>.
+	 * Custom ACF rule match.
 	 *
 	 * @param bool  $result The match result.
 	 * @param array $rule The location rule.
