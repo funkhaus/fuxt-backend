@@ -175,16 +175,56 @@ function gql_register_next_post()
                     "The next post of the current port",
                     "wp-graphql"
                 ),
+                "args" => [
+                    'inSameTerm' => [
+                        'type'        => 'Boolean',
+                        'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'wp-graphql' ),
+                        'default'     => false,
+                    ],
+                    'taxonomy' => [
+                        'type' => 'String',
+                        'description' => __( 'Taxonomy, if inSameTerm is true', 'wp-graphql' ),
+                    ],
+                    'termNotIn' => [
+                        'type' => 'String',
+                        'description' => __( 'Comma-separated list of excluded term IDs.', 'wp-graphql' ),
+                    ],
+                    'termSlugNotIn' => [
+                        'type' => 'String',
+                        'description' => __( 'Comma-separated list of excluded term slugs.', 'wp-graphql' ),
+                    ],
+                ],
                 "resolve" => function ($post, $args, $context) {
                     $post = get_post($post->ID);
 
-                    if (is_post_type_hierarchical($post->post_type)) {
-                        $post_id = get_next_page_id($post);
-                    } else {
-                        $next_post = get_next_post();
-                        $post_id = $next_post->ID;
+                    $in_same_term        = isset( $args['inSameTerm'] ) ? $args['inSameTerm'] : false;
+                    $excluded_terms      = isset( $args['termNotIn'] ) ? array_map( 'intval', explode( ',', $args['termNotIn'] ) ) : array();
+                    $taxonomy            = isset( $args['taxonomy'] ) ? $args['taxonomy'] : 'category';
+                    $excluded_term_slugs = isset( $args['termSlugNotIn'] ) ? explode( ',', $args['termSlugNotIn'] ) : array();
+
+                    // merge termNotIn and termSlugNotIn.
+                    if ( ! empty( $excluded_term_slugs ) ) {
+                        $term_ids = array_map(
+                            function( $slug ) use ( $taxonomy ) {
+                                $term = get_term_by( 'slug', $slug, $taxonomy );
+                                if ( $term ) {
+                                    return $term->term_id;
+                                }
+                                return false;
+                            },
+                            $excluded_term_slugs
+                        );
+
+                        $excluded_terms = array_merge( $excluded_terms, array_filter( $term_ids ) );
                     }
-                    return $post_id;
+
+                    $next_post = get_next_post(
+                        $in_same_term,
+                        $excluded_terms,
+                        $taxonomy
+                    );
+
+                    return $next_post ? $next_post->ID : null;
                 },
             ]);
         }
@@ -232,67 +272,63 @@ function gql_register_previous_post()
                     "The previous post of the current post",
                     "wp-graphql"
                 ),
+                "args" => [
+                    'inSameTerm' => [
+                        'type'        => 'Boolean',
+                        'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'wp-graphql' ),
+                        'default'     => false,
+                    ],
+                    'taxonomy' => [
+                        'type' => 'String',
+                        'description' => __( 'Taxonomy, if inSameTerm is true', 'wp-graphql' ),
+                    ],
+                    'termNotIn' => [
+                        'type' => 'String',
+                        'description' => __( 'Comma-separated list of excluded term IDs.', 'wp-graphql' ),
+                    ],
+                    'termSlugNotIn' => [
+                        'type' => 'String',
+                        'description' => __( 'Comma-separated list of excluded term slugs.', 'wp-graphql' ),
+                    ],
+                ],
                 "resolve" => function ($post, $args, $context) {
                     $post = get_post($post->ID);
 
-                    if (is_post_type_hierarchical($post->post_type)) {
-                        $post_id = get_previous_page_id($post);
-                    } else {
-                        $prev_post = get_previous_post();
-                        $post_id = $prev_post->ID;
+                    // Prepare arguments
+                    $in_same_term        = isset( $args['inSameTerm'] ) ? $args['inSameTerm'] : false;
+                    $excluded_terms      = isset( $args['termNotIn'] ) ? array_map( 'intval', explode( ',', $args['termNotIn'] ) ) : array();
+                    $taxonomy            = isset( $args['taxonomy'] ) ? $args['taxonomy'] : 'category';
+                    $excluded_term_slugs = isset( $args['termSlugNotIn'] ) ? explode( ',', $args['termSlugNotIn'] ) : array();
+
+                    // merge termNotIn and termSlugNotIn.
+                    if ( ! empty( $excluded_term_slugs ) ) {
+                        $term_ids = array_map(
+                            function( $slug ) use ( $taxonomy ) {
+                                $term = get_term_by( 'slug', $slug, $taxonomy );
+                                if ( $term ) {
+                                    return $term->term_id;
+                                }
+                                return false;
+                            },
+                            $excluded_term_slugs
+                        );
+
+                        $excluded_terms = array_merge( $excluded_terms, array_filter( $term_ids ) );
                     }
-                    return $post_id;
+
+                    $prev_post = get_previous_post(
+                        $in_same_term,
+                        $excluded_terms,
+                        $taxonomy
+                    );
+
+                    return $prev_post ? $prev_post->ID : null;
                 },
             ]);
         }
     }
 }
 add_action("graphql_register_types", "gql_register_previous_post");
-
-/*
- *  Util function for previous page id
- */
-function get_previous_page_id($page)
-{
-    return get_adjacent_page_id($page, -1);
-}
-
-/*
- * Util function for next page id
- */
-function get_next_page_id($page)
-{
-    return get_adjacent_page_id($page, 1);
-}
-
-/*
- * Util function for adjacent page id
- *
- * Params: $page -> page object from wordpress
- * Params: $direction -> Integer -1 or 1 indicating next or previous post
- * returns adjacent page id
- */
-function get_adjacent_page_id($page, $direction)
-{
-    $args = [
-        "post_type" => $page->post_type,
-        "order" => "ASC",
-        "orderby" => "menu_order",
-        "post_parent" => $page->post_parent,
-        "fields" => "ids",
-        "posts_per_page" => -1,
-    ];
-
-    $pages = get_posts($args);
-    $current_key = array_search($page->ID, $pages);
-    $output = 0;
-
-    if (isset($pages[$current_key + $direction])) {
-        // Next page exists
-        $output = $pages[$current_key + $direction];
-    }
-    return $output;
-}
 
 /*
  * Allow for more than 100 posts/pages to be returned.
