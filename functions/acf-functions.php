@@ -143,7 +143,7 @@ class Acf {
 		$args = array(
 			'post_parent'    => 0,
 			'post_type'      => $post_types,
-			'posts_per_page' => 100, // Limit this just in case.
+			'posts_per_page' => 1000, // Limit this just in case.
 			'orderby'        => 'type name',
 			'order'          => 'ASC',
 		);
@@ -293,7 +293,7 @@ class Acf {
 		if ( $rule_arr && in_array( $rule_arr['cpt_name'], array_column( $this->get_cpt_array(), 'name' ) ) ) {
 			$args = array(
 				'post_type'              => $rule_arr['cpt_name'],
-				'posts_per_page'         => 100,
+				'posts_per_page'         => 1000,
 				'paged'                  => 0,
 				'orderby'                => 'menu_order title',
 				'order'                  => 'ASC',
