@@ -9,10 +9,10 @@ define( 'FUXT_COOKIE_SETTING_SAMESITE', 'fuxt_cookie_samesite' );
 define( 'FUXT_COOKIE_SETTING_DOMAIN', 'fuxt_cookie_domain' );
 
 // Init global secure variables.
-global $fuxt_secure, $fuxt_secure_logged_in_cookie, $fuxt_is_login;
+global $fuxt_secure, $fuxt_secure_logged_in_cookie, $fuxt_send_auth_cookies;
 $fuxt_secure                  = is_ssl();
 $fuxt_secure_logged_in_cookie = $fuxt_secure && 'https' === parse_url( get_option( 'home' ), PHP_URL_SCHEME );
-$fuxt_is_login                = false;
+$fuxt_send_auth_cookies       = true;
 
 /**
  * Init $fuxt_secure with site secure value.
@@ -30,7 +30,7 @@ function fuxt_secure_auth_cookie( $secure, $user_id ) {
 add_filter( 'secure_auth_cookie', 'fuxt_secure_auth_cookie', PHP_INT_MAX, 2 );
 
 /**
- * Init $fuxt_secure_logged_in_cookie with site secure value and set fuxt_is_login true.
+ * Init $fuxt_secure_logged_in_cookie with site secure value and set fuxt_send_auth_cookies false.
  *
  * @param bool $secure_logged_in_cookie Whether the logged in cookie should only be sent over HTTPS.
  * @param int  $user_id                 User ID.
@@ -39,9 +39,9 @@ add_filter( 'secure_auth_cookie', 'fuxt_secure_auth_cookie', PHP_INT_MAX, 2 );
  * @return bool
  */
 function fuxt_secure_logged_in_cookie( $secure_logged_in_cookie, $user_id, $secure ) {
-	global $fuxt_secure_logged_in_cookie, $fuxt_is_login;
+	global $fuxt_secure_logged_in_cookie, $fuxt_send_auth_cookies;
 	$fuxt_secure_logged_in_cookie = $secure_logged_in_cookie;
-	$fuxt_is_login                = true;
+	$fuxt_send_auth_cookies       = false;
 	return $secure_logged_in_cookie;
 }
 add_filter( 'secure_logged_in_cookie', 'fuxt_secure_logged_in_cookie', PHP_INT_MAX, 3 );
@@ -110,6 +110,30 @@ function fuxt_set_auth_cookie( $auth_cookie, $expire, $expiration, $user_id, $sc
 add_action( 'set_auth_cookie', 'fuxt_set_auth_cookie', 10, 6 );
 
 /**
+ * Clear auth cookie.
+ *
+ * @param string $cookie_domain Cookie domain.
+ */
+function fuxt_clear_auth_cookie( $cookie_domain = '' ) {
+	global $fuxt_send_auth_cookies;
+	$fuxt_send_auth_cookies = false;
+
+	if ( $cookie_domain === '' ) {
+		$cookie_domain = get_option( FUXT_COOKIE_SETTING_DOMAIN, COOKIE_DOMAIN );
+	}
+
+	$time = time() - YEAR_IN_SECONDS;
+
+	setcookie( AUTH_COOKIE, ' ', $time, ADMIN_COOKIE_PATH, $cookie_domain );
+	setcookie( SECURE_AUTH_COOKIE, ' ', $time, ADMIN_COOKIE_PATH, $cookie_domain );
+	setcookie( AUTH_COOKIE, ' ', $time, PLUGINS_COOKIE_PATH, $cookie_domain );
+	setcookie( SECURE_AUTH_COOKIE, ' ', $time, PLUGINS_COOKIE_PATH, $cookie_domain );
+	setcookie( LOGGED_IN_COOKIE, ' ', $time, COOKIEPATH, $cookie_domain );
+	setcookie( LOGGED_IN_COOKIE, ' ', $time, SITECOOKIEPATH, $cookie_domain );
+}
+add_action( 'clear_auth_cookie', 'fuxt_clear_auth_cookie' );
+
+/**
  * Set logged in cookie.
  * Fires immediately before the logged-in authentication cookie is set.
  *
@@ -169,22 +193,13 @@ function fuxt_set_logged_in_cookie( $logged_in_cookie, $expire, $expiration, $us
 add_action( 'set_logged_in_cookie', 'fuxt_set_logged_in_cookie', 10, 6 );
 
 /**
- * Set $fuxt_is_login false on logout.
- */
-function fuxt_clear_auth_cookie() {
-	global $fuxt_is_login;
-	$fuxt_is_login = false;
-}
-add_action( 'clear_auth_cookie', 'fuxt_clear_auth_cookie' );
-
-/**
  * Disable default auth cookie function on login.
  *
  * @param bool $send True.
  */
 function fuxt_send_auth_cookies( $send ) {
-	global $fuxt_is_login;
-	return ! $fuxt_is_login;
+	global $fuxt_send_auth_cookies;
+	return $fuxt_send_auth_cookies;
 }
 add_filter( 'send_auth_cookies', 'fuxt_send_auth_cookies' );
 
@@ -246,6 +261,27 @@ function fuxt_register_setting() {
 
 }
 add_action( 'admin_init', 'fuxt_register_setting' );
+
+/**
+ * Clear old domain cookie and set new domain cookie on cookie setting change.
+ *
+ * @param string $old_value Old value.
+ * @param string $value     New value.
+ */
+function fuxt_remove_old_domain_cookies( $old_value, $value ) {
+	$user_id = get_current_user_id();
+	$secure  = is_ssl();
+
+	// Clear old domain cookie.
+	if ( empty( $old_value ) ) {
+		$old_value = COOKIE_DOMAIN;
+	}
+	fuxt_clear_auth_cookie( $old_value );
+
+	// Set new domain cookie.
+	wp_set_auth_cookie( $user_id, false, $secure );
+}
+add_action( 'update_option_' . FUXT_COOKIE_SETTING_DOMAIN, 'fuxt_remove_old_domain_cookies', 10, 2 );
 
 /**
  * Sanitizes SameSite value.
@@ -328,8 +364,8 @@ function fuxt_setting_domain_callback_function( $val ) {
 	<div id="<?php echo esc_attr( $id ); ?>">
 	<?php foreach ( $wild_cards as $wild_card ) : ?>
 		<div>
-		<label for="<?php echo esc_attr( $wild_card ); ?>">
-			<input type="radio" name="<?php echo esc_attr( $option_name ); ?>" id="<?php echo esc_attr( $wild_card ); ?>" value="<?php echo esc_attr( $wild_card ); ?>" <?php checked( $wild_card, $option_value ); ?>>
+		<label for="fuxt-domain-<?php echo esc_attr( $wild_card ); ?>">
+			<input type="radio" name="<?php echo esc_attr( $option_name ); ?>" id="fuxt-domain-<?php echo esc_attr( $wild_card ); ?>" value="<?php echo esc_attr( $wild_card ); ?>" <?php checked( $wild_card, $option_value ); ?>>
 			<?php if ( $wild_card ) : ?>
 				Enable cookie for <b><?php echo esc_html( $wild_card ); ?></b>
 			<?php else : ?>
