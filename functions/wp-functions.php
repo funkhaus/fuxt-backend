@@ -279,7 +279,7 @@ function filter_oembed_attributes($return, $data, $url)
     $return = preg_replace("/title=\"[\\s\\S]*?\"/", "", $return);
 
     // Strip quotes from title
-    $title = str_replace('"', "", $data->title);
+    $title = str_replace('"', "", $data->title || "");
 
     return str_replace("<iframe", '<iframe title="' . $title . '"', $return);
 }
