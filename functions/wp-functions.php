@@ -25,7 +25,7 @@ function custom_theme_setup()
     add_theme_support("menus");
 
     // Enable HTML5 support
-    add_theme_support("html5");
+	add_theme_support("html5", array("gallery", "caption") );
 }
 add_action("after_setup_theme", "custom_theme_setup");
 
