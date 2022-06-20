@@ -249,6 +249,19 @@ function auto_set_post_status($post_id, $post, $update)
 add_action("save_post", "auto_set_post_status", 13, 3);
 
 /*
+ * Polyfill functions to not throw errors on ACF import
+ */
+function fuxt_polyfill_functions() {
+	if (!function_exists('cp_purge_cache')) {
+	    function cp_purge_cache(){}
+	}
+	if (!function_exists('nd_debounce_deploy')) {
+	    function nd_debounce_deploy(){}
+	}	
+}
+add_action("wp_dashboard_setup", "fuxt_polyfill_functions");
+
+/*
  * Set permlinks on theme activate
  * SEE https://github.com/wp-graphql/wp-graphql/issues/1612
  */
