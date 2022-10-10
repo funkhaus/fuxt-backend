@@ -7,6 +7,15 @@
 
 namespace FuxtBackend;
 
+/*
+ * Adds a hover state to Relationship selectors that shows the URI
+ */    
+	function fuxt_acf_fields_relationship_result($text, $post, $field, $post_id) {
+	 	$uri = get_page_uri($post);
+	    return '<span title="'.$uri.'">'.$text.'</span>';
+	}
+	add_filter('acf/fields/relationship/result', 'fuxt_acf_fields_relationship_result', 10, 4);
+
 /**
  * ACF rules for custom post type
  */
