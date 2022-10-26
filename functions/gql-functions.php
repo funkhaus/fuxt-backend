@@ -114,8 +114,28 @@ function set_wpgql_cors_response_headers($headers)
         return $headers;
     }
 
-    // Allow any domain to send cookies
-    $headers["Access-Control-Allow-Origin"] = get_http_origin();
+    // Set site url as allowed origin.
+    $allowed_origins = array(
+        site_url(),
+    );
+
+    // Add fuxt home url to allowed origin.
+    $fuxt_home_url = get_option( 'fuxt_home_url' );
+    if ( $fuxt_home_url ) {
+        $allowed_origins[] = $fuxt_home_url;
+    }
+
+    $allowed_origins = apply_filters( 'fuxt_allowed_origins', $allowed_origins );
+
+    // Consider localhost case.
+    $origin        = get_http_origin();
+    $parsed_origin = wp_parse_url( $origin );
+
+    if ( ! in_array( $origin, $allowed_origins, true ) && 'localhost' !== $parsed_origin['host'] ) {
+        $origin = $allowed_origins[0];
+    }
+
+    $headers["Access-Control-Allow-Origin"]      = $origin;
     $headers["Access-Control-Allow-Credentials"] = "true";
 
     // Allow certain header types. Respect the defauls from WP-GQL too.
