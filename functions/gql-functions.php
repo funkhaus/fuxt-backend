@@ -65,10 +65,11 @@ function fuxt_add_media_element() {
 		array(
 			'type'    => 'String',
 			'resolve' => function ( $source, $args ) {
-                // phpcs:ignore
+				// phpcs:ignore
 				if ( $source->mimeType === 'image/svg+xml' ) {
 					$media_file = get_attached_file( $source->ID );
 					if ( $media_file ) {
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 						$svg_file_content = file_get_contents( $media_file );
 
 						$find_string = '<svg';
@@ -98,7 +99,7 @@ function add_encoded_content_field() {
 		array(
 			'type'    => 'String',
 			'resolve' => function ( $post ) {
-                // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				$content = get_post( $post->databaseId )->post_content;
 				return ! empty( $content ) ? apply_filters( 'the_content', $content ) : null;
 			},
