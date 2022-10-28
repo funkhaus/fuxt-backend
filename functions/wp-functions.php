@@ -216,7 +216,7 @@ add_filter( 'rest_prepare_page', 'fuxt_preview_link_in_rest_response', 10, 2 );
  * @param bool     $update Whether this is an existing post being updated.
  */
 function auto_set_post_status( $post_id, $post, $update ) {
-	if ( $post->post_status == 'draft' && ! $post->post_name ) {
+	if ( $post->post_status === 'draft' && ! $post->post_name ) {
 		// Un-hook to prevent infinite loop
 		remove_action( 'save_post', 'auto_set_post_status', 13, 3 );
 
@@ -321,12 +321,14 @@ add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
  *
  * @param string $option    Name of the option to update.
  * @param mixed  $old_value The old option value.
- * @param mixed  $value     The new option value.
+ * @param mixed  $new_value The new option value.
  */
 function fuxt_update_home_url( $option, $old_value, $new_value ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing
 	if ( ! empty( $_POST['home'] ) ) {
 		// Remove filter to not cause infinte loop
 		remove_action( 'update_option', 'fuxt_update_home_url', 20, 3 );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		update_option( 'fuxt_home_url ', $_POST['home'], true );
 	}
 }
@@ -367,7 +369,7 @@ add_filter( 'home_url', 'fuxt_get_home_url', 99, 3 );
  */
 function fuxt_filter_home_option( $value ) {
 	global $pagenow;
-	if ( $pagenow == 'options-general.php' ) {
+	if ( $pagenow === 'options-general.php' ) {
 		$value = get_option( 'fuxt_home_url' );
 	}
 	return $value;
@@ -381,7 +383,7 @@ add_filter( 'option_home', 'fuxt_filter_home_option', 99, 1 );
  * @return string[]
  */
 function fuxt_allow_siteurl_safe_redirect( $hosts ) {
-	$wpp = parse_url( site_url() );
+	$wpp = wp_parse_url( site_url() );
 	return array_merge( $hosts, array( $wpp['host'] ) );
 }
 add_filter( 'allowed_redirect_hosts', 'fuxt_allow_siteurl_safe_redirect' );
