@@ -77,15 +77,18 @@ add_action( 'wp_dashboard_setup', 'fuxt_add_dashboard_widget' );
 function fuxt_ajax_dashboard_widgets() {
 	require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 
-	$pagenow = $_GET['pagenow'];
-	if ( 'dashboard-user' === $pagenow || 'dashboard-network' === $pagenow || 'dashboard' === $pagenow ) {
-		set_current_screen( $pagenow );
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['pagenow'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$pagenow = $_GET['pagenow'];
+		if ( in_array( $pagenow, array( 'dashboard-user', 'dashboard-network', 'dashboard' ) ) ) {
+			set_current_screen( $pagenow );
+		}
 	}
 
-	switch ( $_GET['widget'] ) {
-		case 'dashboard_primary':
-			fuxt_dashboard_primary();
-			break;
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['widget'] ) && $_GET['widget'] == 'dashboard_primary' ) {
+		fuxt_dashboard_primary();
 	}
 	wp_die();
 }
