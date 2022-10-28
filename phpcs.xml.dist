@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards">
 	<description>A custom set of rules to check for Fuxt Backend project</description>
+	<arg name="extensions" value="php" />
 	<rule ref="WordPress-Core">
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
