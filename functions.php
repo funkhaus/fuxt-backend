@@ -5,6 +5,8 @@
  * @package fuxt-backend
  */
 
+define( 'FUXT_VERSION', wp_get_theme( 'fuxt-backend' )->get( 'Version' ) );
+
 /**
  * Load all modules.
  */
