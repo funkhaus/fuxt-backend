@@ -124,45 +124,6 @@ function rss_post_thumbnail( $content ) {
 add_filter( 'the_excerpt_rss', 'rss_post_thumbnail' );
 
 /**
- * Allow SVG uploads.
- */
-function add_mime_types( $mimes ) {
-	$mimes['svg'] = 'image/svg+xml';
-	return $mimes;
-}
-// add_filter('upload_mimes', 'add_mime_types');
-
-/**
- * Force SVG uploads!
- * This snippit will force SVGs to be allowed to upladed if the above code doesn't work.
- * I think this code will allow all files to be uploaded, so don't use it unless needed.
- */
-function force_svg_uploads( $data, $file, $filename, $mimes ) {
-	global $wp_version;
-	$filetype = wp_check_filetype( $filename, $mimes );
-
-	return array(
-		'ext'             => $filetype['ext'],
-		'type'            => $filetype['type'],
-		'proper_filename' => $data['proper_filename'],
-	);
-}
-// add_filter( 'wp_check_filetype_and_ext', 'force_svg_uploads', 10, 4);
-
-/**
- * Allow subscriber to see Private posts/pages
- */
-function add_theme_caps() {
-	// Gets the author role
-	$role = get_role( 'subscriber' );
-
-	// Add capabilities
-	$role->add_cap( 'read_private_posts' );
-	$role->add_cap( 'read_private_pages' );
-}
-// add_action( 'switch_theme', 'add_theme_caps');
-
-/**
  * Change the [...] that comes after excerpts.
  *
  * @param string $more Default more string.
