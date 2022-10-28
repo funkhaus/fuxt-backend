@@ -16,4 +16,5 @@
 	</rule>
 
 	<exclude-pattern>*/libs/*</exclude-pattern>
+	<exclude-pattern>index.php</exclude-pattern>
 </ruleset>
