@@ -5,6 +5,9 @@
  * @package fuxt-backend
  */
 
+/**
+ * Custom WP setup.
+ */
 function custom_wordpress_setup() {
 	// Enable tags for Pages
 	register_taxonomy_for_object_type( 'post_tag', 'page' );
@@ -40,15 +43,31 @@ add_action( 'admin_enqueue_scripts', 'custom_admin_scripts' );
 
 /**
  * Style login page and dashboard
+ *
+ * @param string $url Default login header url.
+ * @return string
  */
 function custom_loginpage_logo_link( $url ) {
 	// Return a url; in this case the homepage url of WordPress
 	return get_bloginfo( 'url' );
 }
+add_filter( 'login_headerurl', 'custom_loginpage_logo_link' );
+
+/**
+ * Custom login header text.
+ *
+ * @param string $message Default login header text.
+ * @return string
+ */
 function custom_loginpage_logo_title( $message ) {
 	// Return title text for the logo to replace 'WordPress'; in this case, the blog name.
 	return get_bloginfo( 'name' );
 }
+add_filter( 'login_headertext', 'custom_loginpage_logo_title' );
+
+/**
+ * Enqueue Custom login css.
+ */
 function custom_loginpage_styles() {
 	wp_enqueue_style(
 		'login_css',
@@ -57,24 +76,35 @@ function custom_loginpage_styles() {
 		FUXT_VERSION
 	);
 }
+add_action( 'login_head', 'custom_loginpage_styles' );
+
+/**
+ * Enqueue Admin CSS.
+ */
 function custom_admin_styles() {
 	wp_enqueue_style(
 		'admin-stylesheet',
-		get_template_directory_uri() . '/css/admin.css'
+		get_template_directory_uri() . '/css/admin.css',
+		null,
+		FUXT_VERSION
 	);
 }
+add_action( 'admin_print_styles', 'custom_admin_styles' );
+
+/**
+ * Add custom favicon.
+ */
 function custom_site_favicon() {
 	echo '<link rel="shortcut icon" href="' . esc_url( get_stylesheet_directory_uri() . '/favicon.png' ) . '" />';
 }
-add_filter( 'login_headerurl', 'custom_loginpage_logo_link' );
-add_filter( 'login_headertext', 'custom_loginpage_logo_title' );
-add_action( 'login_head', 'custom_loginpage_styles' );
-add_action( 'admin_print_styles', 'custom_admin_styles' );
 add_action( 'admin_head', 'custom_site_favicon' );
 add_action( 'login_head', 'custom_site_favicon' );
 
 /**
- * Add post thumbnail into RSS feed
+ * Add post thumbnail into RSS feed.
+ *
+ * @param string $content Post content.
+ * @return string
  */
 function rss_post_thumbnail( $content ) {
 	global $post;
@@ -94,7 +124,7 @@ function rss_post_thumbnail( $content ) {
 add_filter( 'the_excerpt_rss', 'rss_post_thumbnail' );
 
 /**
- * Allow SVG uploads
+ * Allow SVG uploads.
  */
 function add_mime_types( $mimes ) {
 	$mimes['svg'] = 'image/svg+xml';
@@ -133,7 +163,10 @@ function add_theme_caps() {
 // add_action( 'switch_theme', 'add_theme_caps');
 
 /**
- * Change the [...] that comes after excerpts
+ * Change the [...] that comes after excerpts.
+ *
+ * @param string $more Default more string.
+ * @return string
  */
 function custom_excerpt_ellipsis( $more ) {
 	return '...';
@@ -141,7 +174,10 @@ function custom_excerpt_ellipsis( $more ) {
 add_filter( 'excerpt_more', 'custom_excerpt_ellipsis' );
 
 /**
- * Change the word length of auto excerpts
+ * Change the word length of auto excerpts.
+ *
+ * @param int $length Default length.
+ * @return int
  */
 function fuxt_custom_excerpt_length( $length ) {
 	return 20;
@@ -158,6 +194,10 @@ add_action( 'send_headers', 'add_nofollow_header' );
 
 /**
  * Add useful args to post/page preview URLs
+ *
+ * @param string   $link URL used for the post preview.
+ * @param \WP_Post $post Post object.
+ * @return string
  */
 function add_custom_preview_link( $link, $post ) {
 	$args = array(
@@ -191,6 +231,10 @@ add_filter( 'preview_post_link', 'add_custom_preview_link', 10, 2 );
 
 /**
  * Includes preview link in post data for a response for Gutenberg preview link to work.
+ *
+ * @param \WP_REST_Response $response The response object.
+ * @param \WP_Post          $post     Post object.
+ * @return \WP_REST_Response
  */
 function fuxt_preview_link_in_rest_response( $response, $post ) {
 	if ( 'draft' === $post->post_status ) {
@@ -205,6 +249,10 @@ add_filter( 'rest_prepare_page', 'fuxt_preview_link_in_rest_response', 10, 2 );
 /**
  * This function auto saves drafts posts, to force them to get a URL for previews to work.
  * See: https://wordpress.stackexchange.com/questions/218168/how-to-make-draft-posts-or-posts-in-review-accessible-via-full-url-slug
+ *
+ * @param int      $post_id Post ID.
+ * @param \WP_Post $post Post object.
+ * @param bool     $update Whether this is an existing post being updated.
  */
 function auto_set_post_status( $post_id, $post, $update ) {
 	if ( $post->post_status == 'draft' && ! $post->post_name ) {
@@ -256,9 +304,11 @@ add_action( 'save_post', 'auto_set_post_status', 13, 3 );
  */
 function fuxt_polyfill_functions() {
 	if ( ! function_exists( 'cp_purge_cache' ) ) {
+		// phpcs:ignore
 		function cp_purge_cache(){}
 	}
 	if ( ! function_exists( 'nd_debounce_deploy' ) ) {
+		// phpcs:ignore
 		function nd_debounce_deploy(){}
 	}
 }
@@ -287,6 +337,11 @@ add_action( 'after_switch_theme', 'set_custom_permalinks' );
 
 /**
  * Strip quotes from oEmbed title html attributes
+ *
+ * @param string $return The returned oEmbed HTML.
+ * @param object $data   A data object result from an oEmbed provider.
+ * @param string $url    The URL of the content to be embedded.
+ * @return string
  */
 function filter_oembed_attributes( $return, $data, $url ) {
 	// Remove the title attribute, as often times it has a quote in it.
@@ -302,6 +357,10 @@ add_filter( 'oembed_dataparse', 'filter_oembed_attributes', 10, 4 );
 /**
  * Update fuxt_home_url option when Site Address(home) is updated.
  * Normally you'd use `update_option_home` here but I guess Flywheel disabled.
+ *
+ * @param string $option    Name of the option to update.
+ * @param mixed  $old_value The old option value.
+ * @param mixed  $value     The new option value.
  */
 function fuxt_update_home_url( $option, $old_value, $new_value ) {
 	if ( ! empty( $_POST['home'] ) ) {
@@ -314,6 +373,11 @@ add_action( 'update_option', 'fuxt_update_home_url', 20, 3 );
 
 /**
  * Return the fuxt_home_url value when code requests the Site Address (URL)
+ *
+ * @param string      $url         The complete home URL including scheme and path.
+ * @param string      $path        Path relative to the home URL. Blank string if no path is specified.
+ * @param string|null $orig_scheme Scheme to give the home URL context. Accepts 'http', 'https', 'relative', 'rest', or null.
+ * @return string
  */
 function fuxt_get_home_url( $url, $path, $orig_scheme ) {
 	if ( 'rest' !== $orig_scheme ) {
@@ -335,7 +399,10 @@ function fuxt_get_home_url( $url, $path, $orig_scheme ) {
 add_filter( 'home_url', 'fuxt_get_home_url', 99, 3 );
 
 /**
- *  Update the Site Address value in General Settings panel to return fuxt override
+ * Update the Site Address value in General Settings panel to return fuxt override
+ *
+ * @param string $value Site address value.
+ * @return string
  */
 function fuxt_filter_home_option( $value ) {
 	global $pagenow;
@@ -347,7 +414,10 @@ function fuxt_filter_home_option( $value ) {
 add_filter( 'option_home', 'fuxt_filter_home_option', 99, 1 );
 
 /**
- * Whitelist siteurl for wp_safe_redirect
+ * Whitelist siteurl for wp_safe_redirect.
+ *
+ * @param string[] $hosts An array of allowed host names.
+ * @return string[]
  */
 function fuxt_allow_siteurl_safe_redirect( $hosts ) {
 	$wpp = parse_url( site_url() );
