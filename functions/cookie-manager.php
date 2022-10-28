@@ -11,7 +11,7 @@ define( 'FUXT_COOKIE_SETTING_DOMAIN', 'fuxt_cookie_domain' );
 // Init global secure variables.
 global $fuxt_secure, $fuxt_secure_logged_in_cookie, $fuxt_send_auth_cookies;
 $fuxt_secure                  = is_ssl();
-$fuxt_secure_logged_in_cookie = $fuxt_secure && 'https' === parse_url( get_option( 'home' ), PHP_URL_SCHEME );
+$fuxt_secure_logged_in_cookie = $fuxt_secure && 'https' === wp_parse_url( get_option( 'home' ), PHP_URL_SCHEME );
 $fuxt_send_auth_cookies       = true;
 
 /**
@@ -238,11 +238,11 @@ function fuxt_register_setting() {
 		'general',
 		FUXT_COOKIE_SETTING_DOMAIN,
 		array(
-			'type'              => 'boolean',
-			'group'             => 'general',
-			'description'       => 'Authentication Cookie Domain',
-			'show_in_rest'      => false,
-			'default'           => COOKIE_DOMAIN,
+			'type'         => 'boolean',
+			'group'        => 'general',
+			'description'  => 'Authentication Cookie Domain',
+			'show_in_rest' => false,
+			'default'      => COOKIE_DOMAIN,
 		)
 	);
 
@@ -385,14 +385,14 @@ function fuxt_setting_domain_callback_function( $val ) {
  * @return array
  */
 function fuxt_get_domain_wildcards() {
-	$domain_name  = parse_url( site_url(), PHP_URL_HOST );
+	$domain_name  = wp_parse_url( site_url(), PHP_URL_HOST );
 	$domain_parts = explode( '.', $domain_name );
 	$count        = count( $domain_parts );
 	$wildcard_arr = array();
 	if ( $count >= 2 ) {
 		$wildcard_str = '.' . $domain_parts[ $count - 1 ];
 		for ( $i = $count - 2; $i >= 0; $i -- ) {
-			$wildcard_str  = '.' . $domain_parts[ $i ] . $wildcard_str;
+			$wildcard_str = '.' . $domain_parts[ $i ] . $wildcard_str;
 			array_unshift( $wildcard_arr, $wildcard_str );
 		}
 	}
