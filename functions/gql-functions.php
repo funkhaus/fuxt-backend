@@ -1,9 +1,15 @@
 <?php
-/*
- * Expose theme screenshot to WP-GQL API
+/**
+ * Misc Graph QL functions, mostly filters used to extend the Schema
+ *
+ * @package fuxt-backend
+ */
+
+/**
+ * Expose general settings() to WP-GQL API
  */
 function whitelist_settings() {
-	 // Define a field to get Theme screenshot URL
+	// Define a field to get Theme screenshot URL
 	register_graphql_field(
 		'GeneralSettings',
 		'themeScreenshotUrl',
@@ -47,19 +53,19 @@ function whitelist_settings() {
 }
 add_action( 'graphql_init', 'whitelist_settings', 1 );
 
-/*
+/**
  * Give media items a `html` field that outputs the SVG element or an IMG element.
  * SEE https://github.com/wp-graphql/wp-graphql/issues/1035
  */
 function fuxt_add_media_element() {
-	 // Add content field for media item
+	// Add content field for media item
 	register_graphql_field(
 		'mediaItem',
 		'element',
 		array(
 			'type'    => 'String',
 			'resolve' => function ( $source, $args ) {
-				if ( $source->mimeType == 'image/svg+xml' ) {
+				if ( $source->mimeType === 'image/svg+xml' ) {
 					$media_file = get_attached_file( $source->ID );
 					if ( $media_file ) {
 						$svg_file_content = file_get_contents( $media_file );
@@ -80,7 +86,7 @@ function fuxt_add_media_element() {
 }
 add_action( 'graphql_register_types', 'fuxt_add_media_element' );
 
-/*
+/**
  * Give each content node a field of HTML encoded to play nicely with wp-content Vue component
  * SEE https://github.com/wp-graphql/wp-graphql/issues/1035
  */
@@ -101,28 +107,28 @@ function add_encoded_content_field() {
 }
 add_action( 'graphql_register_types', 'add_encoded_content_field' );
 
-/*
- * Make menus publicly accessible
+/**
+ * Make menus publicly accessible.
+ *
+ * @param bool   $is_private   If the data is private.
+ * @param string $model_name   Name of the model the filter is currently being executed in.
+ * @return bool
  */
-function enable_public_menus(
-	$is_private,
-	$model_name,
-	$data,
-	$visibility,
-	$owner,
-	$current_user
-) {
+function enable_public_menus( $is_private, $model_name ) {
 	if ( 'MenuObject' === $model_name || 'MenuItemObject' === $model_name ) {
 		return false;
 	}
 	return $is_private;
 }
-add_filter( 'graphql_data_is_private', 'enable_public_menus', 10, 6 );
+add_filter( 'graphql_data_is_private', 'enable_public_menus', 10, 2 );
 
-/*
+/**
  * This allows any frontend domain to access the GQL endpoint. This mirros how WP-JSON API works.
  * SEE https://developer.wordpress.org/reference/functions/rest_send_cors_headers/
  * SEE https://github.com/funkhaus/wp-graphql-cors/blob/master/includes/process-request.php
+ *
+ * @param array $headers Array of headers to filter.
+ * @return array
  */
 function set_wpgql_cors_response_headers( $headers ) {
 	// Abort if using Wp-GQL_CORS plugin for headers instead
@@ -146,16 +152,13 @@ function set_wpgql_cors_response_headers( $headers ) {
 
 	return $headers;
 }
-add_filter(
-	'graphql_response_headers_to_send',
-	'set_wpgql_cors_response_headers'
-);
+add_filter( 'graphql_response_headers_to_send', 'set_wpgql_cors_response_headers' );
 
-/*
+/**
  * Adds next post node to all the custom Post Types
  */
 function gql_register_next_post() {
-	 $post_types = WPGraphQL::get_allowed_post_types();
+	$post_types = WPGraphQL::get_allowed_post_types();
 
 	if ( ! empty( $post_types ) && is_array( $post_types ) ) {
 		foreach ( $post_types as $post_type ) {
@@ -254,11 +257,11 @@ function gql_register_next_post() {
 }
 add_action( 'graphql_register_types', 'gql_register_next_post' );
 
-/*
+/**
  * Adds previous post node to all the custom Post Types
  */
 function gql_register_previous_post() {
-	 $post_types = WPGraphQL::get_allowed_post_types();
+	$post_types = WPGraphQL::get_allowed_post_types();
 
 	if ( ! empty( $post_types ) && is_array( $post_types ) ) {
 		foreach ( $post_types as $post_type ) {
@@ -358,7 +361,7 @@ function gql_register_previous_post() {
 }
 add_action( 'graphql_register_types', 'gql_register_previous_post' );
 
-/*
+/**
  * Allow for more than 100 posts/pages to be returned.
  * There is probably a better way to do what you are doing than changing this!
  */
@@ -367,10 +370,13 @@ function allow_more_posts_per_query( $amount, $source, $args, $context, $info ) 
 }
 // add_filter( 'graphql_connection_max_query_amount', 'allow_more_posts_per_query', 10, 5);
 
-/*
+/**
  * Set the default ordering of quieres in WP-GQL
+ *
+ * @param array $query_args The args that will be passed to the WP_Query.
+ * @return array
  */
-function custom_default_where_args( $query_args, $source, $args, $context, $info ) {
+function custom_default_where_args( $query_args ) {
 	$post_types = $query_args['post_type'];
 	$gql_args   = $query_args['graphql_args'];
 
@@ -379,8 +385,8 @@ function custom_default_where_args( $query_args, $source, $args, $context, $info
 		return $query_args;
 	} elseif (
 		is_array( $post_types ) &&
-		count( $post_types ) == 1 &&
-		in_array( 'post', $post_types )
+		count( $post_types ) === 1 &&
+		in_array( 'post', $post_types, true )
 	) {
 		// Is just Posts, so use defaults
 		return $query_args;
@@ -391,19 +397,13 @@ function custom_default_where_args( $query_args, $source, $args, $context, $info
 	$query_args['order']   = 'ASC';
 	return $query_args;
 }
-add_filter(
-	'graphql_post_object_connection_query_args',
-	'custom_default_where_args',
-	10,
-	5
-);
+add_filter( 'graphql_post_object_connection_query_args', 'custom_default_where_args', 10, 1 );
 
-/*
+/**
  * Extend GraphQL to add a mutation to send emails via the wp_mail() function.
  * SEE https://developer.wordpress.org/reference/functions/wp_mail/ for more info on how each input works.
  * SEE https://docs.wpgraphql.com/extending/mutations/
  */
-use GraphQL\Error\UserError;
 function gql_register_email_mutation() {
 	// Define the input parameters
 	$input_fields = array(
@@ -465,13 +465,13 @@ function gql_register_email_mutation() {
 	$mutate_and_get_payload = function ( $input, $context, $info ) {
 		// Spam honeypot. Make sure that the clientMutationId matches the trap input.
 		if ( $input['clientMutationId'] !== $input['trap'] ) {
-			throw new UserError( 'You got caught in a spam trap' );
+			throw new \GraphQL\Error\UserError( 'You got caught in a spam trap' );
 		}
 
 		// Vailidate email before trying to send
 		foreach ( $input['to'] as $email ) {
 			if ( ! is_email( $email ) ) {
-				throw new UserError( 'Invalid email address: ' . $email );
+				throw new \GraphQL\Error\UserError( 'Invalid email address: ' . $email );
 			}
 		}
 
