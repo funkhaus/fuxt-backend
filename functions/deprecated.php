@@ -7,6 +7,9 @@
 
 /**
  * Allow SVG uploads.
+ *
+ * @param array $mimes Mime types keyed by the file extension regex corresponding to those types.
+ * @return array
  */
 function add_mime_types( $mimes ) {
 	$mimes['svg'] = 'image/svg+xml';
@@ -18,6 +21,12 @@ add_filter( 'upload_mimes', 'add_mime_types' );
  * Force SVG uploads!
  * This snippit will force SVGs to be allowed to upladed if the above code doesn't work.
  * I think this code will allow all files to be uploaded, so don't use it unless needed.
+ *
+ * @param array    $data     Values for the extension, mime type, and corrected filename.
+ * @param string   $file     Full path to the file.
+ * @param string   $filename The name of the file (may differ from $file due to $file being in a tmp directory).
+ * @param string[] $mimes    Array of mime types keyed by their file extension regex.
+ * @return array
  */
 function force_svg_uploads( $data, $file, $filename, $mimes ) {
 	global $wp_version;
