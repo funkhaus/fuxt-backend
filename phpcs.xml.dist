@@ -2,7 +2,10 @@
 <ruleset name="WordPress Coding Standards">
 	<description>A custom set of rules to check for Fuxt Backend project</description>
 	<rule ref="WordPress-Core">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
+		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
 		<exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
 	</rule>
