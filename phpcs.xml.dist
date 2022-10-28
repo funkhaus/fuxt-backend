@@ -3,6 +3,7 @@
 	<description>A custom set of rules to check for Fuxt Backend project</description>
 	<rule ref="WordPress-Core">
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
+		<exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
 	</rule>
 
 	<rule ref="WordPress-Extra"/>
