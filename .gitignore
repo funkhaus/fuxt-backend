@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+phpcs.xml
 
 # file system junk
 .DS_Store

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset name="Fuxt Backend">
+	<arg name="extensions" value="php" />
+	<arg name="colors" />
+	<arg name="parallel" value="16" />
+	<arg value="s" />
+
+	<!-- Lint all PHP files in the project directory by default. -->
+	<file>.</file>
+
+	<config name="testVersion" value="8.0-" /><!-- See the override in composer.json for the lint and lint-fix scripts. -->
+
+	<rule ref="WordPress-Core">
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
+	</rule>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs" />
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="fuxt" />
+			</property>
+		</properties>
+	</rule>
+
+	<exclude-pattern>*/libs/*</exclude-pattern>
+</ruleset>
