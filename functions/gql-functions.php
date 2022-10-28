@@ -65,6 +65,7 @@ function fuxt_add_media_element() {
 		array(
 			'type'    => 'String',
 			'resolve' => function ( $source, $args ) {
+                // phpcs:ignore
 				if ( $source->mimeType === 'image/svg+xml' ) {
 					$media_file = get_attached_file( $source->ID );
 					if ( $media_file ) {
@@ -97,10 +98,9 @@ function add_encoded_content_field() {
 		array(
 			'type'    => 'String',
 			'resolve' => function ( $post ) {
+                // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				$content = get_post( $post->databaseId )->post_content;
-				return ! empty( $content )
-					? apply_filters( 'the_content', $content )
-					: null;
+				return ! empty( $content ) ? apply_filters( 'the_content', $content ) : null;
 			},
 		)
 	);
@@ -175,7 +175,7 @@ function gql_register_next_post() {
 						'node' => array(
 							'description' => __(
 								'The node of the next item',
-								'wp-graphql'
+								'fuxt'
 							),
 							'type'        => $ucfirst,
 							'resolve'     => function ( $post_id, $args, $context ) {
@@ -197,25 +197,25 @@ function gql_register_next_post() {
 					'type'        => 'Next' . $ucfirst . 'Edge',
 					'description' => __(
 						'The next post of the current port',
-						'wp-graphql'
+						'fuxt'
 					),
 					'args'        => array(
 						'inSameTerm'    => array(
 							'type'        => 'Boolean',
-							'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'wp-graphql' ),
+							'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'fuxt' ),
 							'default'     => false,
 						),
 						'taxonomy'      => array(
 							'type'        => 'String',
-							'description' => __( 'Taxonomy, if inSameTerm is true', 'wp-graphql' ),
+							'description' => __( 'Taxonomy, if inSameTerm is true', 'fuxt' ),
 						),
 						'termNotIn'     => array(
 							'type'        => 'String',
-							'description' => __( 'Comma-separated list of excluded term IDs.', 'wp-graphql' ),
+							'description' => __( 'Comma-separated list of excluded term IDs.', 'fuxt' ),
 						),
 						'termSlugNotIn' => array(
 							'type'        => 'String',
-							'description' => __( 'Comma-separated list of excluded term slugs.', 'wp-graphql' ),
+							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
 						),
 					),
 					'resolve'     => function ( $post, $args, $context ) {
@@ -278,7 +278,7 @@ function gql_register_previous_post() {
 						'node' => array(
 							'description' => __(
 								'The node of the previous item',
-								'wp-graphql'
+								'fuxt'
 							),
 							'type'        => $ucfirst,
 							'resolve'     => function ( $post_id, $args, $context ) {
@@ -300,25 +300,25 @@ function gql_register_previous_post() {
 					'type'        => 'Previous' . $ucfirst . 'Edge',
 					'description' => __(
 						'The previous post of the current post',
-						'wp-graphql'
+						'fuxt'
 					),
 					'args'        => array(
 						'inSameTerm'    => array(
 							'type'        => 'Boolean',
-							'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'wp-graphql' ),
+							'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'fuxt' ),
 							'default'     => false,
 						),
 						'taxonomy'      => array(
 							'type'        => 'String',
-							'description' => __( 'Taxonomy, if inSameTerm is true', 'wp-graphql' ),
+							'description' => __( 'Taxonomy, if inSameTerm is true', 'fuxt' ),
 						),
 						'termNotIn'     => array(
 							'type'        => 'String',
-							'description' => __( 'Comma-separated list of excluded term IDs.', 'wp-graphql' ),
+							'description' => __( 'Comma-separated list of excluded term IDs.', 'fuxt' ),
 						),
 						'termSlugNotIn' => array(
 							'type'        => 'String',
-							'description' => __( 'Comma-separated list of excluded term slugs.', 'wp-graphql' ),
+							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
 						),
 					),
 					'resolve'     => function ( $post, $args, $context ) {
@@ -362,15 +362,6 @@ function gql_register_previous_post() {
 add_action( 'graphql_register_types', 'gql_register_previous_post' );
 
 /**
- * Allow for more than 100 posts/pages to be returned.
- * There is probably a better way to do what you are doing than changing this!
- */
-function allow_more_posts_per_query( $amount, $source, $args, $context, $info ) {
-	return 300;
-}
-// add_filter( 'graphql_connection_max_query_amount', 'allow_more_posts_per_query', 10, 5);
-
-/**
  * Set the default ordering of quieres in WP-GQL
  *
  * @param array $query_args The args that will be passed to the WP_Query.
@@ -398,101 +389,3 @@ function custom_default_where_args( $query_args ) {
 	return $query_args;
 }
 add_filter( 'graphql_post_object_connection_query_args', 'custom_default_where_args', 10, 1 );
-
-/**
- * Extend GraphQL to add a mutation to send emails via the wp_mail() function.
- * SEE https://developer.wordpress.org/reference/functions/wp_mail/ for more info on how each input works.
- * SEE https://docs.wpgraphql.com/extending/mutations/
- */
-function gql_register_email_mutation() {
-	// Define the input parameters
-	$input_fields = array(
-		'to'      => array(
-			'type'        => array( 'list_of' => 'String' ),
-			'description' =>
-				'Array of email addresses to send email to. Must comply to RFC 2822 format.',
-		),
-		'subject' => array(
-			'type'        => 'String',
-			'description' => 'Email subject.',
-		),
-		'message' => array(
-			'type'        => 'String',
-			'description' => 'Message contents.',
-		),
-		'headers' => array(
-			'type'        => array( 'list_of' => 'String' ),
-			'description' =>
-				'Array of any additional headers. This is how you set BCC, CC and HTML type. See wp_mail() function for more details.',
-		),
-		'trap'    => array(
-			'type'        => 'String',
-			'description' =>
-				'Crude anti-spam measure. This must equal the clientMutationId, otherwise the email will not be sent.',
-		),
-	);
-
-	// Define the ouput parameters
-	$output_fields = array(
-		'to'      => array(
-			'type'        => array( 'list_of' => 'String' ),
-			'description' =>
-				'Array of email addresses to send email to. Must comply to RFC 2822 format.',
-		),
-		'subject' => array(
-			'type'        => 'String',
-			'description' => 'Email subject.',
-		),
-		'message' => array(
-			'type'        => 'String',
-			'description' => 'Message contents.',
-		),
-		'headers' => array(
-			'type'        => array( 'list_of' => 'String' ),
-			'description' =>
-				'Array of any additional headers. This is how you set BCC, CC and HTML type. See wp_mail() function for more details.',
-		),
-		'sent'    => array(
-			'type'        => 'Boolean',
-			'description' => 'Returns true if the email was sent successfully.',
-			'resolve'     => function ( $payload, $args, $context, $info ) {
-				return isset( $payload['sent'] ) ? $payload['sent'] : false;
-			},
-		),
-	);
-
-	// This function processes the submitted data
-	$mutate_and_get_payload = function ( $input, $context, $info ) {
-		// Spam honeypot. Make sure that the clientMutationId matches the trap input.
-		if ( $input['clientMutationId'] !== $input['trap'] ) {
-			throw new \GraphQL\Error\UserError( 'You got caught in a spam trap' );
-		}
-
-		// Vailidate email before trying to send
-		foreach ( $input['to'] as $email ) {
-			if ( ! is_email( $email ) ) {
-				throw new \GraphQL\Error\UserError( 'Invalid email address: ' . $email );
-			}
-		}
-
-		// Send email!
-		$input['sent'] = wp_mail(
-			$input['to'],
-			$input['subject'],
-			$input['message'],
-			$input['headers'],
-			$input['attachments']
-		);
-
-		return $input;
-	};
-
-	// Add mutation to WP-GQL now
-	$args = array(
-		'inputFields'         => $input_fields,
-		'outputFields'        => $output_fields,
-		'mutateAndGetPayload' => $mutate_and_get_payload,
-	);
-	register_graphql_mutation( 'sendEmail', $args );
-}
-// add_action( 'graphql_register_types', 'gql_register_email_mutation');
