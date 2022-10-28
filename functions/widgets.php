@@ -2,7 +2,7 @@
 /**
  * Override default WordPress features.
  *
- * @package funkhaus
+ * @package fuxt-backend
  */
 
 /**

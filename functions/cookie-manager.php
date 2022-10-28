@@ -2,7 +2,7 @@
 /**
  * Cookie management.
  *
- * @package funkhaus
+ * @package fuxt-backend
  */
 
 define( 'FUXT_COOKIE_SETTING_SAMESITE', 'fuxt_cookie_samesite' );
