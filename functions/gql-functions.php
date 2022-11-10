@@ -224,7 +224,16 @@ function gql_register_next_post()
                         $taxonomy
                     );
 
-                    return $next_post ? $next_post->ID : null;
+                    if ( ! empty( $next_post ) ) {
+                        return $next_post->ID;
+                    }
+
+                    $first_post = get_boundary_post( $in_same_term, $excluded_terms, true, $taxonomy );
+                    if ( ! empty( $first_post ) ) {
+                        return $first_post[0]->ID;
+                    }
+
+                    return null;
                 },
             ]);
         }
@@ -322,7 +331,16 @@ function gql_register_previous_post()
                         $taxonomy
                     );
 
-                    return $prev_post ? $prev_post->ID : null;
+                    if ( ! empty( $prev_post ) ) {
+                        return $prev_post->ID;
+                    }
+
+                    $last_post = get_boundary_post( $in_same_term, $excluded_terms, false, $taxonomy );
+                    if ( ! empty( $last_post ) ) {
+                        return $last_post[0]->ID;
+                    }
+
+                    return null;
                 },
             ]);
         }
