@@ -295,6 +295,11 @@ function fuxt_sanitize_value( $val ) {
 	$valid_values = fuxt_get_valid_values();
 
 	if ( in_array( $val, $valid_values, true ) ) {
+		// Do not allow "None" for Non-SSL site.
+		if ( ! is_ssl() && 'None' === $val ) {
+			return 'Lax';
+		}
+
 		return $val;
 	} else {
 		return 'Lax'; // default one.
@@ -327,7 +332,7 @@ function fuxt_setting_samesite_callback_function( $val ) {
 	?>
 	<select name="<?php echo esc_attr( $option_name ); ?>" id="<?php echo esc_attr( $id ); ?>">
 		<?php foreach ( $valid_values as $valid_value ) : ?>
-			<option value="<?php echo esc_attr( $valid_value ); ?>"  <?php echo esc_attr( $valid_value === $option_value ? ' selected ' : '' ); ?> > <?php echo esc_html( $valid_value ); ?> </option>		<?php endforeach; ?>
+			<option value="<?php echo esc_attr( $valid_value ); ?>"  <?php echo esc_attr( $valid_value === $option_value ? ' selected ' : '' ); ?> <?php disabled( ! is_ssl() && ( 'None' == $valid_value ) ); ?> > <?php echo esc_html( $valid_value ); ?> </option>		<?php endforeach; ?>
 	</select>
 	<?php if ( version_compare( PHP_VERSION, '7.3.0' ) < 0 ) : ?>
 		<p class="description" style="color: red;">
@@ -340,7 +345,7 @@ function fuxt_setting_samesite_callback_function( $val ) {
 	<p class="description">
 		Authentication Cookie SameSite parameter, Use:
 		<ul>
-			<li>`None` if you need to display wp-admin in iframe on other site,</li>
+			<li>`None` if you need to display wp-admin in iframe on other site. You can use this value for HTTPS site only.</li>
 			<li>`Strict` to allow cookie being used only on same site domain </li>
 			<li>`Lax` to allow usage on subdomains as well (default is Lax)</li>
 		</ul>
