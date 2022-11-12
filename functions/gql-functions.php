@@ -137,8 +137,33 @@ function set_wpgql_cors_response_headers( $headers ) {
 		return $headers;
 	}
 
-	// Allow any domain to send cookies
-	$headers['Access-Control-Allow-Origin']      = get_http_origin();
+	$origin = get_http_origin();
+
+	// Cors protection check.
+	$graphql_settings = get_option( 'graphql_general_settings' );
+	if ( isset( $graphql_settings['restrict_gql_endpoint_cors'] ) && 'on' === $graphql_settings['restrict_gql_endpoint_cors'] ) {
+		// Set site url as allowed origin.
+		$allowed_origins = array(
+			site_url(),
+		);
+
+		// Add fuxt home url to allowed origin.
+		$fuxt_home_url = get_option( 'fuxt_home_url' );
+		if ( $fuxt_home_url ) {
+			$allowed_origins[] = $fuxt_home_url;
+		}
+
+		$allowed_origins = apply_filters( 'fuxt_allowed_origins', $allowed_origins );
+
+		// Consider localhost case.
+		$parsed_origin = wp_parse_url( $origin );
+
+		if ( ! in_array( $origin, $allowed_origins, true ) && 'localhost' !== $parsed_origin['host'] ) {
+			$origin = $allowed_origins[0];
+		}
+	}
+
+	$headers['Access-Control-Allow-Origin']      = $origin;
 	$headers['Access-Control-Allow-Credentials'] = 'true';
 
 	// Allow certain header types. Respect the defauls from WP-GQL too.
@@ -154,6 +179,49 @@ function set_wpgql_cors_response_headers( $headers ) {
 	return $headers;
 }
 add_filter( 'graphql_response_headers_to_send', 'set_wpgql_cors_response_headers' );
+
+/**
+ * Register Restrict GraphQL endpoint access setting.
+ */
+function restrict_gql_endpoint_cors_settings_field() {
+	$name    = 'restrict_gql_endpoint_cors';
+	$section = 'graphql_general_settings';
+
+	$options = get_option( $section );
+	$value   = isset( $options[ $name ] ) ? $options[ $name ] : '';
+
+	$args = array(
+		'name'    => $name,
+		'section' => $section,
+		'value'   => $value,
+		'desc'    => __( 'Restrict GraphQL endpoint access to localhost, Site URL and Home URLs only', 'fuxt' ),
+	);
+
+	add_settings_field(
+		"{$section}[{$name}]",
+		__( 'Restrict GraphQL endpoint access to localhost, Site URL and Home URLs only', 'fuxt' ),
+		'restrict_gql_endpoint_cors_field',
+		$section,
+		$section,
+		$args
+	);
+}
+add_action( 'admin_init', 'restrict_gql_endpoint_cors_settings_field', 11 );
+
+/**
+ * Restrict GraphQL endpoint access setting field markup.
+ *
+ * @param array $args Arguments for markup.
+ */
+function restrict_gql_endpoint_cors_field( array $args ) {
+	$html  = '<fieldset>';
+	$html .= sprintf( '<label for="wpuf-%1$s[%2$s]">', $args['section'], $args['name'] );
+	$html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off">', $args['section'], $args['name'] );
+	$html .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s>', $args['section'], $args['name'], checked( $args['value'], 'on', false ) );
+	$html .= sprintf( '%1$s</label>', $args['desc'] );
+	$html .= '</fieldset>';
+	echo $html; // phpcs:ignore
+}
 
 /**
  * Adds next post node to all the custom Post Types
@@ -249,7 +317,16 @@ function gql_register_next_post() {
 							$taxonomy
 						);
 
-						return $next_post ? $next_post->ID : null;
+						if ( ! empty( $next_post ) ) {
+							return $next_post->ID;
+						}
+
+						$first_post = get_boundary_post( $in_same_term, $excluded_terms, true, $taxonomy );
+						if ( ! empty( $first_post ) ) {
+							return $first_post[0]->ID;
+						}
+
+						return null;
 					},
 				)
 			);
@@ -353,7 +430,16 @@ function gql_register_previous_post() {
 							$taxonomy
 						);
 
-						return $prev_post ? $prev_post->ID : null;
+						if ( ! empty( $prev_post ) ) {
+							return $prev_post->ID;
+						}
+
+						$last_post = get_boundary_post( $in_same_term, $excluded_terms, false, $taxonomy );
+						if ( ! empty( $last_post ) ) {
+							return $last_post[0]->ID;
+						}
+
+						return null;
 					},
 				)
 			);
