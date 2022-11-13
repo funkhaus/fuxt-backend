@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards">
+	<description>A custom set of rules to check for Fuxt Backend project</description>
+	<arg name="extensions" value="php" />
+	<rule ref="WordPress-Core">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
+		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
+		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
+		<exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
+	</rule>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs" />
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="fuxt" />
+			</property>
+		</properties>
+	</rule>
+
+	<exclude-pattern>*/libs/*</exclude-pattern>
+	<exclude-pattern>index.php</exclude-pattern>
+</ruleset>

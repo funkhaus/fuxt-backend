@@ -2,7 +2,7 @@
 /**
  * Cookie management.
  *
- * @package funkhaus
+ * @package fuxt-backend
  */
 
 define( 'FUXT_COOKIE_SETTING_SAMESITE', 'fuxt_cookie_samesite' );
@@ -11,7 +11,7 @@ define( 'FUXT_COOKIE_SETTING_DOMAIN', 'fuxt_cookie_domain' );
 // Init global secure variables.
 global $fuxt_secure, $fuxt_secure_logged_in_cookie, $fuxt_send_auth_cookies;
 $fuxt_secure                  = is_ssl();
-$fuxt_secure_logged_in_cookie = $fuxt_secure && 'https' === parse_url( get_option( 'home' ), PHP_URL_SCHEME );
+$fuxt_secure_logged_in_cookie = $fuxt_secure && 'https' === wp_parse_url( get_option( 'home' ), PHP_URL_SCHEME );
 $fuxt_send_auth_cookies       = true;
 
 /**
@@ -238,11 +238,11 @@ function fuxt_register_setting() {
 		'general',
 		FUXT_COOKIE_SETTING_DOMAIN,
 		array(
-			'type'              => 'boolean',
-			'group'             => 'general',
-			'description'       => 'Authentication Cookie Domain',
-			'show_in_rest'      => false,
-			'default'           => COOKIE_DOMAIN,
+			'type'         => 'boolean',
+			'group'        => 'general',
+			'description'  => 'Authentication Cookie Domain',
+			'show_in_rest' => false,
+			'default'      => COOKIE_DOMAIN,
 		)
 	);
 
@@ -295,6 +295,11 @@ function fuxt_sanitize_value( $val ) {
 	$valid_values = fuxt_get_valid_values();
 
 	if ( in_array( $val, $valid_values, true ) ) {
+		// Do not allow "None" for Non-SSL site.
+		if ( ! is_ssl() && 'None' === $val ) {
+			return 'Lax';
+		}
+
 		return $val;
 	} else {
 		return 'Lax'; // default one.
@@ -327,7 +332,7 @@ function fuxt_setting_samesite_callback_function( $val ) {
 	?>
 	<select name="<?php echo esc_attr( $option_name ); ?>" id="<?php echo esc_attr( $id ); ?>">
 		<?php foreach ( $valid_values as $valid_value ) : ?>
-			<option value="<?php echo esc_attr( $valid_value ); ?>"  <?php echo esc_attr( $valid_value === $option_value ? ' selected ' : '' ); ?> > <?php echo esc_html( $valid_value ); ?> </option>		<?php endforeach; ?>
+			<option value="<?php echo esc_attr( $valid_value ); ?>"  <?php echo esc_attr( $valid_value === $option_value ? ' selected ' : '' ); ?> <?php disabled( ! is_ssl() && ( 'None' == $valid_value ) ); ?> > <?php echo esc_html( $valid_value ); ?> </option>		<?php endforeach; ?>
 	</select>
 	<?php if ( version_compare( PHP_VERSION, '7.3.0' ) < 0 ) : ?>
 		<p class="description" style="color: red;">
@@ -340,7 +345,7 @@ function fuxt_setting_samesite_callback_function( $val ) {
 	<p class="description">
 		Authentication Cookie SameSite parameter, Use:
 		<ul>
-			<li>`None` if you need to display wp-admin in iframe on other site,</li>
+			<li>`None` if you need to display wp-admin in iframe on other site. You can use this value for HTTPS site only.</li>
 			<li>`Strict` to allow cookie being used only on same site domain </li>
 			<li>`Lax` to allow usage on subdomains as well (default is Lax)</li>
 		</ul>
@@ -385,14 +390,14 @@ function fuxt_setting_domain_callback_function( $val ) {
  * @return array
  */
 function fuxt_get_domain_wildcards() {
-	$domain_name  = parse_url( site_url(), PHP_URL_HOST );
+	$domain_name  = wp_parse_url( site_url(), PHP_URL_HOST );
 	$domain_parts = explode( '.', $domain_name );
 	$count        = count( $domain_parts );
 	$wildcard_arr = array();
 	if ( $count >= 2 ) {
 		$wildcard_str = '.' . $domain_parts[ $count - 1 ];
 		for ( $i = $count - 2; $i >= 0; $i -- ) {
-			$wildcard_str  = '.' . $domain_parts[ $i ] . $wildcard_str;
+			$wildcard_str = '.' . $domain_parts[ $i ] . $wildcard_str;
 			array_unshift( $wildcard_arr, $wildcard_str );
 		}
 	}

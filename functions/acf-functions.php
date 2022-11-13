@@ -7,15 +7,6 @@
 
 namespace FuxtBackend;
 
-/*
- * Adds a hover state to Relationship selectors that shows the URI
- */    
-	function fuxt_acf_fields_relationship_result($text, $post, $field, $post_id) {
-	 	$uri = get_page_uri($post);
-	    return '<span title="/'.$uri.'">'.$text.'</span>';
-	}
-	add_filter('acf/fields/relationship/result', 'fuxt_acf_fields_relationship_result', 10, 4);
-
 /**
  * ACF rules for custom post type
  */
@@ -103,6 +94,8 @@ class Acf {
 		add_filter( 'acf/location/rule_values', array( $this, 'cpt_location_rule_values' ), 10, 2 );
 		add_filter( 'acf/location/rule_match', array( $this, 'cpt_location_rule_match' ), 10, 4 );
 
+		add_filter( 'acf/fields/relationship/result', array( $this, 'acf_fields_relationship_result' ), 10, 2 );
+
 	}
 
 	/**
@@ -149,7 +142,7 @@ class Acf {
 		}
 
 		// Get all top level pages/CPTs.
-		$args = array(
+		$args  = array(
 			'post_parent'    => 0,
 			'post_type'      => $post_types,
 			'posts_per_page' => 1000, // Limit this just in case.
@@ -190,7 +183,7 @@ class Acf {
 
 		// Is current post in the selected tree?
 		$ancestors = get_ancestors( $current_post->ID, $current_post->post_type );
-		$in_tree   = ( $current_post->ID == $tree_id ) || in_array( $tree_id, $ancestors );
+		$in_tree   = ( $current_post->ID === $tree_id ) || in_array( $tree_id, $ancestors );
 
 		switch ( $rule['operator'] ) {
 			case '==':
@@ -238,7 +231,7 @@ class Acf {
 
 		// Current and selected vars.
 		$current_post = get_post( $post_id );
-		$children = get_children(
+		$children     = get_children(
 			array(
 				'post_parent' => $post_id,
 				'post_type'   => $post_type,
@@ -271,8 +264,8 @@ class Acf {
 		if ( count( $cpt_arr ) ) {
 			foreach ( $cpt_arr as $cpt ) {
 				$types[ $cpt['label'] ] = array(
-					$cpt['rules']['parent']['key']   => $cpt['rules']['parent']['label'],
-					$cpt['rules']['tree']['key']  => $cpt['rules']['tree']['label'],
+					$cpt['rules']['parent']['key'] => $cpt['rules']['parent']['label'],
+					$cpt['rules']['tree']['key']   => $cpt['rules']['tree']['label'],
 				);
 			}
 		}
@@ -300,7 +293,7 @@ class Acf {
 	public function cpt_location_rule_values( $values, $rule ) {
 		$rule_arr = $this->parse_key( $rule['param'] );
 		if ( $rule_arr && in_array( $rule_arr['cpt_name'], array_column( $this->get_cpt_array(), 'name' ) ) ) {
-			$args = array(
+			$args  = array(
 				'post_type'              => $rule_arr['cpt_name'],
 				'posts_per_page'         => 1000,
 				'paged'                  => 0,
@@ -341,12 +334,12 @@ class Acf {
 		$post_type = get_post_type( $post_id );
 
 		$rule_arr = $this->parse_key( $rule['param'] );
-		if ( $rule_arr && $rule_arr['cpt_name'] == $post_type ) {
+		if ( $rule_arr && $rule_arr['cpt_name'] === $post_type ) {
 			switch ( $rule_arr['surfix'] ) {
 				case $this->surfix_parent:
 					$parent = get_post_parent( $post_id );
 					if ( $parent ) {
-						return $parent->ID == $rule['value'];
+						return $parent->ID === $rule['value'];
 					}
 					return false;
 				case $this->surfix_tree:
@@ -387,14 +380,14 @@ class Acf {
 			$this->cpt_array = array();
 			foreach ( $cpt_arr as $cpt ) {
 				$this->cpt_array[] = array(
-					'name'   => $cpt->name,
-					'label'  => $cpt->label,
-					'rules'  => array(
+					'name'  => $cpt->name,
+					'label' => $cpt->label,
+					'rules' => array(
 						'parent' => array(
 							'key'   => $this->get_key_parent( $cpt->name ),
 							'label' => $cpt->label . ' Parent',
 						),
-						'tree' => array(
+						'tree'   => array(
 							'key'   => $this->get_key_tree( $cpt->name ),
 							'label' => $cpt->label . ' belongs to tree',
 						),
@@ -442,13 +435,27 @@ class Acf {
 			return false;
 		}
 
-		array_shift( $arr ); // remove prefix.
-		$surfix = array_pop( $arr );
+		// remove prefix.
+		array_shift( $arr );
+
+		$surfix   = array_pop( $arr );
 		$cpt_name = join( '_', $arr );
 		return array(
 			'cpt_name' => $cpt_name,
 			'surfix'   => $surfix,
 		);
+	}
+
+	/**
+	 * Adds a hover state to Relationship selectors that shows the URI.
+	 *
+	 * @param string  $text The text displayed for this post (the post title).
+	 * @param WP_Post $post The Relationship.
+	 * @return string
+	 */
+	public function acf_fields_relationship_result( $text, $post ) {
+		$uri = get_page_uri( $post );
+		return '<span title="/' . $uri . '">' . $text . '</span>';
 	}
 }
 

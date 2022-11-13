@@ -40,38 +40,6 @@ body.post-php.no-slug #preview-action {
     display: none;
 }
 
-/*
- * Turn off menus
- */
-/*
-    #menu-posts {
-        display: none;
-    }
-    #menu-media {
-        display: none;
-    }
-    #menu-links {
-        display: none;
-    }
-    #menu-pages {
-        display: none;
-    }
-    #menu-appearance {
-        display: none;
-    }
-    #menu-plugins {
-        display: none;
-    }
-    #menu-users {
-        display: none;
-    }
-    #menu-tools {
-        display: none;
-    }
-    #menu-settings {
-        display: none;
-    }
-    */
 #menu-comments {
     display: none;
 }

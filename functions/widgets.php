@@ -2,7 +2,7 @@
 /**
  * Override default WordPress features.
  *
- * @package funkhaus
+ * @package fuxt-backend
  */
 
 /**
@@ -16,7 +16,6 @@ function fuxt_dashboard_events_news() {
 	</div>
 
 	<?php
-	return;
 }
 
 /**
@@ -24,28 +23,28 @@ function fuxt_dashboard_events_news() {
  */
 function fuxt_dashboard_primary() {
 	$feeds = array(
-		'news'   => array(
+		'news' => array(
 
 			/**
 			 * Filters the primary link URL for the 'WordPress Events and News' dashboard widget.
 			 *
 			 * @param string $link The widget's primary link URL.
 			 */
-			'link'         => apply_filters( 'dashboard_primary_link', __( 'https://funkhaus.us/blog/' ) ),
+			'link'         => apply_filters( 'dashboard_primary_link', __( 'https://funkhaus.us/blog/', 'fuxt' ) ),
 
 			/**
 			 * Filters the primary feed URL for the 'WordPress Events and News' dashboard widget.
 			 *
 			 * @param string $url The widget's primary feed URL.
 			 */
-			'url'          => apply_filters( 'dashboard_primary_feed', __( 'https://api.funkhaus.us/feed/' ) ),
+			'url'          => apply_filters( 'dashboard_primary_feed', __( 'https://api.funkhaus.us/feed/', 'fuxt' ) ),
 
 			/**
 			 * Filters the primary link title for the 'WordPress Events and News' dashboard widget.
 			 *
 			 * @param string $title Title attribute for the widget's primary link.
 			 */
-			'title'        => apply_filters( 'dashboard_primary_title', __( 'Funkhaus News' ) ),
+			'title'        => apply_filters( 'dashboard_primary_title', __( 'Funkhaus News', 'fuxt' ) ),
 			'items'        => 5,
 			'show_summary' => 0,
 			'show_author'  => 0,
@@ -66,7 +65,7 @@ function fuxt_add_dashboard_widget() {
 	unset( $wp_meta_boxes['dashboard']['side']['core']['dashboard_primary'] );
 
 	// Override default news block with custom one
-	wp_add_dashboard_widget( 'dashboard_primary', __( 'Funkhaus News' ), 'fuxt_dashboard_events_news' );
+	wp_add_dashboard_widget( 'dashboard_primary', __( 'Funkhaus News', 'fuxt' ), 'fuxt_dashboard_events_news' );
 }
 add_action( 'wp_network_dashboard_setup', 'fuxt_add_dashboard_widget' );
 add_action( 'wp_user_dashboard_setup', 'fuxt_add_dashboard_widget' );
@@ -78,15 +77,18 @@ add_action( 'wp_dashboard_setup', 'fuxt_add_dashboard_widget' );
 function fuxt_ajax_dashboard_widgets() {
 	require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 
-	$pagenow = $_GET['pagenow'];
-	if ( 'dashboard-user' === $pagenow || 'dashboard-network' === $pagenow || 'dashboard' === $pagenow ) {
-		set_current_screen( $pagenow );
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['pagenow'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$pagenow = $_GET['pagenow'];
+		if ( in_array( $pagenow, array( 'dashboard-user', 'dashboard-network', 'dashboard' ) ) ) {
+			set_current_screen( $pagenow );
+		}
 	}
 
-	switch ( $_GET['widget'] ) {
-		case 'dashboard_primary':
-			fuxt_dashboard_primary();
-			break;
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['widget'] ) && $_GET['widget'] == 'dashboard_primary' ) {
+		fuxt_dashboard_primary();
 	}
 	wp_die();
 }
