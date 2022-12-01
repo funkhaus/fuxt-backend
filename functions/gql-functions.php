@@ -364,6 +364,10 @@ function gql_register_previous_post() {
 							'type'        => 'String',
 							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
 						),
+						'inSameParent'  => array(
+							'type'        => 'Boolean',
+							'description' => __( 'Whether post should be under the same parent. Default value: true for hierarchical, false for non-hierarchical', 'fuxt' ),
+						),
 					),
 					'resolve'     => function ( $post, $args, $context ) {
 						return fuxt_get_adjacent_loop_post( $post->ID, $args, true );
@@ -506,21 +510,25 @@ function fuxt_get_adjacent_post( $post, $in_same_term = false, $excluded_terms =
 		$where .= " AND p.post_status = 'publish'";
 	}
 
+	$op    = $previous ? '<' : '>';
 	$order = $previous ? 'DESC' : 'ASC';
 	if ( $in_same_parent ) {
-		$op = $previous ? '<=' : '>=';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$where .= $wpdb->prepare( " AND p.ID <> %d AND p.post_parent = %d AND p.menu_order $op %d", $post->ID, $post->post_parent, $post->menu_order );
-		$sort   = "ORDER BY p.menu_order $order LIMIT 1";
+		// Check menu_order and for the same order check post_date.
+		$where .= $wpdb->prepare(
+			" AND p.post_parent = %d AND ((p.menu_order = %d AND p.post_date $op %s) OR p.menu_order $op %d)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$post->post_parent,
+			$post->menu_order,
+			$post->post_date,
+			$post->menu_order
+		);
+
+		$sort = "ORDER BY p.menu_order $order, p.post_date $order LIMIT 1";
 	} else {
-		$op = $previous ? '<' : '>';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$where .= $wpdb->prepare( " AND p.post_date $op %s", $post->post_date );
+		$where .= $wpdb->prepare( " AND p.post_date $op %s", $post->post_date ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sort   = "ORDER BY p.post_date $order LIMIT 1";
 	}
 
-	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	$where = $wpdb->prepare( "WHERE p.post_type = %s $where", $post->post_type );
+	$where = $wpdb->prepare( "WHERE p.post_type = %s $where", $post->post_type ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 	$join  = apply_filters( "get_{$adjacent}_post_join", $join, $in_same_term, $excluded_terms, $taxonomy, $post );
 	$where = apply_filters( "get_{$adjacent}_post_where", $where, $in_same_term, $excluded_terms, $taxonomy, $post );
@@ -573,9 +581,10 @@ function fuxt_get_boundary_post( $post, $in_same_term = false, $excluded_terms =
 		return null;
 	}
 
+	$order      = $start ? 'ASC' : 'DESC';
 	$query_args = array(
 		'posts_per_page'         => 1,
-		'order'                  => $start ? 'ASC' : 'DESC',
+		'order'                  => $order,
 		'update_post_term_cache' => false,
 		'update_post_meta_cache' => false,
 		'post_type'              => $post->post_type,
@@ -583,7 +592,10 @@ function fuxt_get_boundary_post( $post, $in_same_term = false, $excluded_terms =
 
 	if ( $in_same_parent ) {
 		$query_args['post_parent'] = $post->post_parent;
-		$query_args['orderby']     = 'menu_order';
+		$query_args['orderby']     = array(
+			'menu_order' => $order,
+			'post_date'  => $order,
+		);
 	}
 
 	$term_array = array();
