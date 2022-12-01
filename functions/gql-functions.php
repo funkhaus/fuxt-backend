@@ -286,13 +286,13 @@ function gql_register_next_post() {
 							'type'        => 'String',
 							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
 						),
-						'inSameParent'    => array(
+						'inSameParent'  => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Whether post should be under the same parent. Default value: true for hierarchical, false for non-hierarchical', 'fuxt' ),
 						),
 					),
 					'resolve'     => function ( $post, $args, $context ) {
-						return fuxt_get_adjacent_post( $post->ID, $args, false );
+						return fuxt_get_adjacent_loop_post( $post->ID, $args, false );
 					},
 				)
 			);
@@ -366,7 +366,7 @@ function gql_register_previous_post() {
 						),
 					),
 					'resolve'     => function ( $post, $args, $context ) {
-						return fuxt_get_adjacent_post( $post->ID, $args, true );
+						return fuxt_get_adjacent_loop_post( $post->ID, $args, true );
 					},
 				)
 			);
@@ -376,14 +376,14 @@ function gql_register_previous_post() {
 add_action( 'graphql_register_types', 'gql_register_previous_post' );
 
 /**
- * Get adjacent post.
+ * Get adjacent post in loop.
  *
- * @param int     $post_id  Post ID.
- * @param array   $args     Arguments to determine adjacent post.
- * @param bool    $previous Optional. Whether to retrieve previous post. Default true.
+ * @param int   $post_id  Post ID.
+ * @param array $args     Arguments to determine adjacent post.
+ * @param bool  $previous Optional. Whether to retrieve previous post. Default true.
  * @return int|null Adjacent Post ID.
  */
-function fuxt_get_adjacent_post( $post_id, $args, $previous = true ) {
+function fuxt_get_adjacent_loop_post( $post_id, $args, $previous = true ) {
 	$post = get_post( $post_id );
 
 	// Prepare arguments
@@ -409,32 +409,14 @@ function fuxt_get_adjacent_post( $post_id, $args, $previous = true ) {
 		$excluded_terms = array_merge( $excluded_terms, array_filter( $term_ids ) );
 	}
 
-	$adjacent = $previous ? 'previous' : 'next';
-
-	if ( $in_same_parent ) {
-		// Add same parent filter.
-		add_filter( "get_{$adjacent}_post_where", 'fuxt_filter_same_parent_post', 10, 5 );
-	}
-	$adj_post = get_adjacent_post( $in_same_term, $excluded_terms, $previous, $taxonomy );
-
-	if ( $in_same_parent ) {
-		// Remove same parent filter.
-		remove_filter( "get_{$adjacent}_post_where", 'fuxt_filter_same_parent_post', 10 );
-	}
+	$adj_post = fuxt_get_adjacent_post( $post, $in_same_term, $excluded_terms, $previous, $taxonomy, $in_same_parent );
 
 	if ( ! empty( $adj_post ) ) {
 		return $adj_post->ID;
 	}
 
 	// Get last or fist post if it's prev on start or next on end.
-	// $last_post = fuxt_get_boundary_post( $in_same_term, $excluded_terms, ! $previous, $taxonomy, $in_same_parent );
-	if ( $in_same_parent ) {
-		add_action( 'pre_get_posts', 'fuxt_pre_get_posts_same_parent' );
-	}
-	$last_post = get_boundary_post( $in_same_term, $excluded_terms, ! $previous, $taxonomy );
-	if ( $in_same_parent ) {
-		remove_action( 'pre_get_posts', 'fuxt_pre_get_posts_same_parent' );
-	}
+	$last_post = fuxt_get_boundary_post( $post, $in_same_term, $excluded_terms, ! $previous, $taxonomy, $in_same_parent );
 
 	if ( ! empty( $last_post ) ) {
 		return $last_post[0]->ID;
@@ -444,31 +426,129 @@ function fuxt_get_adjacent_post( $post_id, $args, $previous = true ) {
 }
 
 /**
- * Adds post_parent comparison statement to where clause.
+ * Customized `get_adjacent_post`.
  *
- * @param string       $where          The `WHERE` clause in the SQL.
- * @param bool         $in_same_term   Whether post should be in a same taxonomy term.
- * @param int[]|string $excluded_terms Array of excluded term IDs. Empty string if none were provided.
- * @param string       $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
- * @param WP_Post      $post           WP_Post object.
- * @return string.
+ * @param WP_Post $post           Post object.
+ * @param bool    $in_same_term   Optional. Whether post should be in a same taxonomy term. Default false.
+ * @param int[]   $excluded_terms Optional. Array of excluded term IDs. Default empty array.
+ * @param bool    $previous       Optional. Whether to retrieve previous post. Default true.
+ * @param string  $taxonomy       Optional. Taxonomy, if $in_same_term is true. Default 'category'.
+ * @param bool    $in_same_parent Optional. Whether returned post should be in the same parent. Default true.
+ * @return WP_Post|null|string Post object if successful. Null if global $post is not set. Empty string if no
+ *                             corresponding post exists.
  */
-function fuxt_filter_same_parent_post( $where, $in_same_term, $excluded_terms, $taxonomy, $post ) {
-	return $where .= sprintf( ' AND p.post_parent = %d', $post->post_parent );
-}
+function fuxt_get_adjacent_post( $post, $in_same_term = false, $excluded_terms = array(), $previous = true, $taxonomy = 'category', $in_same_parent = true ) {
+	global $wpdb;
 
-/**
- * Alter query vars to get the post in same parent and post_type.
- *
- * @param WP_Query $query Query object.
- */
-function fuxt_pre_get_posts_same_parent( $query ) {
-	global $post;
-	$query->query_vars['orderby']     = 'menu_order';
-	$query->query_vars['post_parent'] = $post->post_parent;
-	$query->query_vars['post_type']   = $post->post_type;
-}
+	if ( ! $post || ! taxonomy_exists( $taxonomy ) ) {
+		return null;
+	}
 
+	$join     = '';
+	$where    = '';
+	$adjacent = $previous ? 'previous' : 'next';
+
+	$excluded_terms = apply_filters( "get_{$adjacent}_post_excluded_terms", $excluded_terms );
+
+	if ( $in_same_term || ! empty( $excluded_terms ) ) {
+		if ( $in_same_term ) {
+			$join  .= " INNER JOIN $wpdb->term_relationships AS tr ON p.ID = tr.object_id INNER JOIN $wpdb->term_taxonomy AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id";
+			$where .= $wpdb->prepare( 'AND tt.taxonomy = %s', $taxonomy );
+
+			if ( ! is_object_in_taxonomy( $post->post_type, $taxonomy ) ) {
+				return '';
+			}
+			$term_array = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
+
+			// Remove any exclusions from the term array to include.
+			$term_array = array_diff( $term_array, (array) $excluded_terms );
+			$term_array = array_map( 'intval', $term_array );
+
+			if ( ! $term_array || is_wp_error( $term_array ) ) {
+				return '';
+			}
+
+			$where .= ' AND tt.term_id IN (' . implode( ',', $term_array ) . ')';
+		}
+
+		if ( ! empty( $excluded_terms ) ) {
+			$where .= " AND p.ID NOT IN ( SELECT tr.object_id FROM $wpdb->term_relationships tr LEFT JOIN $wpdb->term_taxonomy tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id) WHERE tt.term_id IN (" . implode( ',', array_map( 'intval', $excluded_terms ) ) . ') )';
+		}
+	}
+
+	// 'post_status' clause depends on the current user.
+	if ( is_user_logged_in() ) {
+		$user_id = get_current_user_id();
+
+		$post_type_object = get_post_type_object( $post->post_type );
+		if ( empty( $post_type_object ) ) {
+			$post_type_cap    = $post->post_type;
+			$read_private_cap = 'read_private_' . $post_type_cap . 's';
+		} else {
+			$read_private_cap = $post_type_object->cap->read_private_posts;
+		}
+
+		/*
+		 * Results should include private posts belonging to the current user, or private posts where the
+		 * current user has the 'read_private_posts' cap.
+		 */
+		$private_states = get_post_stati( array( 'private' => true ) );
+		$where         .= " AND ( p.post_status = 'publish'";
+		foreach ( $private_states as $state ) {
+			if ( current_user_can( $read_private_cap ) ) {
+				$where .= $wpdb->prepare( ' OR p.post_status = %s', $state );
+			} else {
+				$where .= $wpdb->prepare( ' OR (p.post_author = %d AND p.post_status = %s)', $user_id, $state );
+			}
+		}
+		$where .= ' )';
+	} else {
+		$where .= " AND p.post_status = 'publish'";
+	}
+
+	$order = $previous ? 'DESC' : 'ASC';
+	if ( $in_same_parent ) {
+		$op = $previous ? '<=' : '>=';
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$where .= $wpdb->prepare( " AND p.ID <> %d AND p.post_parent = %d AND p.menu_order $op %d", $post->ID, $post->post_parent, $post->menu_order );
+		$sort   = "ORDER BY p.menu_order $order LIMIT 1";
+	} else {
+		$op = $previous ? '<' : '>';
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$where .= $wpdb->prepare( " AND p.post_date $op %s", $post->post_date );
+		$sort   = "ORDER BY p.post_date $order LIMIT 1";
+	}
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$where = $wpdb->prepare( "WHERE p.post_type = %s $where", $post->post_type );
+
+	$join  = apply_filters( "get_{$adjacent}_post_join", $join, $in_same_term, $excluded_terms, $taxonomy, $post );
+	$where = apply_filters( "get_{$adjacent}_post_where", $where, $in_same_term, $excluded_terms, $taxonomy, $post );
+	$sort  = apply_filters( "get_{$adjacent}_post_sort", $sort, $post, $order );
+
+	$query     = "SELECT p.ID FROM $wpdb->posts AS p $join $where $sort";
+	$query_key = 'adjacent_post_' . md5( $query );
+	$result    = wp_cache_get( $query_key, 'counts' );
+	if ( false !== $result ) {
+		if ( $result ) {
+			$result = get_post( $result );
+		}
+		return $result;
+	}
+
+	$result = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	if ( null === $result ) {
+		$result = '';
+	}
+
+	wp_cache_set( $query_key, $result, 'counts' );
+
+	if ( $result ) {
+		$result = get_post( $result );
+	}
+
+	return $result;
+}
 
 /**
  * Retrieves the boundary post.
@@ -478,19 +558,18 @@ function fuxt_pre_get_posts_same_parent( $query ) {
  *
  * @since 2.8.0
  *
+ * @param WP_Post      $post           Post object.
  * @param bool         $in_same_term   Optional. Whether returned post should be in a same taxonomy term.
  *                                     Default false.
  * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
  *                                     Default empty.
  * @param bool         $start          Optional. Whether to retrieve first or last post. Default true.
  * @param string       $taxonomy       Optional. Taxonomy, if $in_same_term is true. Default 'category'.
- * @param bool         $in_same_parent Optional. Whether returned post should be in the same parent.
+ * @param bool         $in_same_parent Optional. Whether returned post should be in the same parent. Default true.
  * @return null|array Array containing the boundary post object if successful, null otherwise.
  */
-function fuxt_get_boundary_post( $in_same_term = false, $excluded_terms = '', $start = true, $taxonomy = 'category', $in_same_parent = true ) {
-	$post = get_post();
-
-	if ( ! $post || ! is_single() || is_attachment() || ! taxonomy_exists( $taxonomy ) ) {
+function fuxt_get_boundary_post( $post, $in_same_term = false, $excluded_terms = '', $start = true, $taxonomy = 'category', $in_same_parent = true ) {
+	if ( ! $post || ! taxonomy_exists( $taxonomy ) ) {
 		return null;
 	}
 
