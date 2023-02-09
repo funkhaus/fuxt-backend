@@ -19,3 +19,4 @@ require_once get_template_directory() . '/functions/cookie-manager.php';
 require_once get_template_directory() . '/functions/plugin-manifest.php';
 require_once get_template_directory() . '/functions/developer-role.php';
 require_once get_template_directory() . '/functions/widgets.php';
+require_once get_template_directory() . '/functions/svg.php';
