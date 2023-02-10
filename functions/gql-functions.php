@@ -268,7 +268,7 @@ function gql_register_next_post() {
 						'The next post of the current port',
 						'fuxt'
 					),
-					'args'        => array(
+					'args'	=> array(
 						'inSameTerm'    => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'fuxt' ),
@@ -277,6 +277,7 @@ function gql_register_next_post() {
 						'taxonomy'      => array(
 							'type'        => 'String',
 							'description' => __( 'Taxonomy, if inSameTerm is true', 'fuxt' ),
+							'default'	=> 'category'
 						),
 						'termNotIn'     => array(
 							'type'        => 'String',
@@ -286,47 +287,28 @@ function gql_register_next_post() {
 							'type'        => 'String',
 							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
 						),
+						'loop'    => array(
+							'type'        => 'Boolean',
+							'description' => __( 'Whether to return boundary post if on first or last. Default value: true', 'fuxt' ),
+							'default'     => true,
+						),						
 					),
 					'resolve'     => function ( $post, $args, $context ) {
 						$post = get_post( $post->ID );
-
-						$in_same_term        = isset( $args['inSameTerm'] ) ? $args['inSameTerm'] : false;
-						$excluded_terms      = isset( $args['termNotIn'] ) ? array_map( 'intval', explode( ',', $args['termNotIn'] ) ) : array();
-						$taxonomy            = isset( $args['taxonomy'] ) ? $args['taxonomy'] : 'category';
-						$excluded_term_slugs = isset( $args['termSlugNotIn'] ) ? explode( ',', $args['termSlugNotIn'] ) : array();
-
-						// merge termNotIn and termSlugNotIn.
-						if ( ! empty( $excluded_term_slugs ) ) {
-							$term_ids = array_map(
-								function( $slug ) use ( $taxonomy ) {
-									$term = get_term_by( 'slug', $slug, $taxonomy );
-									if ( $term ) {
-										return $term->term_id;
-									}
-									return false;
-								},
-								$excluded_term_slugs
-							);
-
-							$excluded_terms = array_merge( $excluded_terms, array_filter( $term_ids ) );
+						$loop = $args['loop'] ?? true;
+						$post_type = get_post_type($post);
+						$is_is_post_type_hierarchical = is_post_type_hierarchical($post_type);	
+						
+						if($is_is_post_type_hierarchical) {
+							return fuxt_get_next_prev_page($post, true, $loop);							
 						}
 
-						$next_post = get_next_post(
-							$in_same_term,
-							$excluded_terms,
-							$taxonomy
-						);
-
-						if ( ! empty( $next_post ) ) {
-							return $next_post->ID;
-						}
-
-						$first_post = get_boundary_post( $in_same_term, $excluded_terms, true, $taxonomy );
-						if ( ! empty( $first_post ) ) {
-							return $first_post[0]->ID;
-						}
-
-						return null;
+						// Assuming is a "post" type now
+						$in_same_term = $args['inSameTerm'] ?? false;
+						$taxonomy = $args['taxonomy'] ?? 'category';
+						$excluded_term_ids = $args['termNotIn'] ?? '';
+						$excluded_term_slugs = $args['termSlugNotIn'] ?? '';
+						return fuxt_get_next_prev_post($post, true, $loop, $in_same_term, $excluded_term_ids, $excluded_term_slugs, $taxonomy);
 					},
 				)
 			);
@@ -380,7 +362,7 @@ function gql_register_previous_post() {
 						'The previous post of the current post',
 						'fuxt'
 					),
-					'args'        => array(
+					'args' => array(
 						'inSameTerm'    => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Whether post should be in a same taxonomy term. Default value: false', 'fuxt' ),
@@ -389,6 +371,7 @@ function gql_register_previous_post() {
 						'taxonomy'      => array(
 							'type'        => 'String',
 							'description' => __( 'Taxonomy, if inSameTerm is true', 'fuxt' ),
+							'default'	=> 'category'
 						),
 						'termNotIn'     => array(
 							'type'        => 'String',
@@ -398,48 +381,28 @@ function gql_register_previous_post() {
 							'type'        => 'String',
 							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
 						),
+						'loop'    => array(
+							'type'        => 'Boolean',
+							'description' => __( 'Whether to return boundary post if on first or last. Default value: true', 'fuxt' ),
+							'default'     => true,
+						),						
 					),
 					'resolve'     => function ( $post, $args, $context ) {
 						$post = get_post( $post->ID );
-
-						// Prepare arguments
-						$in_same_term        = isset( $args['inSameTerm'] ) ? $args['inSameTerm'] : false;
-						$excluded_terms      = isset( $args['termNotIn'] ) ? array_map( 'intval', explode( ',', $args['termNotIn'] ) ) : array();
-						$taxonomy            = isset( $args['taxonomy'] ) ? $args['taxonomy'] : 'category';
-						$excluded_term_slugs = isset( $args['termSlugNotIn'] ) ? explode( ',', $args['termSlugNotIn'] ) : array();
-
-						// merge termNotIn and termSlugNotIn.
-						if ( ! empty( $excluded_term_slugs ) ) {
-							$term_ids = array_map(
-								function( $slug ) use ( $taxonomy ) {
-									$term = get_term_by( 'slug', $slug, $taxonomy );
-									if ( $term ) {
-										return $term->term_id;
-									}
-									return false;
-								},
-								$excluded_term_slugs
-							);
-
-							$excluded_terms = array_merge( $excluded_terms, array_filter( $term_ids ) );
+						$loop = $args['loop'] ?? true;
+						$post_type = get_post_type($post);						
+						$is_is_post_type_hierarchical = is_post_type_hierarchical($post_type);	
+						
+						if($is_is_post_type_hierarchical) {
+							return fuxt_get_next_prev_page($post, false, $loop);
 						}
 
-						$prev_post = get_previous_post(
-							$in_same_term,
-							$excluded_terms,
-							$taxonomy
-						);
-
-						if ( ! empty( $prev_post ) ) {
-							return $prev_post->ID;
-						}
-
-						$last_post = get_boundary_post( $in_same_term, $excluded_terms, false, $taxonomy );
-						if ( ! empty( $last_post ) ) {
-							return $last_post[0]->ID;
-						}
-
-						return null;
+						// Assuming is a "post" type now
+						$in_same_term = $args['inSameTerm'] ?? false;
+						$taxonomy = $args['taxonomy'] ?? 'category';
+						$excluded_term_ids = $args['termNotIn'] ?? '';
+						$excluded_term_slugs = $args['termSlugNotIn'] ?? '';
+						return fuxt_get_next_prev_post($post, false, $loop, $in_same_term, $excluded_term_ids, $excluded_term_slugs, $taxonomy);
 					},
 				)
 			);
@@ -447,6 +410,101 @@ function gql_register_previous_post() {
 	}
 }
 add_action( 'graphql_register_types', 'gql_register_previous_post' );
+
+
+/**
+ * Get the next/previous hierarchical post type (eg: Pages)
+ */
+function fuxt_get_next_prev_page($post, $is_next = true, $loop = true) {
+	// Get all siblings pages
+	// Yes this is isn't effienct to query all pages, 
+	// but actually it works well for thousands of pages in practice. 
+	$args = array(
+		'post_type' => get_post_type($post),
+		'posts_per_page'	=> -1,
+		'fields'			=> 'ids',
+		'orderby'			=> 'menu_order',
+		'order'				=> 'ASC',
+		'post_parent'		=> $post->post_parent
+	);
+	
+	// Get all siblings
+	$siblings = get_posts($args);
+	
+	// Find where current posts exists in Siblings
+	$index = array_search($post->ID, $siblings);
+	
+	if($is_next) {
+		$on_last = $index == count($siblings)-1;
+
+		// If on last element, then return first, or null if not looping 
+		if( $loop && $on_last ) {
+			return $siblings[0];
+		} elseif(!$loop && $on_last) {
+			return null;
+		}
+		
+		// Get next
+		return $siblings[$index+1];
+		
+	} else {
+		$on_first = $index == 0;
+		
+		// If on first, then return last, or null if not looping
+		if( $loop && $on_first ) {
+			return end($siblings);
+		} elseif( !$loop && $on_first) {
+			return null;
+		}
+		
+		// Get previous
+		return $siblings[$index-1];
+	}
+	
+}
+
+/**
+ * Get the next/previous date-based post type (eg: Posts)
+ */
+function fuxt_get_next_prev_post(
+	$post, 
+	$is_next = true, 
+	$loop = true, 
+	$in_same_term = false, 
+	$excluded_term_ids = '', 
+	$excluded_term_slugs = '', 
+	$taxonomy = 'category'
+) {
+	// Get IDs of slugs, and merge with any IDs we were given as args
+	if ( ! empty( $excluded_term_slugs ) ) {
+		$slugs_as_ids = array_map(
+			function( $slug ) use ( $taxonomy ) {
+				$term = get_term_by( 'slug', $slug, $taxonomy );
+				if ( $term ) {
+					return $term->term_id;
+				}
+				return false;
+			},
+			$excluded_term_slugs
+		);
+
+		$excluded_term_ids = array_merge( $excluded_term_ids, array_filter( $slugs_as_ids ) );
+	}
+
+	// Return the adjacent post
+	$adjacent_post = get_adjacent_post($in_same_term, $excluded_term_ids, !$is_next, $taxonomy);	
+	if( !empty($adjacent_post) ) {
+		return $adjacent_post->ID;
+	}
+	
+	// If looping, and we won't have $adjacent_post above so get boundry post now
+	if( $loop ) {
+		$boundary_post = get_boundary_post($in_same_term, $excluded_term_ids, $is_next, $taxonomy);
+		return $boundary_post[0]->ID ?? null;
+	}
+
+	return null;
+}
 
 /**
  * Set the default ordering of quieres in WP-GQL
