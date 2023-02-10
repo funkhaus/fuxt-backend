@@ -50,7 +50,7 @@ function fuxt_render_svg_upload_field() {
 	?>
 
 	<input id="checkbox-svg-upload" name="svg_upload" type="checkbox" <?php checked( $value, 1 ); ?> value="1" />
-	<label for="checkbox-svg-upload">Enable SVG Upload</label>
+	<label for="checkbox-svg-upload">Enable SVG Uploads. SVGs can contain executable code, so do not enable for sites with unknown authors.</label>
 
 	<?php
 }
