@@ -6,41 +6,6 @@
  */
 
 /**
- * Allow SVG uploads.
- *
- * @param array $mimes Mime types keyed by the file extension regex corresponding to those types.
- * @return array
- */
-function add_mime_types( $mimes ) {
-	$mimes['svg'] = 'image/svg+xml';
-	return $mimes;
-}
-add_filter( 'upload_mimes', 'add_mime_types' );
-
-/**
- * Force SVG uploads!
- * This snippit will force SVGs to be allowed to upladed if the above code doesn't work.
- * I think this code will allow all files to be uploaded, so don't use it unless needed.
- *
- * @param array    $data     Values for the extension, mime type, and corrected filename.
- * @param string   $file     Full path to the file.
- * @param string   $filename The name of the file (may differ from $file due to $file being in a tmp directory).
- * @param string[] $mimes    Array of mime types keyed by their file extension regex.
- * @return array
- */
-function force_svg_uploads( $data, $file, $filename, $mimes ) {
-	global $wp_version;
-	$filetype = wp_check_filetype( $filename, $mimes );
-
-	return array(
-		'ext'             => $filetype['ext'],
-		'type'            => $filetype['type'],
-		'proper_filename' => $data['proper_filename'],
-	);
-}
-add_filter( 'wp_check_filetype_and_ext', 'force_svg_uploads', 10, 4 );
-
-/**
  * Allow subscriber to see Private posts/pages
  */
 function add_theme_caps() {
@@ -51,7 +16,7 @@ function add_theme_caps() {
 	$role->add_cap( 'read_private_posts' );
 	$role->add_cap( 'read_private_pages' );
 }
-add_action( 'switch_theme', 'add_theme_caps' );
+//add_action( 'switch_theme', 'add_theme_caps' );
 
 
 /**
@@ -81,7 +46,7 @@ function fuxt_custom_blocks() {
 	);
 
 }
-add_action( 'acf/init', 'fuxt_custom_blocks' );
+//add_action( 'acf/init', 'fuxt_custom_blocks' );
 
 /**
  * Extend GraphQL to add a mutation to send emails via the wp_mail() function.
@@ -179,4 +144,4 @@ function gql_register_email_mutation() {
 	);
 	register_graphql_mutation( 'sendEmail', $args );
 }
-add_action( 'graphql_register_types', 'gql_register_email_mutation' );
+//add_action( 'graphql_register_types', 'gql_register_email_mutation' );
