@@ -38,6 +38,8 @@ function fuxt_block_whitelist( $allowed_block_types ) {
 		'core/cover',
 		'core/html',
 		'core/video',
+		'core/buttons',
+		'core/button',
 	);
 
 	return array_merge( $acf_blocks, $whitelist );
@@ -53,3 +55,9 @@ function fuxt_disable_editor_fullscreen_default() {
 	wp_add_inline_script( 'wp-blocks', $script );
 }
 add_action( 'enqueue_block_editor_assets', 'fuxt_disable_editor_fullscreen_default' );
+
+/**
+ * Disable gutenberg features
+ */
+add_theme_support('editor-gradient-presets', []);
+add_theme_support('disable-custom-gradients');
