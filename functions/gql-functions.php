@@ -293,8 +293,8 @@ function gql_register_next_post() {
 							'default'     => true,
 						),						
 					),
-					'resolve'     => function ( $post, $args, $context ) {
-						$post = get_post( $post->ID );
+					'resolve'     => function ( $post_model, $args, $context ) {
+						$post = get_post( $post_model->ID );
 						$loop = $args['loop'] ?? true;
 						$post_type = get_post_type($post);
 						$is_is_post_type_hierarchical = is_post_type_hierarchical($post_type);	
@@ -467,7 +467,7 @@ function fuxt_get_next_prev_page($post, $is_next = true, $loop = true) {
  * Get the next/previous date-based post type (eg: Posts)
  */
 function fuxt_get_next_prev_post(
-	$post, 
+	$cur_post, 
 	$is_next = true, 
 	$loop = true, 
 	$in_same_term = false, 
@@ -475,6 +475,10 @@ function fuxt_get_next_prev_post(
 	$excluded_term_slugs = '', 
 	$taxonomy = 'category'
 ) {
+	global $post;
+	$post = $cur_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	setup_postdata( $post );
+
 	// Get IDs of slugs, and merge with any IDs we were given as args
 	if ( ! empty( $excluded_term_slugs ) ) {
 		$slugs_as_ids = array_map(
@@ -491,19 +495,21 @@ function fuxt_get_next_prev_post(
 		$excluded_term_ids = array_merge( $excluded_term_ids, array_filter( $slugs_as_ids ) );
 	}
 
+	$next_prev_id = null;
+
 	// Return the adjacent post
 	$adjacent_post = get_adjacent_post($in_same_term, $excluded_term_ids, !$is_next, $taxonomy);	
 	if( !empty($adjacent_post) ) {
-		return $adjacent_post->ID;
-	}
-	
-	// If looping, and we won't have $adjacent_post above so get boundry post now
-	if( $loop ) {
+		$next_prev_id = $adjacent_post->ID;
+	} else if( $loop ) {
+		// If looping, and we won't have $adjacent_post above so get boundry post now
 		$boundary_post = get_boundary_post($in_same_term, $excluded_term_ids, $is_next, $taxonomy);
-		return $boundary_post[0]->ID ?? null;
+		$next_prev_id  = $boundary_post[0]->ID ?? null;
 	}
 
-	return null;
+	wp_reset_postdata();
+
+	return $next_prev_id;
 }
 
 /**
