@@ -1,0 +1,139 @@
+[
+    {
+        "key": "group_6466cc3ca925a",
+        "title": "Proxy Settings",
+        "fields": [
+            {
+                "key": "field_6466cc3df4887",
+                "label": "Providers",
+                "name": "providers",
+                "aria-label": "",
+                "type": "repeater",
+                "instructions": "Enter details for the services you wish to proxy.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "layout": "row",
+                "pagination": 0,
+                "min": 0,
+                "max": 0,
+                "collapsed": "",
+                "button_label": "Add Provider",
+                "rows_per_page": 20,
+                "sub_fields": [
+                    {
+                        "key": "field_6466cc64f4888",
+                        "label": "Name",
+                        "name": "name",
+                        "aria-label": "",
+                        "type": "text",
+                        "instructions": "The name of the provider. Used in frontend code for reference.",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "maxlength": "",
+                        "placeholder": "",
+                        "prepend": "",
+                        "append": "",
+                        "parent_repeater": "field_6466cc3df4887"
+                    },
+                    {
+                        "key": "field_6466cc6af4889",
+                        "label": "Base URL",
+                        "name": "base_url",
+                        "aria-label": "",
+                        "type": "url",
+                        "instructions": "The base URL of the API you are trying to proxy. Tip: leave off the trailing slash.",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "placeholder": "",
+                        "parent_repeater": "field_6466cc3df4887"
+                    },
+                    {
+                        "key": "field_6466cc74f488a",
+                        "label": "Authorization header",
+                        "name": "authorization_header",
+                        "aria-label": "",
+                        "type": "text",
+                        "instructions": "The HTTP Authorization header to add to the request. Often this will be of the format `Bearer xxxxxxxxx`",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "show_in_graphql": 1,
+                        "default_value": "",
+                        "maxlength": "",
+                        "placeholder": "",
+                        "prepend": "",
+                        "append": "",
+                        "parent_repeater": "field_6466cc3df4887"
+                    }
+                ]
+            },
+            {
+                "key": "field_6466ccb3f488b",
+                "label": "Domain restricted",
+                "name": "domain_restricted",
+                "aria-label": "",
+                "type": "true_false",
+                "instructions": "When true, only frontend requests from the Site and WordPress URLs will be allowed. When false, requests from all domains will be allowed. This is a security issue, so only have this false during when testing from localhost.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "show_in_graphql": 1,
+                "message": "Restrict access to the Site Address and WordPress Address",
+                "default_value": 1,
+                "ui_on_text": "",
+                "ui_off_text": "",
+                "ui": 1
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "options_page",
+                    "operator": "==",
+                    "value": "proxy-settings"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0,
+        "show_in_graphql": 0,
+        "graphql_field_name": "proxySettings",
+        "map_graphql_types_from_location_rules": 0,
+        "graphql_types": ""
+    }
+]

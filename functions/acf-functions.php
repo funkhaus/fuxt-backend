@@ -115,6 +115,18 @@ class Acf {
 				'position'        => '60.1',
 			)
 		);
+		acf_add_options_page(
+			array(
+				'page_title'      => 'Proxy Settings',
+				'menu_title'      => 'Proxy Settings',
+				'menu_slug'       => 'proxy-settings',
+				'capability'      => 'activate_plugins',
+				'redirect'        => false,
+				'show_in_graphql' => false,
+				'icon_url'		  => 'dashicons-privacy',
+				'position'        => '80.1'
+			)
+		);
 	}
 
 	/**
