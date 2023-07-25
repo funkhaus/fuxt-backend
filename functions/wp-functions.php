@@ -270,7 +270,7 @@ function auto_set_post_status( $post_id, $post, $update ) {
 			add_action( 'save_post', 'nd_debounce_deploy', 20, 1 );
 		}
 
-		if ( is_plugin_active( 'funkhaus-cache-purge/ cache-purge.php' ) ) {
+		if ( is_plugin_active( 'funkhaus-cache-purge/cache-purge.php' ) ) {
 			add_action( 'save_post', 'cp_purge_cache', 20, 1 );
 		}
 	}

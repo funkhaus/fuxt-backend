@@ -12,7 +12,6 @@ function fuxt_proxy_init()
 {
     // Setup new endpoint
 	register_rest_route("fuxt/v1", "/proxy", [
-        // Create Subscriber
         [
             "methods" => "POST, GET, DELETE, PATCH, PUT",
             "callback" => "fuxt_proxy_do_request",
