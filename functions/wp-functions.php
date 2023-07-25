@@ -204,8 +204,25 @@ function fuxt_preview_link_in_rest_response( $response, $post ) {
 
 	return $response;
 }
-add_filter( 'rest_prepare_post', 'fuxt_preview_link_in_rest_response', 10, 2 );
-add_filter( 'rest_prepare_page', 'fuxt_preview_link_in_rest_response', 10, 2 );
+
+/**
+* Add the custom preview link to posts, pages and all public custom post types
+*/
+function custom_filter_preview_links() {
+    add_filter( 'rest_prepare_post', 'fuxt_preview_link_in_rest_response', 10, 2 );
+    add_filter( 'rest_prepare_page', 'fuxt_preview_link_in_rest_response', 10, 2 );
+    
+    $args = array(
+        'public'   => true,
+        '_builtin' => false
+    );
+    $post_types = get_post_types($args, 'names', 'and');
+    
+    foreach($post_types as $post_type) {   
+        add_filter( 'rest_prepare_'.$post_type, 'fuxt_preview_link_in_rest_response', 10, 2 );    
+    }    
+}
+add_action( 'admin_init', 'custom_filter_preview_links');
 
 /**
  * This function auto saves drafts posts, to force them to get a URL for previews to work.
