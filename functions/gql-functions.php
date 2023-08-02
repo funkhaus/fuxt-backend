@@ -248,10 +248,7 @@ function gql_register_next_post() {
 							),
 							'type'        => $ucfirst,
 							'resolve'     => function ( $post_id, $args, $context ) {
-								return \WPGraphQL\Data\DataSource::resolve_post_object(
-									$post_id,
-									$context
-								);
+								return $context->get_loader( 'post' )->load_deferred( $post_id );
 							},
 						),
 					),
@@ -342,10 +339,7 @@ function gql_register_previous_post() {
 							),
 							'type'        => $ucfirst,
 							'resolve'     => function ( $post_id, $args, $context ) {
-								return \WPGraphQL\Data\DataSource::resolve_post_object(
-									$post_id,
-									$context
-								);
+								return $context->get_loader( 'post' )->load_deferred( $post_id );
 							},
 						),
 					),
