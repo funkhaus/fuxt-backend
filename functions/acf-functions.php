@@ -104,29 +104,52 @@ class Acf {
 	 * @return void
 	 */
 	public function add_options() {
-		acf_add_options_page(
+		if ( $this->has_field_group( 'Site Options' ) ) :
+			acf_add_options_page(
+				array(
+					'page_title'      => 'Site Options',
+					'menu_title'      => 'Site Options',
+					'menu_slug'       => 'site-options',
+					'capability'      => 'edit_posts',
+					'redirect'        => false,
+					'show_in_graphql' => true,
+					'position'        => '60.1',
+				)
+			);
+		endif;
+
+		if ( $this->has_field_group( 'Group1' ) ) :
+			acf_add_options_page(
+				array(
+					'page_title'      => 'Proxy Settings',
+					'menu_title'      => 'Proxy Settings',
+					'menu_slug'       => 'proxy-settings',
+					'capability'      => 'activate_plugins',
+					'redirect'        => false,
+					'show_in_graphql' => false,
+					'icon_url'		  => 'dashicons-privacy',
+					'position'        => '80.1'
+				)
+			);
+		endif;
+	}
+
+	/**
+	 * Check if acf group exists by title.
+	 *
+	 * @param string $title Group title.
+	 *
+	 * @return bool Returns true if exists
+	 */
+	private function has_field_group( $title ) {
+		$posts = get_posts(
 			array(
-				'page_title'      => 'Site Options',
-				'menu_title'      => 'Site Options',
-				'menu_slug'       => 'site-options',
-				'capability'      => 'edit_posts',
-				'redirect'        => false,
-				'show_in_graphql' => true,
-				'position'        => '60.1',
+				'post_type' => 'acf-field-group',
+				'title'     => $title,
 			)
 		);
-		acf_add_options_page(
-			array(
-				'page_title'      => 'Proxy Settings',
-				'menu_title'      => 'Proxy Settings',
-				'menu_slug'       => 'proxy-settings',
-				'capability'      => 'activate_plugins',
-				'redirect'        => false,
-				'show_in_graphql' => false,
-				'icon_url'		  => 'dashicons-privacy',
-				'position'        => '80.1'
-			)
-		);
+
+		return ! empty( $posts );
 	}
 
 	/**
