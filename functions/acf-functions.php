@@ -118,7 +118,7 @@ class Acf {
 			);
 		endif;
 
-		if ( $this->has_field_group( 'Group1' ) ) :
+		if ( $this->has_field_group( 'Proxy Settings' ) ) :
 			acf_add_options_page(
 				array(
 					'page_title'      => 'Proxy Settings',
