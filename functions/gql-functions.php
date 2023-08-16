@@ -248,10 +248,7 @@ function gql_register_next_post() {
 							),
 							'type'        => $ucfirst,
 							'resolve'     => function ( $post_id, $args, $context ) {
-								return \WPGraphQL\Data\DataSource::resolve_post_object(
-									$post_id,
-									$context
-								);
+								return $context->get_loader( 'post' )->load_deferred( $post_id );
 							},
 						),
 					),
@@ -286,7 +283,7 @@ function gql_register_next_post() {
 						'termSlugNotIn' => array(
 							'type'        => 'String',
 							'description' => __( 'Comma-separated list of excluded term slugs.', 'fuxt' ),
-						),
+					),
 						'loop'    => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Whether to return boundary post if on first or last. Default value: true', 'fuxt' ),
@@ -298,7 +295,7 @@ function gql_register_next_post() {
 						$loop = $args['loop'] ?? true;
 						$post_type = get_post_type($post);
 						$is_is_post_type_hierarchical = is_post_type_hierarchical($post_type);	
-						
+
 						if($is_is_post_type_hierarchical) {
 							return fuxt_get_next_prev_page($post, true, $loop);							
 						}
@@ -342,10 +339,7 @@ function gql_register_previous_post() {
 							),
 							'type'        => $ucfirst,
 							'resolve'     => function ( $post_id, $args, $context ) {
-								return \WPGraphQL\Data\DataSource::resolve_post_object(
-									$post_id,
-									$context
-								);
+								return $context->get_loader( 'post' )->load_deferred( $post_id );
 							},
 						),
 					),
@@ -387,12 +381,12 @@ function gql_register_previous_post() {
 							'default'     => true,
 						),						
 					),
-					'resolve'     => function ( $post, $args, $context ) {
-						$post = get_post( $post->ID );
+					'resolve'     => function ( $post_model, $args, $context ) {
+						$post = get_post( $post_model->ID );
 						$loop = $args['loop'] ?? true;
 						$post_type = get_post_type($post);						
-						$is_is_post_type_hierarchical = is_post_type_hierarchical($post_type);	
-						
+						$is_is_post_type_hierarchical = is_post_type_hierarchical($post_type);
+
 						if($is_is_post_type_hierarchical) {
 							return fuxt_get_next_prev_page($post, false, $loop);
 						}
@@ -498,18 +492,86 @@ function fuxt_get_next_prev_post(
 	$next_prev_id = null;
 
 	// Return the adjacent post
-	$adjacent_post = get_adjacent_post($in_same_term, $excluded_term_ids, !$is_next, $taxonomy);	
+	$adjacent_post = get_adjacent_post($in_same_term, $excluded_term_ids, !$is_next, $taxonomy);
 	if( !empty($adjacent_post) ) {
 		$next_prev_id = $adjacent_post->ID;
 	} else if( $loop ) {
 		// If looping, and we won't have $adjacent_post above so get boundry post now
-		$boundary_post = get_boundary_post($in_same_term, $excluded_term_ids, $is_next, $taxonomy);
+		$boundary_post = get_boundary_post_custom($in_same_term, $excluded_term_ids, $is_next, $taxonomy);
 		$next_prev_id  = $boundary_post[0]->ID ?? null;
 	}
 
 	wp_reset_postdata();
 
 	return $next_prev_id;
+}
+
+/**
+ * Retrieves the boundary post.
+ *
+ * Boundary being either the first or last post by publish date within the constraints specified
+ * by `$in_same_term` or `$excluded_terms`.
+ *
+ * @since 2.8.0
+ *
+ * @param bool         $in_same_term   Optional. Whether returned post should be in the same taxonomy term.
+ *                                     Default false.
+ * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
+ *                                     Default empty.
+ * @param bool         $start          Optional. Whether to retrieve first or last post.
+ *                                     Default true.
+ * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @return array|null Array containing the boundary post object if successful, null otherwise.
+ */
+function get_boundary_post_custom( $in_same_term = false, $excluded_terms = '', $start = true, $taxonomy = 'category' ) {
+	$post = get_post();
+
+	if ( ! $post || ! taxonomy_exists( $taxonomy ) ) {
+		return null;
+	}
+
+	$query_args = array(
+		'posts_per_page'         => 1,
+		'order'                  => $start ? 'ASC' : 'DESC',
+		'update_post_term_cache' => false,
+		'update_post_meta_cache' => false,
+	);
+
+	$term_array = array();
+
+	if ( ! is_array( $excluded_terms ) ) {
+		if ( ! empty( $excluded_terms ) ) {
+			$excluded_terms = explode( ',', $excluded_terms );
+		} else {
+			$excluded_terms = array();
+		}
+	}
+
+	if ( $in_same_term || ! empty( $excluded_terms ) ) {
+		if ( $in_same_term ) {
+			$term_array = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
+		}
+
+		if ( ! empty( $excluded_terms ) ) {
+			$excluded_terms = array_map( 'intval', $excluded_terms );
+			$excluded_terms = array_diff( $excluded_terms, $term_array );
+
+			$inverse_terms = array();
+			foreach ( $excluded_terms as $excluded_term ) {
+				$inverse_terms[] = $excluded_term * -1;
+			}
+			$excluded_terms = $inverse_terms;
+		}
+
+		$query_args['tax_query'] = array(
+			array(
+				'taxonomy' => $taxonomy,
+				'terms'    => array_merge( $term_array, $excluded_terms ),
+			),
+		);
+	}
+
+	return get_posts( $query_args );
 }
 
 /**
