@@ -96,7 +96,7 @@ function fuxt_proxy_do_request($request)
     // Retrieve information from the $response
     $response_code = wp_remote_retrieve_response_code($response);
     $response_message = wp_remote_retrieve_response_message($response);
-    $response_headers = wp_remote_retrieve_headers($response);
+    $response_headers = wp_remote_retrieve_headers($response)->getAll();
     $response_body = wp_remote_retrieve_body($response);
     
     // Check if response is JSON, if so then decode it so that when we send it later it's not double encoded
@@ -106,7 +106,16 @@ function fuxt_proxy_do_request($request)
 
     // Return data or error back to frontend
     if (!is_wp_error($response)) {
-        return new WP_REST_Response($response_body, $response_code, (array)$response_headers);
+        $response = new WP_REST_Response($response_body, $response_code);
+
+        // Add orginal response's headers 
+        foreach($response_headers as $key => $val) {
+            $response->set_headers( array($key => $val) );
+        }
+
+        // Make sure Flywheel doesn't cache this
+        $response->set_headers( array("Cache-Control" => "no-cache, no-store, must-revalidate, max-age=0") );
+        return $response;
     }
 
     return new WP_Error($response_code, $response_message, $response_body);
