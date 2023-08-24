@@ -602,3 +602,13 @@ function custom_default_where_args( $query_args ) {
 	return $query_args;
 }
 add_filter( 'graphql_post_object_connection_query_args', 'custom_default_where_args', 10, 1 );
+
+/**
+ * Set the default max query result amount (default is 100)
+ *
+ * @return int
+ */
+function custom_max_query_amount( $amount, $source, $args, $context, $info ) {
+    return 1000;
+}
+add_filter( 'graphql_connection_max_query_amount', 'custom_max_query_amount', 10, 5 );
