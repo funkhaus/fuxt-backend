@@ -104,7 +104,7 @@ class Acf {
 	 * @return void
 	 */
 	public function add_options() {
-		if ( $this->has_field_group( 'Site Options' ) ) :
+		if ( $this->has_field_group( 'Site Options' ) && function_exists( 'acf_add_options_page' ) ) :
 			acf_add_options_page(
 				array(
 					'page_title'      => 'Site Options',
@@ -118,7 +118,7 @@ class Acf {
 			);
 		endif;
 
-		if ( $this->has_field_group( 'Proxy Settings' ) ) :
+		if ( $this->has_field_group( 'Proxy Settings' ) && function_exists( 'acf_add_options_page' ) ) :
 			acf_add_options_page(
 				array(
 					'page_title'      => 'Proxy Settings',
@@ -208,12 +208,13 @@ class Acf {
 	public function tree_location_rule_match( $result, $rule, $screen ) {
 
 		// Abort if no post ID.
-		if ( ! isset( $screen['post_id'] ) ) {
+		$post_id = $this->get_current_post_id();
+		if ( is_null( $post_id ) ) {
 			return $result;
 		}
 
 		// Current and selected vars.
-		$current_post = get_post( $screen['post_id'] );
+		$current_post = get_post( $post_id );
 		$tree_id      = (int) str_replace( 'post_id_', '', $rule['value'] );
 
 		// Is current post in the selected tree?
@@ -256,17 +257,15 @@ class Acf {
 	 */
 	public function has_child_location_rule_match( $result, $rule, $screen ) {
 
-		// Abort if no post ID.
-		if ( ! isset( $screen['post_id'] ) ) {
+		$post_id = $this->get_current_post_id();
+		if ( is_null( $post_id ) ) {
 			return $result;
 		}
 
-		$post_id   = $screen['post_id'];
 		$post_type = get_post_type( $post_id );
 
 		// Current and selected vars.
-		$current_post = get_post( $post_id );
-		$children     = get_children(
+		$children = get_children(
 			array(
 				'post_parent' => $post_id,
 				'post_type'   => $post_type,
@@ -361,11 +360,11 @@ class Acf {
 	public function cpt_location_rule_match( $result, $rule, $screen, $field_group ) {
 
 		// Abort if no post ID.
-		if ( ! isset( $screen['post_id'] ) ) {
+		$post_id = $this->get_current_post_id();
+		if ( is_null( $post_id ) ) {
 			return $result;
 		}
 
-		$post_id   = $screen['post_id'];
 		$post_type = get_post_type( $post_id );
 
 		$rule_arr = $this->parse_key( $rule['param'] );
@@ -491,6 +490,21 @@ class Acf {
 	public function acf_fields_relationship_result( $text, $post ) {
 		$uri = get_page_uri( $post );
 		return '<span title="/' . $uri . '">' . $text . '</span>';
+	}
+
+	/**
+	 * Get current post id in admin panel. Returns null if it's not a post page.
+	 *
+	 * @return int|null
+	 */
+	private function get_current_post_id() {
+		global $pagenow;
+		if ( $pagenow !== 'post.php' ) {
+			return null;
+		}
+
+		global $post;
+		return $post->ID;
 	}
 }
 
