@@ -104,7 +104,7 @@ class Acf {
 	 * @return void
 	 */
 	public function add_options() {
-		if ( function_exists( 'acf_add_options_page' ) ) :
+		if ( $this->has_field_group( 'Site Options' ) && function_exists( 'acf_add_options_page' ) ) :
 			acf_add_options_page(
 				array(
 					'page_title'      => 'Site Options',
@@ -116,6 +116,9 @@ class Acf {
 					'position'        => '60.1',
 				)
 			);
+		endif;
+
+		if ( $this->has_field_group( 'Proxy Settings' ) && function_exists( 'acf_add_options_page' ) ) :
 			acf_add_options_page(
 				array(
 					'page_title'      => 'Proxy Settings',
@@ -129,6 +132,24 @@ class Acf {
 				)
 			);
 		endif;
+	}
+
+	/**
+	 * Check if acf group exists by title.
+	 *
+	 * @param string $title Group title.
+	 *
+	 * @return bool Returns true if exists
+	 */
+	private function has_field_group( $title ) {
+		$posts = get_posts(
+			array(
+				'post_type' => 'acf-field-group',
+				'title'     => $title,
+			)
+		);
+
+		return ! empty( $posts );
 	}
 
 	/**
