@@ -612,3 +612,25 @@ function custom_max_query_amount( $amount, $source, $args, $context, $info ) {
     return 1000;
 }
 add_filter( 'graphql_connection_max_query_amount', 'custom_max_query_amount', 10, 5 );
+
+/**
+ * Give each excerpt node a field of the user defined excerpt, or empty string.
+ * SEE https://github.com/wp-graphql/wp-graphql/issues/1314
+ */
+function custom_add_defined_excerpt_field() {
+	register_graphql_field(
+		'NodeWithExcerpt',
+		'definedExcerpt',
+		array(
+			'type'    => 'String',
+			'resolve' => function ( $post ) {
+                $excerpt = '';
+                if (has_excerpt($post)) {
+                    $excerpt = wp_strip_all_tags( get_the_excerpt($post) );
+                }
+                return $excerpt;
+			},
+		)
+	);
+}
+add_action( 'graphql_register_types', 'custom_add_defined_excerpt_field' );
