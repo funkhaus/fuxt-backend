@@ -624,11 +624,12 @@ function custom_add_defined_excerpt_field() {
 		array(
 			'type'    => 'String',
 			'resolve' => function ( $post ) {
-                $excerpt = '';
-                if (has_excerpt($post)) {
-                    $excerpt = wp_strip_all_tags( get_the_excerpt($post) );
-                }
-                return $excerpt;
+				$excerpt = '';
+				if (has_excerpt($post->ID)) {
+					$full_post = get_post( $post->ID );
+					$excerpt = wp_strip_all_tags($full_post->post_excerpt);
+				}
+				return $excerpt;
 			},
 		)
 	);
