@@ -28,7 +28,8 @@ body.post-php.is-developer-locked:not(.is-developer) #edit-slug-buttons {
 body:not(.is-developer) #wp-admin-bar-graphiql-ide,
 body:not(.is-developer) #adminmenu #toplevel_page_graphql,
 body:not(.is-developer) #adminmenu #toplevel_page_wp-graphiql-wp-graphiql,
-body:not(.is-developer) #adminmenu #toplevel_page_wp-graphql-gutenberg-admin {
+body:not(.is-developer) #adminmenu #toplevel_page_wp-graphql-gutenberg-admin
+body:not(.is-developer) #adminmenu #toplevel_page_proxy-settings {
     display: none;
 }
 
