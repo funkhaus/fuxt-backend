@@ -404,3 +404,19 @@ function fuxt_allow_siteurl_safe_redirect( $hosts ) {
 	return array_merge( $hosts, array( $wpp['host'] ) );
 }
 add_filter( 'allowed_redirect_hosts', 'fuxt_allow_siteurl_safe_redirect' );
+
+
+/**
+ * Make sure email's are sent from the server's domain, not the frontend domain.
+ */
+function fuxt_wp_mail_from( $email ) {
+
+    $server_domain = get_site_url();
+    $server_host = wp_parse_url($server_domain, PHP_URL_HOST);
+    
+    $frontend_domain = get_home_url();
+    $frontend_host = wp_parse_url($frontend_domain, PHP_URL_HOST);
+    
+	return str_replace($frontend_host, $server_host, $email);
+}
+add_filter( 'wp_mail_from', 'fuxt_wp_mail_from' );
