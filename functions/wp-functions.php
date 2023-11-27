@@ -222,7 +222,7 @@ function custom_filter_preview_links() {
         add_filter( 'rest_prepare_'.$post_type, 'fuxt_preview_link_in_rest_response', 10, 2 );    
     }    
 }
-add_action( 'admin_init', 'custom_filter_preview_links');
+add_action( 'rest_api_init', 'custom_filter_preview_links');
 
 /**
  * This function auto saves drafts posts, to force them to get a URL for previews to work.

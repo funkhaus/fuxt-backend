@@ -96,6 +96,9 @@ class Acf {
 
 		add_filter( 'acf/fields/relationship/result', array( $this, 'acf_fields_relationship_result' ), 10, 2 );
 
+		add_filter( 'acf/location/rule_values/page_parent', array( $this, 'page_location_rule_values_no_parent' ), 10, 2 );
+		add_filter( 'acf/location/rule_match/page_parent', array( $this, 'page_location_rule_match_no_parent' ), 4, 3 );
+
 	}
 
 	/**
@@ -327,22 +330,27 @@ class Acf {
 	public function cpt_location_rule_values( $values, $rule ) {
 		$rule_arr = $this->parse_key( $rule['param'] );
 		if ( $rule_arr && in_array( $rule_arr['cpt_name'], array_column( $this->get_cpt_array(), 'name' ) ) ) {
-			$args  = array(
-				'post_type'              => $rule_arr['cpt_name'],
-				'posts_per_page'         => 1000,
-				'paged'                  => 0,
-				'orderby'                => 'menu_order title',
-				'order'                  => 'ASC',
-				'post_status'            => 'any',
-				'no_found_rows'          => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
+			$choices = array(
+				0 => 'No Parent',
 			);
-			$pages = get_posts( $args );
 
-			foreach ( $pages as $page ) {
-				$values[ $page->ID ] = $page->post_title;
+			// Get grouped posts.
+			$groups = acf_get_grouped_posts(
+				array(
+					'post_type' => array( $rule_arr['cpt_name'] ),
+				)
+			);
+
+			// Get first group.
+			$posts = reset( $groups );
+
+			// Append to choices.
+			if ( $posts ) {
+				foreach ( $posts as $post ) {
+					$choices[ $post->ID ] = acf_get_post_title( $post );
+				}
 			}
+			return $choices;
 		}
 		return $values;
 	}
@@ -368,14 +376,16 @@ class Acf {
 		$post_type = get_post_type( $post_id );
 
 		$rule_arr = $this->parse_key( $rule['param'] );
+
 		if ( $rule_arr && $rule_arr['cpt_name'] === $post_type ) {
 			switch ( $rule_arr['surfix'] ) {
 				case $this->surfix_parent:
 					$parent = get_post_parent( $post_id );
 					if ( $parent ) {
-						return $parent->ID === $rule['value'];
+						return $parent->ID == $rule['value'];
+					} else {
+						return empty( $rule['value'] );
 					}
-					return false;
 				case $this->surfix_tree:
 					$ancestors   = get_ancestors( $post_id, $post_type, 'post_type' );
 					$ancestor_id = $rule['value'];
@@ -505,6 +515,44 @@ class Acf {
 
 		global $post;
 		return $post->ID;
+	}
+
+	/**
+	 * Add no parent option to page location rule.
+	 *
+	 * @param array $values Rule values.
+	 * @param array $rule   Rule.
+	 *
+	 * @return array
+	 */
+	public function page_location_rule_values_no_parent( $values, $rule ) {
+		$values[ PHP_INT_MAX ] = 'No Parent';
+		return $values;
+	}
+
+	/**
+	 * No-parent page location rule match.
+	 *
+	 * @param bool  $result The match result.
+	 * @param array $rule The location rule.
+	 * @param array $screen The screen args.
+	 *
+	 * @return array
+	 */
+	public function page_location_rule_match_no_parent( $result, $rule, $screen ) {
+		if ( $rule['value'] != PHP_INT_MAX ) {
+			return $result;
+		}
+
+		if ( isset( $screen['post_id'] ) ) {
+			$post = get_post( $screen['post_id'] );
+			if ( $post->post_type != 'page' ) {
+				return false;
+			}
+			$page_parent = $post ? $post->post_parent : false;
+
+			return empty( $page_parent );
+		}
 	}
 }
 
