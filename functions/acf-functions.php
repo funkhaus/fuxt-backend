@@ -99,6 +99,8 @@ class Acf {
 		add_filter( 'acf/location/rule_values/page_parent', array( $this, 'page_location_rule_values_no_parent' ), 10, 2 );
 		add_filter( 'acf/location/rule_match/page_parent', array( $this, 'page_location_rule_match_no_parent' ), 4, 3 );
 
+		add_filter( 'acf/post_type/registration_args', array( $this, 'enable_graphql_for_cpts' ), 10, 2 );
+		add_filter( 'acf/taxonomy/registration_args', array( $this, 'enable_graphql_for_taxonomies' ), 10, 2 );
 	}
 
 	/**
@@ -553,6 +555,34 @@ class Acf {
 
 			return empty( $page_parent );
 		}
+	}
+
+	/**
+	 * Enable GraphQL by default for CPTs registered with ACF.
+	 *
+	 * @param array $args Arrays to filter.
+	 * @param array $post The main ACF post type settings array.
+	 */
+	public function enable_graphql_for_cpts( $args, $post ) {
+		$args['show_in_graphql']     = true;
+		$args['graphql_single_name'] = $post['post_type'];
+		$args['graphql_plural_name'] = $post['post_type'] . 's';
+
+		return $args;
+	}
+
+	/**
+	 * Enable GraphQL by default for custom taxonomies registered with ACF.
+	 *
+	 * @param array $args Arrays to filter.
+	 * @param array $post The main ACF taxonomy settings array.
+	 */
+	public function enable_graphql_for_taxonomies( $args, $post ) {
+		$args['show_in_graphql']     = true;
+		$args['graphql_single_name'] = $post['taxonomy'];
+		$args['graphql_plural_name'] = $post['taxonomy'] . 's';
+
+		return $args;
 	}
 }
 
