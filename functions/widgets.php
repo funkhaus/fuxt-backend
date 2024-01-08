@@ -93,3 +93,12 @@ function fuxt_ajax_dashboard_widgets() {
 	wp_die();
 }
 add_action( 'wp_ajax_dashboard-widgets', 'fuxt_ajax_dashboard_widgets', 1 );
+
+/**
+ * Remove site health widget from admin dashboard.
+ */
+function fuxt_remove_site_health_box() {
+	remove_meta_box( 'dashboard_site_health', null, 'normal' );
+}
+add_action( 'wp_user_dashboard_setup', 'fuxt_remove_site_health_box' );
+add_action( 'wp_dashboard_setup', 'fuxt_remove_site_health_box' );
