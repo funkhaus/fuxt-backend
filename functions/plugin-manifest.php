@@ -31,7 +31,7 @@ function fuxt_register_required_plugins() {
 		array(
 			'name'    => 'WP Graph QL',
 			'slug'    => 'wp-graphql',
-			'version' => '1.0',
+			'version' => '1.19.0',
 		),
 		array(
 			'name'         => 'Advanced Custom Fields Pro',
@@ -67,7 +67,7 @@ function fuxt_register_required_plugins() {
 			'name'     => 'WP GQL Gutenberg',
 			'slug'     => 'wp-gql-gutenberg',
 			'source'   => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/main.zip',
-			'version'  => '0.3.8',
+			'version'  => '0.4.1',
 			'required' => false,
 		),
 	);
