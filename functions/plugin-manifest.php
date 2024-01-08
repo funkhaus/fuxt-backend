@@ -47,9 +47,8 @@ function fuxt_register_required_plugins() {
 		),
 		array(
 			'name'     => 'WP GraphQL for Advanced Custom Fields',
-			'slug'     => 'wp-graphql-acf',
-			'source'   => 'https://github.com/wp-graphql/wp-graphql-acf/archive/master.zip',
-			'version'  => '0.3.3',
+			'slug'     => 'wpgraphql-acf',
+			'version'  => '2.0.0',
 			'required' => false,
 		),
 		array(
