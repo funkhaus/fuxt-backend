@@ -420,3 +420,68 @@ function fuxt_wp_mail_from( $email ) {
 	return str_replace($frontend_host, $server_host, $email);
 }
 add_filter( 'wp_mail_from', 'fuxt_wp_mail_from' );
+
+add_action(
+	'rest_api_init',
+	function () {
+
+		add_filter('rest_page_query', function ($args, $request){
+			$path = $request->get_param('path');
+		  
+			if (!empty($path)) {
+			  // get the page by path
+			  if ($path === '/') {
+				// get the front page
+				$id = get_option('page_on_front');
+				$args['p'] = $id;
+			  } else {
+				$pageByPath = get_page_by_path($path, OBJECT, 'page');
+				$args['p'] = $pageByPath->ID;
+			  }
+			  // overwrite the page id with the page id by path
+			}
+		  
+			return $args;
+
+		  }, 10, 2);
+
+		add_filter('rest_page_collection_params', function($params) {
+			$params['path'] = array(
+				'description'       => 'Path of the page',
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => function($param, $request, $key) {
+					return is_string($param);
+				}
+			);
+			return $params;
+		});
+	
+		// Field name to register.
+		$field = 'path';
+		register_rest_field(
+			'page',
+			$field,
+			array(
+				'get_callback'    => function ( $object ) use ( $field ) {
+					// Get field as single value from post meta.
+					return get_post_meta( $object['id'], $field, true );
+				},
+				'schema'          => array(
+					'type'        => 'string',
+					'description' => 'The path of the page',
+					'arg_options' => array(
+						'sanitize_callback' => function ( $value ) {
+							// Make the value safe for storage.
+							return sanitize_text_field( $value );
+						},
+						'validate_callback' => function ( $value ) {
+							// Valid if it contains exactly 10 English letters.
+							return (bool) preg_match( '/\A[a-z]{10}\Z/', $value );
+						},
+					),
+				),
+			)
+		);
+	}
+);
