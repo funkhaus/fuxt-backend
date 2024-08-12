@@ -5,30 +5,31 @@
 /*
  * Globals
  */
-:root {
+ :root {
     /* Body */
-    --body-bg-color: #011931;
+    --body-bg-color: #fff;
 
-    --text-color: #ffffff;
-    --text-color-hover: #ffffff;
+    --text-color: #000;
+    --text-color-hover: #000;
 
     /* Form */
-    --form-bg-color: #011931;
-    --form-border-color: #011931;
+    --form-bg-color: #fff;
+    --form-border-color: #fff;
 
     /* Input fields */
-    --input-bg-color: #ffffff;
-    --input-color: #011931;
+    --input-bg-color: #fff;
+    --input-text-color: #000;
+    --input-border-color: #000;
 
     /* Submit button */
-    --button-color: #011931;
-    --button-color-hover: #ffffff;
-
     --button-bg-color: #ffffff;
-    --button-bg-color-hover: #011931;
+    --button-bg-color-hover: #000;
 
-    --button-border-color: #ffffff;
-    --button-border-color-hover: #ffffff;
+    --button-text-color: #000;
+    --button-text-color-hover: #ffffff;    
+
+    --button-border-color: #000;
+    --button-border-color-hover: #000;
 }
 html {
     background: var(--body-bg-color);
@@ -50,7 +51,7 @@ a {
  * Login Banner Image
  */
 #login h1 a {
-    background-image: url(../images/logo-funkhaus.svg);
+    background-image: url(../images/logo.svg);
     background-position: center center;
     margin: 0;
     background-size: auto;
@@ -71,11 +72,11 @@ a {
 #loginform input[type='text'],
 #loginform input[type='password'] {
     background: var(--input-bg-color);
-    border: 1px solid var(--input-bg-color);
+    border: 1px solid var(--input-border-color);
     font-family: inherit;
     padding: 5px 8px;
     box-sizing: border-box;
-    color: var(--input-color);
+    color: var(--input-text-color);
 }
 #loginform input[type='checkbox'],
 #loginform input[type='radio'] {
@@ -87,7 +88,7 @@ a {
  */
 #wp-submit {
     background: var(--button-bg-color);
-    color: var(--button-color);
+    color: var(--button-text-color);
     border: none;
     text-shadow: none;
     box-shadow: none;
@@ -100,7 +101,7 @@ a {
 #wp-submit:hover,
 #wp-submit:focus {
     background: var(--button-bg-color-hover);
-    color: var(--button-color-hover);
+    color: var(--button-text-color-hover);
     border: 2px solid var(--button-border-color-hover);
 }
 
