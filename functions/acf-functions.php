@@ -99,6 +99,14 @@ class Acf {
 		add_filter( 'acf/location/rule_values/page_parent', array( $this, 'page_location_rule_values_no_parent' ), 10, 2 );
 		add_filter( 'acf/location/rule_match/page_parent', array( $this, 'page_location_rule_match_no_parent' ), 4, 3 );
 
+		add_filter( 'acf/post_type/registration_args', array( $this, 'enable_graphql_for_cpts' ), 10, 2 );
+		add_filter( 'acf/taxonomy/registration_args', array( $this, 'enable_graphql_for_taxonomies' ), 10, 2 );
+
+		add_filter( 'acf/post_type/additional_settings_tabs', array( $this, 'add_graphql_settings_tab' ) );
+		add_filter( 'acf/taxonomy/additional_settings_tabs', array( $this, 'add_graphql_settings_tab' ) );
+
+		add_action( 'acf/post_type/render_settings_tab/graphql', array( $this, 'add_graphql_acf_toggle_cpt' ), 10, 1 );
+		add_action( 'acf/taxonomy/render_settings_tab/graphql', array( $this, 'add_graphql_acf_toggle_taxonomy' ), 10, 1 );
 	}
 
 	/**
@@ -553,6 +561,174 @@ class Acf {
 
 			return empty( $page_parent );
 		}
+	}
+
+	/**
+	 * Enable GraphQL by default for CPTs registered with ACF.
+	 *
+	 * @param array $args Arrays to filter.
+	 * @param array $post The main ACF post type settings array.
+	 */
+	public function enable_graphql_for_cpts( $args, $post ) {
+		$args['show_in_graphql'] = ! empty( $post['show_in_graphql'] );
+		if ( $args['show_in_graphql'] ) {
+			$args['graphql_single_name'] = empty( $post['graphql_single_name'] ) ? $post['post_type'] : $post['graphql_single_name'];
+			$args['graphql_plural_name'] = empty( $post['graphql_plural_name'] ) ? $post['post_type'] . 's' : $post['graphql_plural_name'];
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Enable GraphQL by default for custom taxonomies registered with ACF.
+	 *
+	 * @param array $args Arrays to filter.
+	 * @param array $post The main ACF taxonomy settings array.
+	 */
+	public function enable_graphql_for_taxonomies( $args, $post ) {
+		$args['show_in_graphql'] = ! empty( $post['show_in_graphql'] );
+		if ( $args['show_in_graphql'] ) {
+			$args['graphql_single_name'] = empty( $post['graphql_single_name'] ) ? $post['taxonomy'] : $post['graphql_single_name'];
+			$args['graphql_plural_name'] = empty( $post['graphql_plural_name'] ) ? $post['taxonomy'] . 's' : $post['graphql_plural_name'];
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Adds graphql settings tab to acf setting.
+	 *
+	 * @param array $additional_tabs Tabs array.
+	 * @return array
+	 */
+	public function add_graphql_settings_tab( $additional_tabs ) {
+		$additional_tabs['graphql'] = __( 'GraphQL', 'fuxt' );
+		return $additional_tabs;
+	}
+
+
+	/**
+	 * Adds Show in GraphQL toggle to ACF post type creation panel.
+	 *
+	 * @param array $acf_post_type Post type array data.
+	 */
+	public function add_graphql_acf_toggle_cpt( $acf_post_type ) {
+		acf_render_field_wrap(
+			array(
+				'type'         => 'true_false',
+				'name'         => 'show_in_graphql',
+				'key'          => 'show_in_graphql',
+				'prefix'       => 'acf_post_type',
+				'value'        => empty( $acf_post_type['show_in_graphql'] ) ? 0 : $acf_post_type['show_in_graphql'],
+				'label'        => __( 'Show In GraphQL API', 'fuxt' ),
+				'instructions' => __( 'Exposes this post type in the GraphQL API.', 'fuxt' ),
+				'default'      => 0,
+				'ui'           => true,
+			),
+			'div'
+		);
+
+		acf_render_field_wrap(
+			array(
+				'type'         => 'text',
+				'name'         => 'graphql_single_name',
+				'prefix'       => 'acf_post_type',
+				'value'        => isset( $acf_post_type['graphql_single_name'] ) ? $acf_post_type['graphql_single_name'] : '',
+				'label'        => __( 'Single Name', 'fuxt' ),
+				'instructions' => __( 'GraphQL Single Name.', 'fuxt' ),
+				'defalult'     => $acf_post_type['post_type'],
+				'placeholder'  => $acf_post_type['post_type'],
+				'conditions'   => array(
+					'field'    => 'show_in_graphql',
+					'operator' => '==',
+					'value'    => '1',
+				),
+			),
+			'div',
+			'field'
+		);
+
+		acf_render_field_wrap(
+			array(
+				'type'         => 'text',
+				'name'         => 'graphql_plural_name',
+				'prefix'       => 'acf_post_type',
+				'value'        => isset( $acf_post_type['graphql_plural_name'] ) ? $acf_post_type['graphql_plural_name'] : '',
+				'label'        => __( 'Plural Name', 'fuxt' ),
+				'instructions' => __( 'GraphQL Plural Name.', 'fuxt' ),
+				'defalult'     => $acf_post_type['post_type'] . 's',
+				'placeholder'  => $acf_post_type['post_type'] . 's',
+				'conditions'   => array(
+					'field'    => 'show_in_graphql',
+					'operator' => '==',
+					'value'    => '1',
+				),
+			),
+			'div',
+			'field'
+		);
+	}
+
+	/**
+	 * Adds Show in GraphQL toggle to ACF post type creation panel.
+	 *
+	 * @param array $acf_taxonomy Taxonomy array data.
+	 */
+	public function add_graphql_acf_toggle_taxonomy( $acf_taxonomy ) {
+		acf_render_field_wrap(
+			array(
+				'type'         => 'true_false',
+				'name'         => 'show_in_graphql',
+				'key'          => 'show_in_graphql',
+				'prefix'       => 'acf_taxonomy',
+				'value'        => empty( $acf_taxonomy['show_in_graphql'] ) ? 0 : $acf_taxonomy['show_in_graphql'],
+				'label'        => __( 'Show In GraphQL API', 'fuxt' ),
+				'instructions' => __( 'Exposes this taxonomy in the GraphQL API.', 'fuxt' ),
+				'default'      => 0,
+				'ui'           => true,
+			),
+			'div'
+		);
+
+		acf_render_field_wrap(
+			array(
+				'type'         => 'text',
+				'name'         => 'graphql_single_name',
+				'prefix'       => 'acf_taxonomy',
+				'value'        => isset( $acf_taxonomy['graphql_single_name'] ) ? $acf_taxonomy['graphql_single_name'] : '',
+				'label'        => __( 'Single Name', 'fuxt' ),
+				'instructions' => __( 'GraphQL Single Name.', 'fuxt' ),
+				'defalult'     => $acf_taxonomy['taxonomy'],
+				'placeholder'  => $acf_taxonomy['taxonomy'],
+				'conditions'   => array(
+					'field'    => 'show_in_graphql',
+					'operator' => '==',
+					'value'    => '1',
+				),
+			),
+			'div',
+			'field'
+		);
+
+		acf_render_field_wrap(
+			array(
+				'type'         => 'text',
+				'name'         => 'graphql_plural_name',
+				'prefix'       => 'acf_taxonomy',
+				'value'        => isset( $acf_taxonomy['graphql_plural_name'] ) ? $acf_taxonomy['graphql_plural_name'] : '',
+				'label'        => __( 'Plural Name', 'fuxt' ),
+				'instructions' => __( 'GraphQL Plural Name.', 'fuxt' ),
+				'defalult'     => $acf_taxonomy['taxonomy'] . 's',
+				'placeholder'  => $acf_taxonomy['taxonomy'] . 's',
+				'conditions'   => array(
+					'field'    => 'show_in_graphql',
+					'operator' => '==',
+					'value'    => '1',
+				),
+			),
+			'div',
+			'field'
+		);
 	}
 }
 
