@@ -30,6 +30,12 @@ function custom_theme_setup() {
 
 	// Enable HTML5 support
 	add_theme_support( 'html5', array( 'gallery', 'caption' ) );
+	
+	// Disable color and font palettes, this will only allow custom pickers.
+	add_theme_support('editor-color-palette', []);
+    add_theme_support('editor-font-sizes', []);	
+    add_theme_support('editor-gradient-presets', []);
+    add_theme_support('editor-spacing-sizes', []);
 }
 add_action( 'after_setup_theme', 'custom_theme_setup' );
 

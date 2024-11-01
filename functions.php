@@ -11,7 +11,6 @@ define( 'FUXT_VERSION', wp_get_theme( 'fuxt-backend' )->get( 'Version' ) );
  * Load all modules.
  */
 require_once get_template_directory() . '/functions/wp-functions.php';
-require_once get_template_directory() . '/functions/gql-functions.php';
 require_once get_template_directory() . '/functions/theme-config.php';
 require_once get_template_directory() . '/functions/gutenberg-functions.php';
 require_once get_template_directory() . '/functions/acf-functions.php';
