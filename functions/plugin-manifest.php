@@ -29,11 +29,6 @@ function fuxt_register_required_plugins() {
 
 	$plugins = array(
 		array(
-			'name'    => 'WP Graph QL',
-			'slug'    => 'wp-graphql',
-			'version' => '1.19.0',
-		),
-		array(
 			'name'         => 'Advanced Custom Fields Pro',
 			'slug'         => 'advanced-custom-fields-pro',
 			'external_url' => 'https://www.advancedcustomfields.com/pro/',
@@ -43,12 +38,6 @@ function fuxt_register_required_plugins() {
 			'name'     => 'Auto SEO',
 			'slug'     => 'funkhaus-auto-seo',
 			'source'   => 'https://github.com/funkhaus/funkhaus-auto-seo/archive/main.zip',
-			'required' => false,
-		),
-		array(
-			'name'     => 'WP GraphQL for Advanced Custom Fields',
-			'slug'     => 'wpgraphql-acf',
-			'version'  => '2.0.0',
 			'required' => false,
 		),
 		array(
@@ -64,12 +53,17 @@ function fuxt_register_required_plugins() {
 			'required' => false,
 		),
 		array(
-			'name'     => 'WP GQL Gutenberg',
-			'slug'     => 'wp-gql-gutenberg',
-			'source'   => 'https://github.com/funkhaus/wp-gql-gutenberg/archive/main.zip',
-			'version'  => '0.4.1',
+			'name'     => 'WP OpenAPI',
+			'slug'     => 'wp-openapi',
 			'required' => false,
 		),
+		array(
+			'name'     => 'fuxt-api',
+			'slug'     => 'funkhaus-fuxt-api',
+			'source'   => 'https://github.com/funkhaus/fuxt-api/archive/main.zip',
+			'version'  => '1.0',
+			'required' => true,
+		),		
 	);
 
 	tgmpa( $plugins, $config );
