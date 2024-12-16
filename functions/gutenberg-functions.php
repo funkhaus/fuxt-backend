@@ -40,6 +40,7 @@ function fuxt_block_whitelist( $allowed_block_types ) {
 		'core/video',
 		'core/buttons',
 		'core/button',
+		'core/separator',
 	);
 
 	return array_merge( $acf_blocks, $whitelist );
