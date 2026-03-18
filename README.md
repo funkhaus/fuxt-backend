@@ -15,7 +15,7 @@ Built by [Funkhaus](http://funkhaus.us/).
 
 ## Setting up WordPress Coding Standards in VS Code
 
-1.  Install [PHP CodeSniffer (PHPCS)](https://github.com/squizlabs/PHP_CodeSniffer#installation)
+1.  Install [PHP CodeSniffer (PHPCS)](https://github.com/PHPCSStandards/PHP_CodeSniffer#installation)
     ```
     composer global require "squizlabs/php_codesniffer=*"
     ```
