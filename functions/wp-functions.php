@@ -426,3 +426,31 @@ function fuxt_wp_mail_from( $email ) {
 	return str_replace($frontend_host, $server_host, $email);
 }
 add_filter( 'wp_mail_from', 'fuxt_wp_mail_from' );
+
+/**
+ * Keep attachments uploaded to nav menu items publicly visible in WPGraphQL.
+ *
+ * Since wp-graphql 2.x, attachments inherit privacy from their parent post.
+ * Images uploaded through an ACF field on a menu item are parented to the
+ * nav_menu_item post (a non-public post type), so they resolve to null for
+ * public requests. Treat them as public, like the rest of the media library.
+ * SEE https://github.com/wp-graphql/wp-graphql/pull/3444
+ *
+ * @param bool|null $is_private Whether the object is private. Null means use default logic.
+ * @param string    $model_name Name of the model the filter is applied to.
+ * @param mixed     $data       The un-modeled incoming data.
+ * @return bool|null
+ */
+function fuxt_show_menu_item_media_in_graphql( $is_private, $model_name, $data ) {
+	if ( 'PostObject' !== $model_name || ! isset( $data->post_type, $data->post_parent ) || 'attachment' !== $data->post_type ) {
+		return $is_private;
+	}
+
+	$parent = get_post( (int) $data->post_parent );
+	if ( $parent && 'nav_menu_item' === $parent->post_type ) {
+		return false;
+	}
+
+	return $is_private;
+}
+add_filter( 'graphql_pre_model_data_is_private', 'fuxt_show_menu_item_media_in_graphql', 10, 3 );
